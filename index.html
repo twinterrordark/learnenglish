@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#4f46e5">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>A2 İngilizce Gramer Haritası</title>
 <style>
 :root{
@@ -176,6 +177,55 @@ tr td:first-child{font-weight:600}
 .score{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;
   text-align:center;box-shadow:var(--shadow);margin-bottom:14px}
 .score .big{font-size:clamp(22px,6vw,36px);font-weight:800;letter-spacing:-1px;line-height:1.2;word-break:break-word}
+
+/* ---------- DİNLEME PRATİĞİ ---------- */
+.lcount{background:var(--accent-soft);color:var(--accent);font-size:11.5px;font-weight:800;
+  padding:2px 8px;border-radius:99px;margin-left:2px}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.vcard{background:var(--surface2);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.vplayer-box{position:relative;width:100%;background:#000}
+.vthumb{display:block;width:100%;aspect-ratio:16/9;position:relative;padding:0;border:none;background:none;line-height:0;cursor:pointer}
+.vthumb img{width:100%;height:100%;object-fit:cover;display:block}
+.vplay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:46px;height:46px;
+  border-radius:99px;background:rgba(0,0,0,.68);color:#fff;display:grid;place-items:center;font-size:17px;
+  transition:.15s;pointer-events:none}
+.vthumb:hover .vplay{background:#e11d48;transform:translate(-50%,-50%) scale(1.1)}
+.vplay-lbl{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.78);
+  color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap;pointer-events:none}
+.vframe{position:relative;width:100%;aspect-ratio:16/9;background:#000}
+.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vmeta{padding:10px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.vt{font-weight:700;font-size:14px;line-height:1.35}
+.vlinks{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:12px;margin-top:auto}
+.btn-play-inline{display:inline-flex;align-items:center;gap:4px;background:var(--accent);color:#fff;border:none;padding:6px 12px;border-radius:7px;font-weight:700;font-size:12px;cursor:pointer;transition:.15s}
+.btn-play-inline:hover{filter:brightness(1.1)}
+.yt-link-subtle{color:var(--muted);text-decoration:none;font-size:12px;margin-left:auto}
+.yt-link-subtle:hover{color:var(--accent);text-decoration:underline}
+.v-file-notice{background:rgba(245,158,11,.1);border-top:1px solid rgba(245,158,11,.25);padding:7px 10px;font-size:11.5px;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:6px}
+.v-file-notice a{color:var(--accent);font-weight:700;text-decoration:underline;white-space:nowrap}
+.vdel{color:var(--err);font-size:12px;font-weight:600;padding:0;background:none;border:none;cursor:pointer}
+.ladd{margin-top:11px;padding:12px;background:var(--surface2);border-radius:11px}
+.ladd input{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--line);
+  background:var(--surface);color:var(--text);font-size:15px}
+.lname{font-weight:700;font-size:14px;margin:8px 0 5px}
+audio.lau{width:100%;margin-bottom:6px}
+.playlist-box{background:linear-gradient(135deg,rgba(79,70,229,.07),rgba(225,29,72,.07));border:1.5px solid var(--accent);border-radius:14px;padding:15px;margin-bottom:16px}
+.playlist-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.playlist-title{font-size:15.5px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:7px}
+.playlist-desc{font-size:12.5px;color:var(--muted);margin:3px 0 0;line-height:1.4}
+.playlist-ctrls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.playlist-ctrls .btn{padding:7px 14px;font-size:13px}
+.playlist-queue{margin-top:12px;max-height:240px;overflow-y:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:5px}
+.queue-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;cursor:pointer;font-size:12.5px;transition:.15s}
+.queue-item:hover{background:var(--surface2)}
+.queue-item.active{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.queue-num{font-weight:800;font-size:11px;color:var(--muted);width:22px;flex:none}
+.queue-title{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.queue-topic{font-size:11px;color:var(--muted);flex:none}
+.lhub-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
+.lhub-row:first-child{border-top:none}
+.lhub-row .hn{flex:1;min-width:0;font-weight:600;font-size:14.5px}
+.lhub-row .hc{font-size:12px;color:var(--muted);flex:none}
 
 /* ---------- GENEL DEĞERLENDİRME ---------- */
 .ex-head{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
@@ -475,6 +525,7 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
     <button class="nav-special" id="writeBtn" style="background:linear-gradient(135deg,var(--accent-2),var(--accent))">✎ &nbsp;Yazma Atölyesi</button>
     <button class="nav-special" id="bigQuizBtn">◎ &nbsp;Karışık Test (25 soru)</button>
     <button class="nav-special" id="examBtn" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">🎓 &nbsp;Genel Değerlendirme (24 soru)</button>
+    <button class="nav-special" id="listenBtn" style="background:linear-gradient(135deg,#e11d48,#f97316)">🎧 &nbsp;Dinleme Pratiği</button>
     <div id="navList"></div>
   </nav>
   <main id="main"></main>
@@ -1954,6 +2005,471 @@ T("gerund-vs-infinitive", {t:"vlink",
 })();
 
 /* Konu sayfasına eklenecek panel */
+/* =====================================================================
+   DİNLEME PRATİĞİ
+   ---------------------------------------------------------------------
+   VİDEO EKLEMEK İÇİN TEK YER: aşağıdaki LISTEN tablosundaki "yt" dizisi.
+     yt:[{id:"VIDEO_ID", t:"Başlık"}]
+   Video kimliği, YouTube adresindeki  watch?v=BURASI  kısmıdır.
+   Uygulama içinden de "Video Ekle" ile eklenebilir (tarayıcıya kaydolur).
+
+   ARKA PLANDA ÇALMA:
+     - Masaüstü: sekme değiştirince YouTube sesi devam eder.
+     - Telefon: tarayıcılar arka plana atılan sekmedeki YouTube gömülü
+       oynatıcısını durdurur; sayfadan bunu aşmak mümkün değil.
+       Gerçekten arka planda dinlemek için ya YouTube uygulamasında açmak
+       ya da "audio" dizisine kendi ses dosyanı (mp3) koymak gerekir —
+       gerçek <audio> öğesi Media Session ile arka planda çalar.
+   ===================================================================== */
+var LISTEN = {
+  "simple-present": {
+    q: "A2 English listening practice daily routines present simple",
+    yt: [
+      { id: "mrcLQA8wPJU", t: "My Daily Routine - A2 Listening Practice" },
+      { id: "SztMnWtbOvc", t: "Daily Routines in English (Simple Present)" }
+    ],
+    audio: []
+  },
+  "present-continuous": {
+    q: "A2 English listening present continuous what are they doing",
+    yt: [
+      { id: "W8UPzSRwlwY", t: "Present Continuous - What are they doing?" },
+      { id: "xUE0pH_OQig", t: "Present Continuous Listening Practice" }
+    ],
+    audio: []
+  },
+  "past-simple": {
+    q: "A2 English listening past simple story my holiday",
+    yt: [
+      { id: "Hu9FfMKiSKg", t: "Past Simple Story - My Last Holiday" },
+      { id: "wWj5APNaG20", t: "Past Simple Listening Practice" }
+    ],
+    audio: []
+  },
+  "past-continuous": {
+    q: "A2 English listening past continuous while when story",
+    yt: [
+      { id: "etvW0FOD_so", t: "Past Continuous Story - When & While" },
+      { id: "QJ2x20GmUTs", t: "Past Continuous Listening Practice" }
+    ],
+    audio: []
+  },
+  "will": {
+    q: "A2 English listening will future predictions practice",
+    yt: [
+      { id: "VhYYEqvcNLA", t: "Future with Will - Predictions" },
+      { id: "vcTO415dq6g", t: "Will vs Going to Practice" }
+    ],
+    audio: []
+  },
+  "going-to": {
+    q: "A2 English listening going to future plans practice",
+    yt: [
+      { id: "Eo77DWovbBU", t: "Going to Future Plans - English Listening" },
+      { id: "VhYYEqvcNLA", t: "Talking About Future Plans" }
+    ],
+    audio: []
+  },
+  "present-perfect": {
+    q: "A2 English listening present perfect have you ever",
+    yt: [
+      { id: "5Z9TbOmzajY", t: "Present Perfect - Have you ever?" },
+      { id: "ZpXAMGpWxsk", t: "Present Perfect Life Experiences" }
+    ],
+    audio: []
+  },
+  "when-while": {
+    q: "A2 English listening when while past continuous story",
+    yt: [
+      { id: "etvW0FOD_so", t: "When and While in Past Stories" },
+      { id: "QJ2x20GmUTs", t: "Past Continuous with When/While" }
+    ],
+    audio: []
+  },
+  "time-connectors": {
+    q: "A2 English listening before after until as soon as",
+    yt: [
+      { id: "FtqbKDuS_ew", t: "Time Connectors (Before, After, Until)" },
+      { id: "GH7x5w7mtjE", t: "Sequencing Words in English" }
+    ],
+    audio: []
+  },
+  "can-could": {
+    q: "A2 English listening can could ability permission",
+    yt: [
+      { id: "5KnFiDoQbQk", t: "Modal Verbs: Can and Could (Ability & Permission)" },
+      { id: "EzQ6Ag16rJk", t: "Can vs Could Listening Practice" }
+    ],
+    audio: []
+  },
+  "may-might": {
+    q: "A2 English listening may might possibility practice",
+    yt: [
+      { id: "840VBVRevWA", t: "Using May, Might and Could to Express Possibilities" },
+      { id: "QCYWiRpMBz8", t: "May, Might, Can, Could" }
+    ],
+    audio: []
+  },
+  "must-haveto": {
+    q: "A2 English listening must have to rules obligation",
+    yt: [
+      { id: "kfGrr3mZQaE", t: "Modals of Obligation - Have to, Need to, Must" },
+      { id: "pGb-ujyyuQE", t: "Must, Should, Have to Kullanımı" }
+    ],
+    audio: []
+  },
+  "should": {
+    q: "A2 English listening should advice giving practice",
+    yt: [
+      { id: "-tOl_215wHA", t: "English Speaking Lesson - Asking for & Giving Advice" },
+      { id: "B-BwdBZPqJc", t: "A2 English Listening Practice - Advice" }
+    ],
+    audio: []
+  },
+  "would": {
+    q: "A2 English listening would like ordering restaurant",
+    yt: [
+      { id: "uUMPULuwdLI", t: "How to Order Food at a Restaurant in English" },
+      { id: "bgfdqVmVjfk", t: "At the Restaurant Conversation" }
+    ],
+    audio: []
+  },
+  "zero-conditional": {
+    q: "A2 English listening zero conditional facts practice",
+    yt: [
+      { id: "WlStOWpZlyY", t: "Zero Conditional - Facts & General Truths" },
+      { id: "rLAXTdO3Ipw", t: "The Zero Conditional Lesson" }
+    ],
+    audio: []
+  },
+  "first-conditional": {
+    q: "A2 English listening first conditional if will practice",
+    yt: [
+      { id: "s59ygVYxpag", t: "First Conditional - Grammar & Verb Tenses" },
+      { id: "wA85Nu5mo68", t: "First Conditional Practice" }
+    ],
+    audio: []
+  },
+  "count-uncount": {
+    q: "A2 English listening countable uncountable nouns food",
+    yt: [
+      { id: "xnG57RzZoIo", t: "Countable and Uncountable Nouns in English" },
+      { id: "xEznhRnmR30", t: "Countable vs Uncountable Food Practice" }
+    ],
+    audio: []
+  },
+  "many-few": {
+    q: "A2 English listening many a few quantifiers practice",
+    yt: [
+      { id: "ZfhfR8VgH9U", t: "Quantifiers: Much, Many, Little, Few" },
+      { id: "XxGzMZZ_Hjc", t: "Many vs Few English Listening" }
+    ],
+    audio: []
+  },
+  "much-little": {
+    q: "A2 English listening much a little quantifiers practice",
+    yt: [
+      { id: "ZfhfR8VgH9U", t: "Much and Little Quantifiers Practice" },
+      { id: "tRRoarHdMIY", t: "Much, Many, A lot of, Few, Little" }
+    ],
+    audio: []
+  },
+  "a-lot-of": {
+    q: "A2 English listening a lot of lots of quantifiers",
+    yt: [
+      { id: "ZfhfR8VgH9U", t: "Quantifiers in English - A lot of" },
+      { id: "BkMU2Mg9ITo", t: "A lot of / Lots of English Practice" }
+    ],
+    audio: []
+  },
+  "some-any-no": {
+    q: "A2 English listening some any shopping conversation",
+    yt: [
+      { id: "audbOVSuCds", t: "Some, Any, No - English Quantifiers" },
+      { id: "98aY7pOP--M", t: "Some or Any Conversation in English" }
+    ],
+    audio: []
+  },
+  "gerund": {
+    q: "A2 English listening gerund ing verbs hobbies likes",
+    yt: [
+      { id: "1VaoDZpzWTw", t: "Gerunds (-ing) in English - Hobbies & Likes" },
+      { id: "ixj1hZasgk8", t: "Gerund Practice in Sentences" }
+    ],
+    audio: []
+  },
+  "infinitive": {
+    q: "A2 English listening infinitive to verb want decide",
+    yt: [
+      { id: "wfsMxT4ZFdQ", t: "Infinitives (to + verb) in English" },
+      { id: "1VaoDZpzWTw", t: "Infinitive Verbs Practice" }
+    ],
+    audio: []
+  },
+  "gerund-vs-infinitive": {
+    q: "A2 English listening gerund vs infinitive practice",
+    yt: [
+      { id: "1VaoDZpzWTw", t: "Gerund vs Infinitive - When to Use Each" },
+      { id: "ixj1hZasgk8", t: "Gerunds and Infinitives Practice" }
+    ],
+    audio: []
+  }
+};
+
+/* Kullanıcının eklediği videolar (tarayıcıda saklanır) */
+function lsKey(id){ return "a2gram_listen_" + id; }
+function userVids(id){
+  try{ return JSON.parse(localStorage.getItem(lsKey(id)) || "[]") || []; }catch(e){ return []; }
+}
+function saveUserVids(id, arr){
+  try{ localStorage.setItem(lsKey(id), JSON.stringify(arr)); }catch(e){}
+}
+/* Her biçimden video kimliği çıkar: watch?v= · youtu.be/ · shorts/ · embed/ · çıplak kimlik */
+function ytId(raw){
+  var s = String(raw || "").trim();
+  if(/^[A-Za-z0-9_-]{11}$/.test(s)) return s;
+  var m = s.match(/(?:v=|youtu\.be\/|\/shorts\/|\/embed\/|\/live\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+function allVids(id){
+  var base = (LISTEN[id] && LISTEN[id].yt) || [];
+  return base.concat(userVids(id));
+}
+
+/* Bütün konulardaki tüm YouTube videolarını topla */
+function getAllTopicVideos(){
+  var list = [];
+  T.forEach(function(t){
+    var vids = allVids(t.id);
+    vids.forEach(function(v, idx){
+      list.push({
+        id: v.id,
+        t: v.t || (t.title + " - Video " + (idx + 1)),
+        tid: t.id,
+        topicTitle: t.title
+      });
+    });
+  });
+  return list;
+}
+
+/* YouTube Kesintisiz Oynatma Listesi URL'si (watch_videos) */
+function getPlaylistUrl(vids){
+  var ids = (vids || []).map(function(v){ return v.id; }).filter(Boolean);
+  return "https://www.youtube.com/watch_videos?video_ids=" + ids.slice(0, 50).join(",");
+}
+
+/* YouTube Gömülü Playlist Oynatıcı Kodu */
+function mountPlaylistPlayer(box, vids, startIdx){
+  if(!vids || !vids.length) return;
+  startIdx = startIdx || 0;
+  if(startIdx < 0 || startIdx >= vids.length) startIdx = 0;
+  var cur = vids[startIdx];
+  var otherIds = vids.map(function(v){ return v.id; });
+  var embedUrl = "https://www.youtube.com/embed/" + cur.id +
+    "?playlist=" + otherIds.join(",") + "&autoplay=1&playsinline=1&rel=0";
+  var isFile = window.location.protocol === "file:";
+  var ytPlUrl = getPlaylistUrl(vids);
+
+  var h = '<div class="vframe"><iframe src="' + embedUrl + '" title="Playlist" frameborder="0" allowfullscreen ' +
+    'referrerpolicy="strict-origin-when-cross-origin" ' +
+    'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>';
+
+  if(isFile){
+    h += '<div class="v-file-notice">' +
+      '<span>💡 Not: YouTube yerel dosyada (file://) engellerse:</span> ' +
+      '<a href="' + ytPlUrl + '" target="_blank" rel="noopener noreferrer" data-yturl="' + ytPlUrl + '">YouTube\'da Playlist Olarak Aç ↗</a>' +
+      '</div>';
+  }
+
+  // Playlist İçi Parça Listesi ve Kontroller
+  h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap;gap:8px">' +
+       '<div style="font-size:12.5px;font-weight:700">Şu an: ' + (startIdx + 1) + ' / ' + vids.length + ' - ' + esc(cur.t) + '</div>' +
+       '<div style="display:flex;gap:6px">' +
+       '<button class="btn" id="plPrevBtn"' + (startIdx === 0 ? ' disabled style="opacity:.5"' : '') + '>‹ Önceki</button>' +
+       '<button class="btn" id="plNextBtn"' + (startIdx === vids.length - 1 ? ' disabled style="opacity:.5"' : '') + '>Sonraki ›</button>' +
+       '</div></div>';
+
+  h += '<div class="playlist-queue">';
+  vids.forEach(function(v, idx){
+    h += '<div class="queue-item' + (idx === startIdx ? ' active' : '') + '" data-plidx="' + idx + '">' +
+      '<span class="queue-num">' + (idx + 1) + '.</span>' +
+      '<span class="queue-title">' + esc(v.t) + '</span>' +
+      (v.topicTitle ? '<span class="queue-topic">' + esc(v.topicTitle) + '</span>' : '') +
+      '</div>';
+  });
+  h += '</div>';
+
+  box.innerHTML = h;
+
+  var prevB = box.querySelector("#plPrevBtn");
+  if(prevB && startIdx > 0) prevB.onclick = function(){ mountPlaylistPlayer(box, vids, startIdx - 1); };
+  var nextB = box.querySelector("#plNextBtn");
+  if(nextB && startIdx < vids.length - 1) nextB.onclick = function(){ mountPlaylistPlayer(box, vids, startIdx + 1); };
+
+  box.querySelectorAll("[data-plidx]").forEach(function(item){
+    item.onclick = function(){
+      var idx = parseInt(this.getAttribute("data-plidx"), 10);
+      mountPlaylistPlayer(box, vids, idx);
+    };
+  });
+}
+
+function listenPanel(id){
+  var L = LISTEN[id];
+  if(!L) return "";
+  var vids = allVids(id);
+  var topicPlUrl = getPlaylistUrl(vids);
+  var allV = getAllTopicVideos();
+  var masterPlUrl = getPlaylistUrl(allV);
+
+  var h = '<details class="viz listen" data-lid="' + id + '" open>' +
+          '<summary><span>🎧</span>Dinleme Videoları' +
+          (vids.length ? ' <span class="lcount">' + vids.length + ' video</span>' : '') +
+          '</summary><div class="viz-body">';
+
+  /* PLAYLIST SEÇENEĞİ */
+  h += '<div class="playlist-box">' +
+       '<div class="playlist-head">' +
+       '<div>' +
+       '<div class="playlist-title"><span>🎬</span> Otomatik Sırayla Oynat (Playlist)</div>' +
+       '<div class="playlist-desc">Videoları tek tek açmak yerine baştan sona sırayla, kesintisiz dinleyin.</div>' +
+       '</div>' +
+       '<div class="playlist-ctrls">' +
+       (vids.length > 1 ? '<button class="btn primary" id="btnTopicPl">▶ Bu Konudaki ' + vids.length + ' Videoyu Oynat</button>' : '') +
+       '<button class="btn' + (vids.length <= 1 ? ' primary' : '') + '" id="btnMasterPl">🎬 Tüm A2 Videolarını Oynat (' + allV.length + ' Video)</button>' +
+       '<a class="btn" target="_blank" rel="noopener noreferrer" data-yturl="' + (vids.length > 1 ? topicPlUrl : masterPlUrl) + '" href="' + (vids.length > 1 ? topicPlUrl : masterPlUrl) + '">YouTube\'da Playlist Olarak Aç ↗</a>' +
+       '</div></div>' +
+       '<div id="plPlayerBox" style="margin-top:12px" hidden></div>' +
+       '</div>';
+
+  /* VİDEO LİSTESİ */
+  h += '<h4 style="font-size:14px;font-weight:700;margin:14px 0 8px">Konu Videoları</h4>';
+  h += '<div class="lgrid" id="lGrid">' + (vids.length
+        ? vids.map(function(v, i){ return vidCard(v, i, id); }).join("")
+        : '<p class="viz-cap" style="margin:0">Video bulunamadı.</p>') + '</div>';
+
+  h += '<div class="btn-row" style="margin-top:12px">' +
+       '<a class="btn primary" target="_blank" rel="noopener noreferrer" data-yturl="https://www.youtube.com/results?search_query=' +
+       encodeURIComponent(L.q) + '" href="https://www.youtube.com/results?search_query=' +
+       encodeURIComponent(L.q) + '">▷ YouTube\'da daha fazla ara</a>' +
+       '<button class="btn" data-addvid="' + id + '">+ Video ekle</button></div>';
+
+  h += '<div class="ladd" id="lAdd" hidden>' +
+       '<input id="lUrl" type="url" inputmode="url" placeholder="YouTube adresini yapıştır (youtube.com/watch?v=... )" autocomplete="off">' +
+       '<div class="btn-row" style="margin-top:8px">' +
+       '<button class="btn primary" data-savevid="' + id + '">Kaydet</button>' +
+       '<button class="btn" data-canceladd="1">Vazgeç</button></div>' +
+       '<div id="lErr" class="viz-cap" style="color:var(--err);margin-top:6px" hidden></div></div>';
+
+  return h + '</div></details>';
+}
+
+function openExternal(url){
+  if(!url) return;
+  try {
+    var win = window.open(url, "_blank", "noopener,noreferrer");
+    if(!win || win.closed || typeof win.closed === "undefined"){
+      window.location.href = url;
+    }
+  } catch(e){
+    window.location.href = url;
+  }
+}
+window.openExternal = openExternal;
+
+function vidCard(v, i, tid){
+  var t = v.t || "Dinleme " + (i + 1);
+  var ytUrl = "https://www.youtube.com/watch?v=" + v.id;
+  return '<div class="vcard" data-vid="' + v.id + '">' +
+    '<div class="vplayer-box" id="vp-' + v.id + '">' +
+      '<button class="vthumb" data-playvid="' + v.id + '" aria-label="' + esc(t) + '">' +
+        '<img loading="lazy" src="https://i.ytimg.com/vi/' + v.id + '/mqdefault.jpg" alt="">' +
+        '<span class="vplay">▶</span>' +
+      '</button>' +
+    '</div>' +
+    '<div class="vmeta"><div class="vt">' + esc(t) + '</div>' +
+      '<div class="vlinks">' +
+        '<button class="btn-play-inline" data-playvid="' + v.id + '">▶ Sayfada Oynat</button>' +
+        '<a class="yt-link-subtle" target="_blank" rel="noopener noreferrer" href="' + ytUrl + '" data-yturl="' + ytUrl + '">YouTube\'da aç ↗</a>' +
+        (v.user ? ' · <button class="vdel" data-delvid="' + v.id + '" data-tid="' + tid + '">kaldır</button>' : '') +
+      '</div></div></div>';
+}
+
+function mountPlayer(box, vid){
+  var isFile = window.location.protocol === "file:";
+  var ytUrl = "https://www.youtube.com/watch?v=" + vid;
+  var h = '<div class="vframe"><iframe src="https://www.youtube.com/embed/' + vid +
+    '?autoplay=1&playsinline=1&rel=0" title="Dinleme" frameborder="0" allowfullscreen ' +
+    'referrerpolicy="strict-origin-when-cross-origin" ' +
+    'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>';
+  if(isFile){
+    h += '<div class="v-file-notice">' +
+      '<span>💡 Not: YouTube yerel dosyalarda gömülü oynatmayı kısıtlarsa:</span> ' +
+      '<a href="' + ytUrl + '" target="_blank" rel="noopener noreferrer" data-yturl="' + ytUrl + '">YouTube\'da İzle ↗</a>' +
+      '</div>';
+  }
+  box.innerHTML = h;
+}
+
+function wireListen(root, tid){
+  var topicVids = allVids(tid);
+  var allV = getAllTopicVideos();
+  var plBox = root.querySelector("#plPlayerBox");
+
+  var topicPlBtn = root.querySelector("#btnTopicPl");
+  if(topicPlBtn && plBox){
+    topicPlBtn.onclick = function(){
+      plBox.hidden = false;
+      mountPlaylistPlayer(plBox, topicVids, 0);
+      plBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
+  }
+
+  var masterPlBtn = root.querySelector("#btnMasterPl");
+  if(masterPlBtn && plBox){
+    masterPlBtn.onclick = function(){
+      plBox.hidden = false;
+      mountPlaylistPlayer(plBox, allV, 0);
+      plBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
+  }
+
+  var grid = root.querySelector("#lGrid");
+  if(grid){
+    grid.querySelectorAll("[data-playvid]").forEach(function(b){
+      b.onclick = function(){
+        var vid = this.getAttribute("data-playvid");
+        var card = this.closest(".vcard"), box = card.querySelector(".vplayer-box");
+        mountPlayer(box, vid);
+      };
+    });
+  }
+  var addBtn = root.querySelector("[data-addvid]"), box = root.querySelector("#lAdd");
+  if(addBtn && box) addBtn.onclick = function(){ box.hidden = !box.hidden; if(!box.hidden) root.querySelector("#lUrl").focus(); };
+  var cancel = root.querySelector("[data-canceladd]");
+  if(cancel && box) cancel.onclick = function(){ box.hidden = true; };
+  var save = root.querySelector("[data-savevid]");
+  if(save) save.onclick = function(){
+    var inp = root.querySelector("#lUrl"), err = root.querySelector("#lErr");
+    var id = ytId(inp.value);
+    if(!id){ err.hidden = false; err.textContent = "Geçerli bir YouTube adresi bulamadım. Örnek: youtube.com/watch?v=XXXXXXXXXXX"; return; }
+    err.hidden = true;
+    var arr = userVids(tid);
+    if(arr.some(function(x){ return x.id === id; })){ err.hidden = false; err.textContent = "Bu video zaten ekli."; return; }
+    arr.push({id:id, t:"Eklediğim video " + (arr.length + 1), user:true});
+    saveUserVids(tid, arr);
+    showTopic(tid);
+  };
+  root.querySelectorAll("[data-delvid]").forEach(function(b){
+    b.onclick = function(){
+      var vid = this.getAttribute("data-delvid"), t = this.getAttribute("data-tid");
+      saveUserVids(t, userVids(t).filter(function(x){ return x.id !== vid; }));
+      showTopic(t);
+    };
+  });
+}
+
 function vizPanel(id){
   var sp = VZ[id];
   if(!sp) return "";
@@ -1979,6 +2495,7 @@ function showTopic(id){
           '<p class="topic-sub">'+esc(t.sub)+'</p>'+
           '<p class="gloss-hint">💡 İngilizce cümlelerde altı noktalı <b>kelimelere</b> dokun (veya üzerine gel) — Türkçe anlamını gösterir.</p>'+
           vizPanel(id)+
+          listenPanel(id)+
           renderSections(t.s) + renderQuiz(t.q, id);
   h += '<div class="done-bar">'+
        '<button class="btn primary" id="markDone">'+(done[id]?"✓ Tamamlandı":"Konuyu tamamladım")+'</button>';
@@ -1990,6 +2507,8 @@ function showTopic(id){
   window.scrollTo(0,0);
   /* Görsel, konu açıldığında SVG eklendiği an kendiliğinden bir kez oynar
      (CSS animasyonları render'da başlar — ayrı bir tetikleyiciye gerek yok). */
+  var lp = main.querySelector("details.listen");
+  if(lp) wireListen(lp, id);
   applyGloss(main);
   wireQuiz(main, t.q);
   el("markDone").onclick = function(){
@@ -2024,6 +2543,9 @@ function showHome(){
   h += '<button class="node-card" data-go="__exam" style="border-color:var(--accent)">'+
        '<span class="badge">SINAV</span>'+
        '<h4>🎓 Genel Değerlendirme</h4><p>24 konunun tamamından soru + hangi konuyu tekrar etmen gerektiğini gösteren rapor</p></button>';
+  h += '<button class="node-card" data-go="__listen" style="border-color:#f97316">'+
+       '<span class="badge" style="background:rgba(249,115,22,.15);color:#ea580c">DİNLEME</span>'+
+       '<h4>🎧 Dinleme Pratiği</h4><p>Her konu için YouTube video listesi — kendi videolarını da ekleyebilirsin</p></button>';
   h += '</div>';
   h += '<h3 style="margin:26px 0 12px;font-size:18px;font-weight:800;">Tüm Konular</h3>';
   NODES.forEach(function(nd){
@@ -3888,20 +4410,79 @@ function examResult(){
   if(ag) ag.onclick = function(){ showExam(true); };
 }
 
+/* ---------- Dinleme merkezi: bütün konuların video sayıları ---------- */
+function showListenHub(){
+  current = null; closeNav();
+  var total = 0;
+  T.forEach(function(t){ total += allVids(t.id).length; });
+  var allV = getAllTopicVideos();
+  var masterPlUrl = getPlaylistUrl(allV);
+
+  var h = '<div class="crumb">Pratik</div><h1 class="topic-title">🎧 Dinleme Videoları</h1>' +
+    '<p class="topic-sub">Her konu için seçilmiş YouTube dinleme videoları ve kesintisiz playlist.</p>';
+
+  h += '<div class="playlist-box">' +
+       '<div class="playlist-head">' +
+       '<div>' +
+       '<div class="playlist-title"><span>🎬</span> Tüm A2 Videoları Playlist\'i (' + allV.length + ' Video)</div>' +
+       '<div class="playlist-desc">24 konudaki tüm dinleme videolarını baştan sona tek seferde, sırayla dinleyin ve izleyin.</div>' +
+       '</div>' +
+       '<div class="playlist-ctrls">' +
+       '<button class="btn primary" id="hubPlayAllBtn">▶ Sayfada Sırayla Oynat</button>' +
+       '<a class="btn" target="_blank" rel="noopener noreferrer" data-yturl="' + masterPlUrl + '" href="' + masterPlUrl + '">YouTube\'da Playlist Olarak Aç ↗</a>' +
+       '</div></div>' +
+       '<div id="hubPlaylistArea" style="margin-top:12px" hidden></div>' +
+       '</div>';
+
+  NODES.forEach(function(nd){
+    h += '<h3 style="margin:22px 0 10px;font-size:17px;font-weight:800;">Düğüm ' + nd.n + ' · ' + esc(nd.title) + '</h3><div class="card">';
+    T.filter(function(t){ return t.node === nd.n; }).forEach(function(t){
+      var n = allVids(t.id).length;
+      h += '<div class="lhub-row"><span class="hn">' + esc(t.title) + '</span>' +
+           '<span class="hc">' + (n ? n + " video" : "video yok") + '</span>' +
+           '<button class="chip link" data-go="' + t.id + '">aç ›</button></div>';
+    });
+    h += '</div>';
+  });
+
+  main.innerHTML = h;
+  window.scrollTo(0, 0);
+  fab.style.display = "none";
+  buildNav(el("search").value);
+
+  var playAllBtn = main.querySelector("#hubPlayAllBtn");
+  var plArea = main.querySelector("#hubPlaylistArea");
+  if(playAllBtn && plArea){
+    playAllBtn.onclick = function(){
+      plArea.hidden = false;
+      mountPlaylistPlayer(plArea, allV, 0);
+      plArea.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
+  }
+}
+
 /* ---------- Yönlendirme ---------- */
 function go(id){
   if(id === "__home") showHome();
   else if(id === "__write") showWriting();
   else if(id === "__exam") showExam(true);
+  else if(id === "__listen") showListenHub();
   else showTopic(id);
 }
 document.addEventListener("click", function(e){
+  var yt = e.target.closest("[data-yturl]");
+  if(yt){
+    e.preventDefault();
+    openExternal(yt.getAttribute("data-yturl") || yt.getAttribute("href"));
+    return;
+  }
   var b = e.target.closest("[data-go]");
   if(b){ go(b.getAttribute("data-go")); }
 });
 el("homeBtn").onclick = showHome;
 el("bigQuizBtn").onclick = showBigQuiz;
 el("examBtn").onclick = function(){ showExam(true); };
+el("listenBtn").onclick = showListenHub;
 el("writeBtn").onclick = function(){ showWriting(); };
 el("search").addEventListener("input", function(){ buildNav(this.value); });
 window.addEventListener("resize", function(){
