@@ -177,6 +177,30 @@ tr td:first-child{font-weight:600}
   text-align:center;box-shadow:var(--shadow);margin-bottom:14px}
 .score .big{font-size:clamp(22px,6vw,36px);font-weight:800;letter-spacing:-1px;line-height:1.2;word-break:break-word}
 
+/* ---------- GENEL DEĞERLENDİRME ---------- */
+.ex-head{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:13px 15px;margin-bottom:14px;box-shadow:var(--shadow)}
+.ex-head .ln{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:7px}
+.ex-head .ln b{color:var(--accent)}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft);font-weight:700}
+.ex-nav{display:flex;gap:10px;margin-top:14px}
+.ex-nav .btn{flex:1}
+.ex-topic{font-size:11.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.res-big{font-size:clamp(40px,12vw,58px);font-weight:800;letter-spacing:-2px;line-height:1;margin-bottom:4px}
+.res-pct{font-size:15px;color:var(--muted)}
+.nrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.nrow:first-child{border-top:none}
+.nrow .nn{flex:1;min-width:0}
+.nrow .nb{width:76px;height:8px;border-radius:99px;background:var(--surface2);overflow:hidden;flex:none}
+.nrow .nb i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.nrow .ns{width:46px;text-align:right;font-weight:800;font-size:13px;flex:none}
+.wrong{border-left:3px solid var(--err);background:var(--surface2);border-radius:0 10px 10px 0;
+  padding:11px 13px;margin-bottom:9px;font-size:14.5px}
+.wrong .wq{font-weight:700;margin-bottom:6px}
+.wrong .wa{font-size:13.5px;margin-bottom:3px}
+.wrong .wa s{color:var(--err)}
+.wrong .wa b{color:var(--ok)}
+
 .backdrop{
   display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;
   background:rgba(0,0,0,.5);z-index:900;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
@@ -348,12 +372,74 @@ html[data-theme="dark"] #wtip{box-shadow:0 10px 34px rgba(0,0,0,.55)}
 #wtip .wb{font-size:12.5px;color:var(--muted);font-weight:600;margin-left:6px}
 #wtip .wt{margin-top:4px}
 #wtip .wn{margin-top:5px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:5px}
-.gloss-hint{font-size:13px;color:var(--muted);margin:0 0 14px;display:flex;gap:7px;align-items:center}
+.gloss-hint{font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.55}
 .gloss-hint b{border-bottom:1px dotted var(--muted);color:var(--text)}
 
 .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.35);
   border-top-color:#fff;border-radius:99px;animation:sp .7s linear infinite;vertical-align:-2px}
 @keyframes sp{to{transform:rotate(360deg)}}
+
+/* ---------- GÖRSEL ANLATIM PANELİ ---------- */
+details.viz{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+details.viz>summary{padding:13px 16px;font-weight:800;font-size:15px;cursor:pointer;list-style:none;
+  display:flex;align-items:center;gap:9px;user-select:none}
+details.viz>summary::-webkit-details-marker{display:none}
+details.viz>summary::after{content:"▾";margin-left:auto;color:var(--muted);transition:.2s;font-size:13px}
+details.viz[open]>summary::after{transform:rotate(180deg)}
+details.viz>summary:hover{background:var(--surface2)}
+.viz-body{padding:0 14px 15px}
+.viz-cap{font-size:14.5px;color:var(--muted);margin:2px 0 0;line-height:1.55}
+.viz-cap b{color:var(--text)}
+.viz-ex{margin-top:11px;padding:10px 12px;background:var(--surface2);border-radius:10px;font-size:14.5px}
+.viz-ex .en{font-weight:700}
+.viz-ex .tr{color:var(--muted);font-size:13.5px}
+.viz-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* Daima kaba sığar (yatay kaydırma yok); masaüstünde aşırı büyümemesi için sınırlı */
+svg.vz{display:block;width:100%;max-width:560px;margin:0 auto;height:auto;font-family:inherit}
+
+svg.vz .ax{stroke:var(--line);stroke-width:2}
+svg.vz .axf{fill:var(--line)}
+svg.vz .nw{stroke:var(--accent);stroke-width:2;opacity:.85}
+svg.vz .tx{fill:var(--muted);font-size:20px;font-weight:600}
+svg.vz .tn{fill:var(--accent);font-size:20px;font-weight:800}
+svg.vz .lb{fill:var(--text);font-size:22px;font-weight:700}
+svg.vz .lbs{fill:var(--muted);font-size:19px;font-weight:600}
+svg.vz .dot{fill:var(--accent)}
+svg.vz .dot2{fill:var(--accent-2)}
+svg.vz .bar{fill:var(--accent);opacity:.42}
+svg.vz .span{fill:var(--accent-2);opacity:.26}
+svg.vz .bx{fill:var(--surface2);stroke:var(--line);stroke-width:1.5}
+svg.vz .bxa{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+svg.vz .arw{stroke:var(--accent);stroke-width:2.5;fill:none}
+svg.vz .arwf{fill:var(--accent)}
+svg.vz .neg{fill:var(--err)}
+svg.vz .pos{fill:var(--ok)}
+svg.vz .xs{stroke:var(--err);stroke-width:3}
+svg.vz .blob{fill:var(--accent-2);opacity:.32}
+
+svg.vz .nwq{stroke:var(--muted);stroke-width:1.5;opacity:.42}   /* sönük ŞİMDİ çizgisi */
+svg.vz .ul{fill:var(--accent)}                                   /* yazının altındaki renk şeridi */
+svg.vz .ul2{fill:var(--accent-2)}
+svg.vz .lbm{fill:var(--text);font-size:19px;font-weight:700}
+svg.vz .ghost{fill:none;stroke:var(--accent);stroke-width:2;stroke-dasharray:8 7;opacity:.85}
+svg.vz .solid{fill:var(--accent);opacity:.34;stroke:var(--accent);stroke-width:2}
+svg.vz .stopbar{fill:var(--err)}
+svg.vz .chip{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2}
+svg.vz .chipt{fill:var(--accent);font-size:21px;font-weight:800}
+
+svg.vz .an{opacity:0;animation:vzIn .42s ease forwards}
+svg.vz .grow{transform-box:fill-box;transform-origin:left center;animation:vzGrow .62s cubic-bezier(.3,.9,.3,1) forwards}
+svg.vz .pop{transform-box:fill-box;transform-origin:center;animation:vzPop .46s cubic-bezier(.34,1.56,.64,1) both}
+svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s ease forwards}
+@keyframes vzIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes vzGrow{from{transform:scaleX(.02)}to{transform:scaleX(1)}}
+@keyframes vzPop{0%{transform:scale(0)}100%{transform:scale(1)}}
+@keyframes vzDraw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){
+  svg.vz .an,svg.vz .grow,svg.vz .pop,svg.vz .draw{animation:none;opacity:1;transform:none;stroke-dashoffset:0}
+}
+
 
 .fab{position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom) + 16px);z-index:50;
   background:var(--accent);color:#fff;border-radius:99px;padding:12px 18px;font-weight:700;
@@ -388,6 +474,7 @@ html[data-theme="dark"] #wtip{box-shadow:0 10px 34px rgba(0,0,0,.55)}
     </div>
     <button class="nav-special" id="writeBtn" style="background:linear-gradient(135deg,var(--accent-2),var(--accent))">✎ &nbsp;Yazma Atölyesi</button>
     <button class="nav-special" id="bigQuizBtn">◎ &nbsp;Karışık Test (25 soru)</button>
+    <button class="nav-special" id="examBtn" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">🎓 &nbsp;Genel Değerlendirme (24 soru)</button>
     <div id="navList"></div>
   </nav>
   <main id="main"></main>
@@ -1502,6 +1589,385 @@ function wireQuiz(root, qs, onAnswer){
 }
 
 /* ---------- Konu sayfası ---------- */
+/* =====================================================================
+   GÖRSEL ANLATIM MOTORU
+   Her konu için tek bir görsel tipi + tanım. Kalıp değil, veri:
+   timeline (zaman çizelgesi) · scale (ölçek) · flow (akış) ·
+   split (dallanma) · qty (miktar çubukları) · count (sayılabilirlik)
+   ===================================================================== */
+var VZ = {};   /* topicId -> spec */
+
+function vzWrap(inner, w, h){
+  return '<div class="viz-scroll"><svg class="vz" viewBox="0 0 ' + w + ' ' + h + '" role="img">' + inner + '</svg></div>';
+}
+function an(i){ return ' class="an" style="animation-delay:' + (0.10 + i * 0.13) + 's"'; }
+
+/* ---------- 1) ZAMAN ÇİZELGESİ ---------- */
+function vzTimeline(sp){
+  var x0 = 46, x1 = 566, ay = 118;
+  function X(f){ return Math.round(x0 + f * (x1 - x0)); }
+  var s = '';
+  s += '<line class="ax" x1="' + x0 + '" y1="' + ay + '" x2="' + x1 + '" y2="' + ay + '"/>';
+  s += '<polygon class="axf" points="' + x1 + ',' + ay + ' ' + (x1-11) + ',' + (ay-5.5) + ' ' + (x1-11) + ',' + (ay+5.5) + '"/>';
+  /* ŞİMDİ çizgisi yalnızca bir referans — konu "now" değilse öne çıkmasın */
+  var fc = sp.focus || "";
+  function zc(z){ return fc.indexOf(z) >= 0 ? "tn" : "tx"; }
+  s += '<line class="' + (fc.indexOf("now") >= 0 ? "nw" : "nwq") + '" x1="' + X(0.5) +
+       '" y1="40" x2="' + X(0.5) + '" y2="140" stroke-dasharray="5 5"/>';
+  s += '<text class="' + zc("past")   + '" x="' + X(0.14) + '" y="166" text-anchor="middle">PAST · geçmiş</text>';
+  s += '<text class="' + zc("now")    + '" x="' + X(0.5)  + '" y="166" text-anchor="middle">NOW · şimdi</text>';
+  s += '<text class="' + zc("future") + '" x="' + X(0.87) + '" y="166" text-anchor="middle">FUTURE · gelecek</text>';
+
+  (sp.marks || []).forEach(function(m, i){
+    var g = '<g' + an(i) + '>';
+    var d = ' style="animation-delay:' + (0.16 + i * 0.15) + 's"';
+    if(m.k === "dot"){
+      g += '<circle class="' + (m.c || "dot") + ' pop"' + d + ' cx="' + X(m.at) + '" cy="' + ay + '" r="9"/>';
+    } else if(m.k === "dots"){
+      var n = m.n || 5;
+      for(var j = 0; j < n; j++){
+        var f = m.from + (m.to - m.from) * (n === 1 ? 0 : j / (n - 1));
+        g += '<circle class="dot pop" style="animation-delay:' + (0.16 + i*0.15 + j*0.07) + 's" cx="' +
+             X(f) + '" cy="' + ay + '" r="6.5"/>';
+      }
+    } else if(m.k === "bar"){
+      g += '<rect class="' + (m.c || "bar") + ' grow"' + d + ' x="' + X(m.from) + '" y="' + (ay-13) + '" width="' +
+           (X(m.to) - X(m.from)) + '" height="26" rx="13"/>';
+    } else if(m.k === "span"){
+      g += '<rect class="span grow"' + d + ' x="' + X(m.from) + '" y="' + (ay-13) + '" width="' +
+           (X(m.to) - X(m.from)) + '" height="26" rx="13"/>';
+      g += '<polygon class="dot2 pop" style="animation-delay:' + (0.16 + i*0.15 + 0.45) + 's" points="' +
+           X(m.to) + ',' + ay + ' ' + (X(m.to)-13) + ',' + (ay-8) + ' ' + (X(m.to)-13) + ',' + (ay+8) + '"/>';
+    } else if(m.k === "flag"){
+      g += '<line class="arw draw"' + d + ' x1="' + X(m.at) + '" y1="' + ay + '" x2="' + X(m.at) + '" y2="' + (ay-34) + '"/>';
+      g += '<circle class="dot pop"' + d + ' cx="' + X(m.at) + '" cy="' + ay + '" r="6"/>';
+    } else if(m.k === "cross"){
+      var cx = X(m.at);
+      g += '<line class="xs" x1="' + (cx-8) + '" y1="' + (ay-8) + '" x2="' + (cx+8) + '" y2="' + (ay+8) + '"/>';
+      g += '<line class="xs" x1="' + (cx+8) + '" y1="' + (ay-8) + '" x2="' + (cx-8) + '" y2="' + (ay+8) + '"/>';
+    } else if(m.k === "arrow"){
+      g += '<line class="arw draw"' + d + ' x1="' + X(m.from) + '" y1="' + (ay-40) + '" x2="' + (X(m.to)-10) + '" y2="' + (ay-40) + '"/>';
+      g += '<polygon class="arwf pop" style="animation-delay:' + (0.16 + i*0.15 + 0.4) + 's" points="' +
+           X(m.to) + ',' + (ay-40) + ' ' + (X(m.to)-11) + ',' + (ay-45.5) + ' ' + (X(m.to)-11) + ',' + (ay-34.5) + '"/>';
+    }
+    if(m.lb){
+      var lx = X(m.k === "bar" || m.k === "span" || m.k === "dots" || m.k === "arrow"
+                ? (m.from + m.to) / 2 : m.at);
+      /* etiketler daima eksen bandının ÜSTÜNDE kalsın — çubuk/nokta ile çakışmasın.
+         m.ly verilirse etiket eksenden o kadar yukarıya konur: aynı x'te duran
+         iki işaretin etiketleri farklı satırlara yerleşsin diye. */
+      var ly = m.ly ? ay - m.ly
+             : m.k === "arrow" ? ay - 58 : m.k === "flag" ? ay - 48 : ay - 46;
+      g += '<text class="lb" x="' + lx + '" y="' + ly + '" text-anchor="middle">' + m.lb + '</text>';
+      if(m.sub) g += '<text class="lbs" x="' + lx + '" y="' + (ly + 20) + '" text-anchor="middle">' + m.sub + '</text>';
+    }
+    s += g + '</g>';
+  });
+  return vzWrap(s, 612, 178);
+}
+
+/* ---------- 2) ÖLÇEK (olasılık / zorunluluk derecesi) ---------- */
+function vzScale(sp){
+  /* Etiketler dönüşümlü olarak çubuğun üstünde ve altında; ikisi de bara değmez. */
+  var by = 108, bh = 18;
+  var stops = sp.stops || [];
+  /* uçtaki etiketler kırpılmasın diye kenar boşluğu bırak */
+  var x0 = 92, x1 = 520;
+  function X(f){ return Math.round(x0 + f * (x1 - x0)); }
+  var s = '';
+  s += '<defs><linearGradient id="vzg' + (sp.gid || 0) + '" x1="0" x2="1">' +
+       '<stop offset="0" stop-color="var(--line)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>';
+  s += '<rect class="grow" style="animation-delay:.08s" x="' + x0 + '" y="' + by + '" width="' + (x1-x0) +
+       '" height="' + bh + '" rx="' + (bh/2) + '" fill="url(#vzg' + (sp.gid || 0) + ')"/>';
+  /* uç etiketleri viewBox içinde kalsın: sola yapışık başlat, sağa yapışık bitir */
+  s += '<text class="tx" x="6" y="' + (by + bh + 6) + '">' + (sp.lo || "zayıf") + '</text>';
+  s += '<text class="tx" x="606" y="' + (by + bh + 6) + '" text-anchor="end">' + (sp.hi || "güçlü") + '</text>';
+  stops.forEach(function(st, i){
+    var x = X(st.f), up = i % 2 === 0;
+    var g = '<g' + an(i) + '>';
+    /* tick: bardan uzaklaşan kısa çizgi */
+    g += '<line class="nw" x1="' + x + '" y1="' + (up ? by - 4 : by + bh + 4) + '" x2="' + x + '" y2="' +
+         (up ? by - 20 : by + bh + 20) + '"/>';
+    g += '<circle class="dot pop" style="animation-delay:' + (0.30 + i * 0.13) + 's" cx="' + x +
+         '" cy="' + (by + bh/2) + '" r="8"/>';
+    /* lb ve sub: tick'in ötesinde, üst üste binmeden */
+    var lbY  = up ? by - 48 : by + bh + 44;
+    var subY = up ? by - 26 : by + bh + 66;
+    g += '<text class="lb" x="' + x + '" y="' + lbY + '" text-anchor="middle">' + st.en + '</text>';
+    g += '<text class="lbs" x="' + x + '" y="' + subY + '" text-anchor="middle">' + st.tr + '</text>';
+    s += g + '</g>';
+  });
+  return vzWrap(s, 612, 212);
+}
+
+/* ---------- 3) AKIŞ (koşul cümleleri, some/any/no) ---------- */
+function vzFlow(sp){
+  var bw = sp.boxes.length === 3 ? 168 : 232, gap = 46, h = 74;
+  var totalW = sp.boxes.length * bw + (sp.boxes.length - 1) * gap;
+  var sx = Math.round((612 - totalW) / 2), s = '';
+  sp.boxes.forEach(function(b, i){
+    var x = sx + i * (bw + gap), y = 34;
+    var g = '<g' + an(i) + '>';
+    g += '<rect class="' + (b.hot ? "bxa" : "bx") + '" x="' + x + '" y="' + y + '" width="' + bw + '" height="' + h + '" rx="12"/>';
+    g += '<text class="lb" x="' + (x + bw/2) + '" y="' + (y + 27) + '" text-anchor="middle">' + b.en + '</text>';
+    /* İngilizce etiketin ALTINDA renk şeridi — yazıyı Türkçe açıklamadan ayırır */
+    g += '<rect class="' + (b.hot ? "ul" : "ul2") + '" x="' + (x + bw/2 - 24) + '" y="' + (y + 35) + '" width="48" height="4" rx="2"/>';
+    g += '<text class="lbs" x="' + (x + bw/2) + '" y="' + (y + 58) + '" text-anchor="middle">' + b.tr + '</text>';
+    /* alt etiket: ilk kutuda sola, son kutuda sağa yapışık — kenardan taşmayı önler */
+    if(b.tag){
+      var last = i === sp.boxes.length - 1;
+      var tAnc = i === 0 ? "start" : last ? "end" : "middle";
+      var tX   = i === 0 ? x : last ? x + bw : x + bw/2;
+      g += '<text class="tn" x="' + tX + '" y="' + (y + h + 24) + '" text-anchor="' + tAnc + '">' + b.tag + '</text>';
+    }
+    if(i < sp.boxes.length - 1){
+      var ax1 = x + bw + 8, ax2 = x + bw + gap - 8, my = y + h/2;
+      g += '<line class="arw" x1="' + ax1 + '" y1="' + my + '" x2="' + (ax2-9) + '" y2="' + my + '"/>';
+      g += '<polygon class="arwf" points="' + ax2 + ',' + my + ' ' + (ax2-10) + ',' + (my-5.5) + ' ' + (ax2-10) + ',' + (my+5.5) + '"/>';
+    }
+    s += g + '</g>';
+  });
+  return vzWrap(s, 612, 154);
+}
+
+/* ---------- 4) DALLANMA (gerund / infinitive) ---------- */
+function vzSplit(sp){
+  var s = '';
+  s += '<g' + an(0) + '><rect class="bxa" x="26" y="60" width="180" height="60" rx="12"/>' +
+       '<text class="lb" x="116" y="86" text-anchor="middle">' + sp.root.en + '</text>' +
+       '<text class="lbs" x="116" y="106" text-anchor="middle">' + sp.root.tr + '</text></g>';
+  sp.branches.forEach(function(b, i){
+    var y = i === 0 ? 26 : 116, my = y + 32;
+    var g = '<g' + an(i + 1) + '>';
+    g += '<path class="arw" d="M206 90 C 250 90, 250 ' + my + ', 292 ' + my + '"/>';
+    g += '<polygon class="arwf" points="304,' + my + ' 293,' + (my-5.5) + ' 293,' + (my+5.5) + '"/>';
+    g += '<rect class="bx" x="308" y="' + y + '" width="282" height="64" rx="12"/>';
+    g += '<text class="lb" x="326" y="' + (y+27) + '">' + b.en + '</text>';
+    g += '<text class="lbs" x="326" y="' + (y+47) + '">' + b.tr + '</text>';
+    s += g + '</g>';
+  });
+  return vzWrap(s, 612, 206);
+}
+
+/* ---------- 5) MİKTAR ÇUBUKLARI (many/much, few/little) ---------- */
+function vzQty(sp){
+  /* satır: [etiket] [çubuk] altında Türkçe nüans — taşma olmasın diye alt satırda */
+  var s = '', y = 20, BX = 146, BW = 260;
+  sp.rows.forEach(function(r, i){
+    var bw = Math.max(10, Math.round(r.v * BW));
+    var g = '<g' + an(i) + '>';
+    g += '<text class="lb" x="10" y="' + (y + 26) + '">' + r.en + '</text>';
+    g += '<rect class="bx" x="' + BX + '" y="' + (y + 8) + '" width="' + BW + '" height="24" rx="12"/>';
+    g += '<rect class="' + (r.neg ? "neg" : "bar") + ' grow" style="animation-delay:' + (0.16 + i * 0.16) +
+         's" x="' + BX + '" y="' + (y + 8) + '" width="' + bw +
+         '" height="24" rx="12"' + (r.neg ? ' opacity="0.5"' : '') + '/>';
+    g += '<text class="lbs" x="' + (BX + BW + 12) + '" y="' + (y + 26) + '">' + r.tr + '</text>';
+    s += g + '</g>';
+    y += 46;
+  });
+  return vzWrap(s, 612, y + 6);
+}
+
+/* ---------- 6) SAYILABİLİRLİK ---------- */
+function vzCount(){
+  var s = '';
+  s += '<g' + an(0) + '><text class="lb" x="18" y="30">Countable</text>';
+  s += '<text class="lbs" x="18" y="52">sayılabilir</text>';
+  for(var i = 0; i < 4; i++) s += '<circle class="dot" cx="' + (40 + i*46) + '" cy="98" r="18"/>';
+  s += '<text class="lbs" x="18" y="146">1, 2, 3… tek tek</text>';
+  s += '<text class="lb" x="18" y="176">many / a few</text></g>';
+  s += '<line class="ax" x1="306" y1="12" x2="306" y2="188" stroke-dasharray="4 6"/>';
+  s += '<g' + an(1) + '><text class="lb" x="330" y="30">Uncountable</text>';
+  s += '<text class="lbs" x="330" y="52">sayılamaz</text>';
+  s += '<path class="blob" d="M336 112 C 336 84, 374 70, 406 78 C 442 66, 486 84, 478 110 C 496 118, 480 124, 458 122 L 352 122 C 334 122, 330 118, 336 112 Z"/>';
+  s += '<text class="lbs" x="330" y="146">kütle · bölünmez</text>';
+  s += '<text class="lb" x="330" y="176">much / a little</text></g>';
+  return vzWrap(s, 612, 196);
+}
+
+/* ---------- 7) FİİL BAĞLANTISI (gerund ↔ infinitive) ----------
+   Görsel mantık: DOLU blok = eylem gerçek / yaşanıyor  (-ing)
+                  KESİKLİ blok = eylem henüz olmadı, hedef  (to + V1)
+   Yazı yok, biçim anlatıyor. SVG içinde HTML etiketi KULLANILMAZ. */
+function vzVLink(sp){
+  var s = '', y = 16, RH = 96;
+  sp.rows.forEach(function(r, i){
+    var d = ' style="animation-delay:' + (0.16 + i * 0.20) + 's"';
+    var g = '<g' + an(i) + '>';
+    /* kaynak fiil kutusu + altında renk şeridi */
+    g += '<rect class="bx" x="8" y="' + y + '" width="212" height="58" rx="13"/>';
+    g += '<text class="lbm" x="114" y="' + (y + 30) + '" text-anchor="middle">' + r.src + '</text>';
+    g += '<rect class="ul" x="88" y="' + (y + 42) + '" width="52" height="4" rx="2"/>';
+    /* bağlantı halkası: -ing / to / ∅ */
+    g += '<line class="arw draw"' + d + ' x1="220" y1="' + (y + 29) + '" x2="244" y2="' + (y + 29) + '"/>';
+    g += '<rect class="chip pop"' + d + ' x="248" y="' + (y + 9) + '" width="86" height="40" rx="20"/>';
+    g += '<text class="chipt" x="291" y="' + (y + 36) + '" text-anchor="middle">' + r.conn + '</text>';
+    g += '<line class="arw draw"' + d + ' x1="334" y1="' + (y + 29) + '" x2="360" y2="' + (y + 29) + '"/>';
+    g += '<polygon class="arwf pop"' + d + ' points="372,' + (y+29) + ' 360,' + (y+23) + ' 360,' + (y+35) + '"/>';
+    /* hedef blok: dolu mu, hayalet mi */
+    g += '<rect class="' + (r.solid ? "solid" : "ghost") + ' grow"' + d + ' x="378" y="' + y +
+         '" width="' + (r.stopbar ? 190 : 202) + '" height="58" rx="13"/>';
+    g += '<text class="lbm" x="' + (378 + (r.stopbar ? 190 : 202)/2) + '" y="' + (y + 34) +
+         '" text-anchor="middle">' + r.tgt + '</text>';
+    if(r.stopbar) g += '<rect class="stopbar pop"' + d + ' x="572" y="' + (y+6) + '" width="9" height="46" rx="4"/>';
+    /* açıklama satırı — satırın altında, tam genişlikte (sağdan taşmasın) */
+    g += '<text class="lbs" x="10" y="' + (y + 80) + '">' + r.note + '</text>';
+    s += g + '</g>';
+    y += RH;
+  });
+  return vzWrap(s, 612, y + 2);
+}
+
+var VZ_RENDER = {timeline:vzTimeline, scale:vzScale, flow:vzFlow, split:vzSplit,
+                 qty:vzQty, count:vzCount, vlink:vzVLink};
+
+/* ---------- Konu → görsel tanımları ---------- */
+(function(){
+function T(id, spec){ VZ[id] = spec; }
+
+/* --- DÜĞÜM 1: zamanlar --- */
+T("simple-present", {t:"timeline", focus:"past now future", cap:"Eylem <b>belirli bir ana bağlı değil</b>. Geçmişte de, şimdi de, gelecekte de geçerli — bu yüzden çizelgenin tamamına yayılır.",
+  marks:[{k:"dots", from:0.08, to:0.92, n:7, lb:"her zaman tekrar", sub:"rutin · kural · genel gerçek"}],
+  ex:["I <b>get up</b> at seven every day.", "Her gün yedide kalkarım."]});
+
+T("present-continuous", {t:"timeline", focus:"now", cap:"Eylem <b>şu anı kapsıyor</b>: az önce başladı, biraz sonra bitecek. Başlangıcı ve bitişi değil, <b>sürmesi</b> önemli.",
+  marks:[{k:"bar", from:0.34, to:0.66, lb:"şu an sürüyor", sub:"geçici · devam eden"}, {k:"dot", at:0.5}],
+  ex:["I <b>am reading</b> a book now.", "Şu an kitap okuyorum."]});
+
+T("past-simple", {t:"timeline", focus:"past", cap:"Eylem geçmişte <b>başladı ve bitti</b>. Şimdiyle bağı kalmadı — bu yüzden çizelgede tek bir kapalı nokta.",
+  marks:[{k:"dot", at:0.2, lb:"bitti", sub:"yesterday · last week · in 2015"}, {k:"cross", at:0.2}],
+  ex:["I <b>visited</b> Bodrum last summer.", "Geçen yaz Bodrum'u ziyaret ettim."]});
+
+T("past-continuous", {t:"timeline", focus:"past", cap:"Geçmişte <b>belirli bir anda sürmekte olan</b> eylem. Bir çizgi gibi uzar; başı ve sonu ilgi alanı dışında.",
+  marks:[{k:"bar", from:0.10, to:0.38, lb:"o sırada sürüyordu", sub:"at 8 o'clock · all day"}],
+  ex:["I <b>was watching</b> TV at nine.", "Dokuzda televizyon izliyordum."]});
+
+T("will", {t:"timeline", focus:"future", cap:"Karar <b>şu anda</b> veriliyor (dikey ok), eylem gelecekte. Plan yok — anlık karar, vaat veya tahmin.",
+  marks:[{k:"flag", at:0.5, lb:"karar şimdi verildi"}, {k:"arrow", from:0.5, to:0.86},
+         {k:"dot", at:0.86, lb:"eylem", sub:"tomorrow · next week"}],
+  ex:["The phone is ringing — I <b>'ll answer</b> it.", "Telefon çalıyor — ben açarım."]});
+
+T("going-to", {t:"timeline", focus:"future", cap:"Fark burada: karar <b>şimdiden önce</b> verilmiş (plan hazır), eylem gelecekte. <b>will</b> ise anlık karardır.",
+  marks:[{k:"flag", at:0.24, lb:"plan zaten yapıldı"}, {k:"arrow", from:0.24, to:0.86},
+         {k:"dot", at:0.86, lb:"eylem", sub:"planlanmış · kanıta dayalı"}],
+  ex:["We <b>are going to</b> buy a house.", "Bir ev alacağız. (planlı)"]});
+
+T("present-perfect", {t:"timeline", focus:"past now", cap:"<b>Köprü zaman.</b> Eylem geçmişte oldu ama <u>tam ne zaman söylenmez</u>; önemli olan sonucun <b>şimdiye</b> uzanması.",
+  marks:[{k:"span", from:0.14, to:0.5, lb:"geçmişten şimdiye bağ", sub:"for · since · ever · just · already"}],
+  ex:["I <b>have lost</b> my keys.", "Anahtarlarımı kaybettim. (hâlâ yok)"]});
+
+T("when-while", {t:"timeline", focus:"past", cap:"<b>while</b> uzun eylemi (çizgi), <b>when</b> kısa eylemi (nokta) taşır. Kısa eylem uzun olanı <b>keser</b>.",
+  marks:[{k:"bar", from:0.06, to:0.46, lb:"while + Past Continuous", sub:"uzun eylem · arka plan", ly:86},
+         {k:"dot", at:0.34, c:"dot2"},
+         {k:"flag", at:0.34, lb:"when + Past Simple", ly:42}],
+  ex:["<b>While</b> I was cooking, the phone <b>rang</b>.", "Yemek yaparken telefon çaldı."]});
+
+T("time-connectors", {t:"flow", cap:"Bu bağlaçlar eylemlerin <b>sırasını</b> kurar. Kritik kural: bağlaçtan sonra gelecek anlamı olsa bile <b>will kullanılmaz</b>.",
+  boxes:[{en:"before", tr:"…den önce", tag:"1. eylem sonra"},
+         {en:"after", tr:"…den sonra", tag:"1. eylem önce"},
+         {en:"as soon as", tr:"…er ermez", hot:true, tag:"hemen ardından"}],
+  ex:["I'll call you as soon as I <b>arrive</b>.", "Varır varmaz seni arayacağım. (will değil)"]});
+
+/* --- DÜĞÜM 2: modaller ve koşul --- */
+T("can-could", {t:"timeline", focus:"past now", cap:"<b>can</b> şimdiki yeteneği, <b>could</b> geçmiş yeteneği anlatır. <b>could</b> ayrıca <u>daha kibar</u> bir tondur.",
+  marks:[{k:"bar", from:0.08, to:0.40, lb:"could", sub:"geçmişte yapabilirdim"},
+         {k:"bar", from:0.44, to:0.92, lb:"can", sub:"şimdi yapabiliyorum"}],
+  ex:["I <b>could</b> swim at five. Now I <b>can</b> swim well.", "Beş yaşında yüzebiliyordum. Şimdi iyi yüzebiliyorum."]});
+
+T("may-might", {t:"scale", cap:"Bu modaller <b>ne kadar emin olduğunu</b> gösterir. Ölçekte sağa gittikçe kesinlik artar.",
+  lo:"%0 imkânsız", hi:"%100 kesin",
+  stops:[{f:0.03, en:"can't", tr:"olamaz"}, {f:0.35, en:"might", tr:"olabilir"},
+         {f:0.50, en:"may", tr:"olabilir"}, {f:0.80, en:"must", tr:"olmalı"}, {f:0.99, en:"is", tr:"öyle"}],
+  ex:["She <b>might</b> be at home.", "Evde olabilir. (emin değilim)"]});
+
+T("must-haveto", {t:"scale", cap:"Zorunluluğun <b>şiddeti</b>. En kritik nokta olumsuzlarda: <b>mustn't</b> = yasak, <b>don't have to</b> = gerek yok.",
+  lo:"tavsiye", hi:"kesin zorunluluk",
+  stops:[{f:0.05, en:"should", tr:"yapsan iyi"}, {f:0.42, en:"have to", tr:"gerekli (dış kural)"},
+         {f:0.95, en:"must", tr:"zorunlu (iç karar)"}],
+  ex:["You <b>mustn't</b> smoke here. / You <b>don't have to</b> come.", "Sigara içmek yasak. / Gelmek zorunda değilsin."]});
+
+T("should", {t:"scale", cap:"<b>should</b> zorunluluk değil <b>tavsiye</b>dir — ölçeğin yumuşak ucunda durur.",
+  lo:"nazik öneri", hi:"güçlü uyarı",
+  stops:[{f:0.10, en:"should", tr:"…meli (tavsiye)"}, {f:0.50, en:"ought to", tr:"…meli (resmî)"},
+         {f:0.92, en:"had better", tr:"…sen iyi olur"}],
+  ex:["You look tired. You <b>should</b> rest.", "Yorgun görünüyorsun. Dinlenmelisin."]});
+
+T("would", {t:"vlink", cap:"İkisi de <b>would</b> ile başlar ama bağlantı halkası farklıdır: <b>would like</b> daima <b>to</b> alır, <b>would rather</b> <u>asla</u> almaz.",
+  rows:[{src:"would like", conn:"to", tgt:"book a table", solid:false, note:"kibar istek — to ŞART"},
+        {src:"would rather", conn:"∅", tgt:"stay home", solid:true, note:"tercih — to YOK"}],
+  ex:["I would like <b>to</b> book a table. / I'd rather stay home.", "Masa ayırtmak istiyorum. / Evde kalsam daha iyi."]});
+
+T("zero-conditional", {t:"flow", cap:"Koşul <b>her zaman</b> aynı sonucu verir — bilimsel gerçek, değişmez kural. Bu yüzden iki tarafta da <b>geniş zaman</b>.",
+  boxes:[{en:"If + Present", tr:"su 100°'ye ulaşırsa", hot:true},
+         {en:"Present", tr:"kaynar (her zaman)", tag:"%100 sonuç"}],
+  ex:["If you <b>heat</b> water, it <b>boils</b>.", "Suyu ısıtırsan kaynar."]});
+
+T("first-conditional", {t:"flow", cap:"Gelecekte <b>olası</b> bir durum ve sonucu. <u>if</u> tarafında asla <b>will</b> olmaz.",
+  boxes:[{en:"If + Present", tr:"yarın yağmur yağarsa", hot:true},
+         {en:"will + V1", tr:"evde kalacağız", tag:"olası sonuç"}],
+  ex:["If it <b>rains</b>, we <b>will stay</b> home.", "Yağmur yağarsa evde kalacağız."]});
+
+/* --- DÜĞÜM 3: miktar --- */
+T("count-uncount", {t:"count", cap:"Tüm miktar belirteçlerinin temeli bu ayrım: isim <b>tek tek sayılabiliyor</b> mu, yoksa <b>kütle</b> mi?",
+  ex:["three <b>apples</b> · some <b>water</b>", "üç elma · biraz su"]});
+
+T("many-few", {t:"qty", cap:"Hepsi <b>sayılabilir çoğul</b> isimlerle. Kritik nüans: <b>a few</b> = var (olumlu), <b>few</b> = yok denecek kadar az (olumsuz).",
+  rows:[{en:"many", v:0.92, tr:"çok"}, {en:"a few", v:0.30, tr:"birkaç · yeterli ✓"},
+        {en:"few", v:0.12, tr:"çok az ✗", neg:true}],
+  ex:["I have <b>a few</b> friends. / I have <b>few</b> friends.", "Birkaç arkadaşım var. / Neredeyse hiç arkadaşım yok."]});
+
+T("much-little", {t:"qty", cap:"Hepsi <b>sayılamaz</b> isimlerle. Aynı nüans: <b>a little</b> = var, <b>little</b> = neredeyse yok.",
+  rows:[{en:"much", v:0.92, tr:"çok (soru/olumsuz)"}, {en:"a little", v:0.30, tr:"biraz ✓"},
+        {en:"little", v:0.12, tr:"çok az ✗", neg:true}],
+  ex:["I have <b>a little</b> time. / I have <b>little</b> time.", "Biraz vaktim var. / Neredeyse hiç vaktim yok."]});
+
+T("a-lot-of", {t:"qty", cap:"<b>a lot of</b> her iki isim türüyle çalışır ve olumlu cümlelerin doğal seçimidir. Emin değilsen bunu kullan.",
+  rows:[{en:"a lot of", v:0.95, tr:"ikisiyle de ✓"},
+        {en:"many", v:0.90, tr:"yalnız sayılabilir"},
+        {en:"much", v:0.90, tr:"yalnız sayılamaz"}],
+  ex:["He drinks <b>a lot of</b> water and eats <b>a lot of</b> apples.", "Çok su içer ve çok elma yer."]});
+
+T("some-any-no", {t:"flow", cap:"Cümlenin tipi belirteci seçer. Tek istisna: <b>teklif ve ricalarda</b> soru olsa bile <b>some</b> kullanılır.",
+  boxes:[{en:"some", tr:"olumlu (+)", hot:true, tag:"I have some"},
+         {en:"any", tr:"olumsuz / soru", tag:"I don't have any"},
+         {en:"no", tr:"sıfır miktar", tag:"I have no money"}],
+  ex:["Would you like <b>some</b> tea?", "Biraz çay ister misin? (teklif → any değil)"]});
+
+/* --- DÜĞÜM 4: fiil bağlantıları --- */
+T("gerund", {t:"vlink",
+  cap:"Blok <b>dolu</b> çünkü <b>-ing</b> eylemin <u>gerçekten var olduğunu</u> anlatır: okuma zaten oluyor, yüzme zaten yapılıyor. İki değişmez yer: duygu/tercih fiilleri ve <b>her edat</b>.",
+  rows:[{src:"enjoy · avoid", conn:"-ing", tgt:"reading", solid:true, note:"eylem gerçek — zaten oluyor"},
+        {src:"in · at · of", conn:"-ing", tgt:"swimming", solid:true, note:"edattan sonra istisnasız -ing"}],
+  ex:["I'm interested <b>in learning</b> Spanish.", "İspanyolca öğrenmekle ilgileniyorum."]});
+
+T("infinitive", {t:"vlink",
+  cap:"Blok <b>kesikli</b> çünkü <b>to + V1</b> eylemin <u>henüz gerçekleşmediğini</u> anlatır: eve gitmek bir <b>hedef</b>, süt almak bir <b>amaç</b>. Ok o hedefi işaret eder.",
+  rows:[{src:"want · hope", conn:"to", tgt:"go home", solid:false, note:"henüz olmadı — niyet / karar"},
+        {src:"amaç bildirme", conn:"to", tgt:"buy milk", solid:false, note:"…mek için (neden gittim?)"}],
+  ex:["She decided <b>to study</b> medicine.", "Tıp okumaya karar verdi."]});
+
+T("gerund-vs-infinitive", {t:"vlink",
+  cap:"Aynı fiil <b>stop</b>, iki farklı bağlantı, iki farklı anlam. Üstte sigara içme eylemi <u>vardı ve kırmızı çizgide sona erdi</u>. Altta ise sigara içmek <u>henüz olmamış bir hedef</u> — o yüzden kesikli.",
+  rows:[{src:"stop", conn:"-ing", tgt:"smoking", solid:true, stopbar:true, note:"var olan eylem sona erdi = sigarayı bıraktı"},
+        {src:"stop", conn:"to", tgt:"smoke", solid:false, note:"yeni bir amaç için durdu = içmek için durdu"}],
+  ex:["He stopped <b>smoking</b>. / He stopped <b>to smoke</b>.", "Sigarayı bıraktı. / Sigara içmek için durdu."]});
+})();
+
+/* Konu sayfasına eklenecek panel */
+function vizPanel(id){
+  var sp = VZ[id];
+  if(!sp) return "";
+  var fn = VZ_RENDER[sp.t];
+  if(!fn) return "";
+  var body = "";
+  try{ body = fn(sp); }catch(e){ return ""; }
+  return '<details class="viz" open><summary><span>🎬</span>Görsel Anlatım</summary>' +
+         '<div class="viz-body"><div id="vzHost">' + body + '</div>' +
+         (sp.cap ? '<p class="viz-cap">' + sp.cap + '</p>' : '') +
+         (sp.ex ? '<div class="viz-ex"><div class="en gl">' + sp.ex[0] + '</div><div class="tr">' + sp.ex[1] + '</div></div>' : '') +
+         '</div></details>';
+}
+
 function showTopic(id){
   var t = null, idx = -1;
   T.forEach(function(x,i){ if(x.id===id){ t=x; idx=i; } });
@@ -1512,14 +1978,18 @@ function showTopic(id){
           '<h1 class="topic-title">'+esc(t.title)+'</h1>'+
           '<p class="topic-sub">'+esc(t.sub)+'</p>'+
           '<p class="gloss-hint">💡 İngilizce cümlelerde altı noktalı <b>kelimelere</b> dokun (veya üzerine gel) — Türkçe anlamını gösterir.</p>'+
+          vizPanel(id)+
           renderSections(t.s) + renderQuiz(t.q, id);
   h += '<div class="done-bar">'+
        '<button class="btn primary" id="markDone">'+(done[id]?"✓ Tamamlandı":"Konuyu tamamladım")+'</button>';
   if(idx > 0) h += '<button class="btn" data-go="'+T[idx-1].id+'">‹ Önceki</button>';
   if(idx < T.length-1) h += '<button class="btn" data-go="'+T[idx+1].id+'">Sonraki ›</button>';
+  else h += '<button class="btn primary" data-go="__exam">🎓 Genel Değerlendirmeye Geç ›</button>';
   h += '</div>';
   main.innerHTML = h;
   window.scrollTo(0,0);
+  /* Görsel, konu açıldığında SVG eklendiği an kendiliğinden bir kez oynar
+     (CSS animasyonları render'da başlar — ayrı bir tetikleyiciye gerek yok). */
   applyGloss(main);
   wireQuiz(main, t.q);
   el("markDone").onclick = function(){
@@ -1529,7 +1999,7 @@ function showTopic(id){
   };
   if(fab){
     fab.style.display = window.innerWidth <= 900 ? "inline-flex" : "none";
-    fab.onclick = function(){ if(idx < T.length-1) go(T[idx+1].id); else showHome(); };
+    fab.onclick = function(){ if(idx < T.length-1) go(T[idx+1].id); else showExam(true); };
   }
   buildNav(el("search").value);
   closeNav();
@@ -1551,6 +2021,9 @@ function showHome(){
   h += '<button class="node-card" data-go="__write" style="border-color:var(--accent-2)">'+
        '<span class="badge" style="background:rgba(13,148,136,.15);color:var(--accent-2)">PRATİK</span>'+
        '<h4>✎ Yazma Atölyesi</h4><p>100 kelimelik yazı görevleri + otomatik cümle kontrolü</p></button>';
+  h += '<button class="node-card" data-go="__exam" style="border-color:var(--accent)">'+
+       '<span class="badge">SINAV</span>'+
+       '<h4>🎓 Genel Değerlendirme</h4><p>24 konunun tamamından soru + hangi konuyu tekrar etmen gerektiğini gösteren rapor</p></button>';
   h += '</div>';
   h += '<h3 style="margin:26px 0 12px;font-size:18px;font-weight:800;">Tüm Konular</h3>';
   NODES.forEach(function(nd){
@@ -3271,14 +3744,164 @@ function buildReport(r, net, text){
   return h;
 }
 
+/* =====================================================================
+   GENEL DEĞERLENDİRME — her konudan garanti soru + konu bazlı rapor
+   Karışık Test'ten farkı: rastgele değil, 24 konunun HEPSİNİ kapsar ve
+   cevaplar anında değil sınav sonunda değerlendirilir.
+   ===================================================================== */
+var EX = null;
+var EX_BEST = "a2gram_exam_best";
+
+function examBuild(){
+  var qs = [];
+  T.forEach(function(t){
+    if(!t.q || !t.q.length) return;
+    var pick = t.q[Math.floor(Math.random() * t.q.length)];
+    qs.push({tid:t.id, title:t.title, node:t.node, q:pick});
+  });
+  for(var i = qs.length - 1; i > 0; i--){          /* karıştır */
+    var j = Math.floor(Math.random() * (i + 1)), tmp = qs[i]; qs[i] = qs[j]; qs[j] = tmp;
+  }
+  return {qs:qs, ans:qs.map(function(){ return null; }), idx:0, done:false};
+}
+
+function showExam(restart){
+  current = null; closeNav();
+  if(restart || !EX) EX = examBuild();
+  fab.style.display = "none";
+  buildNav(el("search").value);
+  EX.done ? examResult() : examQuestion();
+}
+
+function examQuestion(){
+  var n = EX.qs.length, cur = EX.qs[EX.idx], answered = 0;
+  EX.ans.forEach(function(a){ if(a !== null) answered++; });
+
+  var h = '<div class="crumb">Genel Değerlendirme</div>' +
+    '<div class="ex-head"><div class="ln"><span>Soru <b>' + (EX.idx + 1) + '</b> / ' + n + '</span>' +
+    '<span>' + answered + ' soru cevaplandı</span></div>' +
+    '<div class="prog-bar"><div class="prog-fill" style="width:' + ((EX.idx + 1) / n * 100) + '%"></div></div></div>';
+
+  h += '<div class="q"><div class="ex-topic">' + esc(cur.title) + '</div>' +
+       '<div class="q-text">' + esc(cur.q.q).replace(/___/g, '<span class="k">_____</span>') + '</div>';
+  cur.q.o.forEach(function(o, j){
+    h += '<button class="opt' + (EX.ans[EX.idx] === j ? " sel" : "") + '" data-pick="' + j + '">' +
+         String.fromCharCode(65 + j) + ') ' + esc(o) + '</button>';
+  });
+  h += '</div>';
+
+  h += '<div class="ex-nav">';
+  if(EX.idx > 0) h += '<button class="btn" data-exnav="prev">‹ Geri</button>';
+  h += EX.idx < n - 1
+      ? '<button class="btn primary" data-exnav="next">Sonraki ›</button>'
+      : '<button class="btn primary" data-exnav="finish">Sınavı Bitir</button>';
+  h += '</div>';
+  if(EX.idx === n - 1 && answered < n)
+    h += '<div class="note warn" style="margin-top:12px"><b class="lbl">Dikkat</b>' +
+         (n - answered) + ' soru boş. Boş sorular yanlış sayılır.</div>';
+
+  main.innerHTML = h;
+  window.scrollTo(0, 0);
+  applyGloss(main);
+
+  main.querySelectorAll("[data-pick]").forEach(function(b){
+    b.onclick = function(){
+      EX.ans[EX.idx] = +this.getAttribute("data-pick");
+      /* sınav modunda doğru/yanlış gösterilmez — sadece seçim işaretlenir */
+      main.querySelectorAll("[data-pick]").forEach(function(x){ x.classList.remove("sel"); });
+      this.classList.add("sel");
+      var cnt = 0; EX.ans.forEach(function(a){ if(a !== null) cnt++; });
+      var ln = main.querySelector(".ex-head .ln span:last-child");
+      if(ln) ln.textContent = cnt + " soru cevaplandı";
+      if(EX.idx < EX.qs.length - 1) setTimeout(function(){ EX.idx++; examQuestion(); }, 260);
+    };
+  });
+  main.querySelectorAll("[data-exnav]").forEach(function(b){
+    b.onclick = function(){
+      var a = this.getAttribute("data-exnav");
+      if(a === "prev" && EX.idx > 0) EX.idx--;
+      else if(a === "next" && EX.idx < EX.qs.length - 1) EX.idx++;
+      else if(a === "finish"){ EX.done = true; examResult(); return; }
+      examQuestion();
+    };
+  });
+}
+
+function examResult(){
+  var n = EX.qs.length, right = 0, byNode = {}, wrong = [];
+  EX.qs.forEach(function(item, i){
+    var ok = EX.ans[i] === item.q.a;
+    if(!byNode[item.node]) byNode[item.node] = {r:0, t:0};
+    byNode[item.node].t++;
+    if(ok){ right++; byNode[item.node].r++; }
+    else wrong.push({item:item, given:EX.ans[i]});
+  });
+  var pct = Math.round(right / n * 100);
+  var best = 0;
+  try{ best = +(localStorage.getItem(EX_BEST) || 0); }catch(e){}
+  if(pct > best){ best = pct; try{ localStorage.setItem(EX_BEST, String(pct)); }catch(e){} }
+
+  var verdict = pct >= 85 ? {t:"Çok iyi", m:"A2 konularına hâkimsin. Yazma Atölyesi'nde pratiğe geçebilirsin.", c:"tip"}
+              : pct >= 65 ? {t:"İyi", m:"Temeller sağlam. Aşağıdaki konuları tekrar edince tamamlanır.", c:"tip"}
+              : pct >= 45 ? {t:"Orta", m:"Bazı konularda boşluk var. Aşağıdaki listeyi sırayla çalış.", c:"warn"}
+                          : {t:"Tekrar gerekli", m:"Konuları baştan gözden geçirmen faydalı olur.", c:"err"};
+
+  var h = '<div class="crumb">Genel Değerlendirme · Sonuç</div>' +
+    '<div class="score"><div class="res-big">' + right + ' / ' + n + '</div>' +
+    '<div class="res-pct">%' + pct + ' doğru · en iyi skorun: %' + best + '</div></div>';
+
+  h += '<div class="note ' + verdict.c + '"><b class="lbl">' + verdict.t + '</b>' + verdict.m + '</div>';
+
+  h += '<h3 style="margin:22px 0 10px;font-size:18px;font-weight:800;">Düğüm Bazlı Sonuç</h3><div class="card">';
+  NODES.forEach(function(nd){
+    var b = byNode[nd.n]; if(!b) return;
+    h += '<div class="nrow"><span class="nn"><b>' + nd.n + '.</b> ' + esc(nd.title) + '</span>' +
+         '<span class="nb"><i style="width:' + (b.r / b.t * 100) + '%"></i></span>' +
+         '<span class="ns">' + b.r + '/' + b.t + '</span></div>';
+  });
+  h += '</div>';
+
+  if(wrong.length){
+    h += '<h3 style="margin:22px 0 10px;font-size:18px;font-weight:800;">Tekrar Etmen Gereken Konular</h3>';
+    wrong.forEach(function(w){
+      var q = w.item.q;
+      h += '<div class="wrong"><div class="wq">' + esc(q.q).replace(/___/g, "_____") + '</div>' +
+           '<div class="wa">' +
+           (w.given === null ? "<s>Boş bıraktın</s>" : "<s>" + esc(q.o[w.given]) + "</s>") +
+           ' → <b>' + esc(q.o[q.a]) + '</b></div>' +
+           '<div class="wa" style="color:var(--muted)">' + q.e + '</div>' +
+           '<div class="fix" style="margin-top:6px"><span class="chip link" data-go="' + w.item.tid + '">' +
+           esc(w.item.title) + ' konusunu aç ›</span></div></div>';
+    });
+  } else {
+    h += '<div class="note tip"><b class="lbl">Tam puan</b>24 konunun hepsinde doğru cevap verdin.</div>';
+  }
+
+  h += '<div class="btn-row" style="margin-top:18px">' +
+       '<button class="btn primary" data-exnav="again">Yeni Sınav</button>' +
+       '<button class="btn" data-go="__home">Ana Sayfa</button></div>';
+
+  main.innerHTML = h;
+  window.scrollTo(0, 0);
+  applyGloss(main);
+  var ag = main.querySelector('[data-exnav="again"]');
+  if(ag) ag.onclick = function(){ showExam(true); };
+}
+
 /* ---------- Yönlendirme ---------- */
-function go(id){ if(id === "__home") showHome(); else if(id === "__write") showWriting(); else showTopic(id); }
+function go(id){
+  if(id === "__home") showHome();
+  else if(id === "__write") showWriting();
+  else if(id === "__exam") showExam(true);
+  else showTopic(id);
+}
 document.addEventListener("click", function(e){
   var b = e.target.closest("[data-go]");
   if(b){ go(b.getAttribute("data-go")); }
 });
 el("homeBtn").onclick = showHome;
 el("bigQuizBtn").onclick = showBigQuiz;
+el("examBtn").onclick = function(){ showExam(true); };
 el("writeBtn").onclick = function(){ showWriting(); };
 el("search").addEventListener("input", function(){ buildNav(this.value); });
 window.addEventListener("resize", function(){
