@@ -2605,17 +2605,108 @@ window.addEventListener("scroll", hideTip, true);
      1) anahtarı yalnızca "Generative Language API" ile sınırla,
      2) projeye bir BÜTÇE ÜST SINIRI koy.
    Anahtarı değiştirmek için tek yer: GEMINI_KEY.
-   Boş bırakırsan AI denetimi kapanır, uygulama yine çalışır.
-   ===================================================================== */
-var GEMINI_KEY   = "AQ.Ab8RN6KaOxKVNrBXaQpsNwP6Mfh1ladgreX7dceeSJvqe2MR9w";
-var GEMINI_MODEL = "gemini-3.5-flash-lite";   /* hızlı + ucuz; kaliteyi artırmak için: gemini-3.6-flash */
-var AI_MIN_GAP   = 3000;                       /* iki istek arası en az bekleme (ms) */
+    Boş bırakırsan AI denetimi kapanır, uygulama yine çalışır.
+    ===================================================================== */
+var GEMINI_KEY   = "";
+var GEMINI_MODEL = "gemini-3.5-flash-lite";   /* varsayılan hızlı model */
+var AI_MIN_GAP   = 2000;                       /* iki istek arası en az bekleme (ms) */
 var aiLast = 0;
 
-function aiKey(){
-  try{ var k = localStorage.getItem("a2gram_gemini_key"); if(k) return k.trim(); }catch(e){}
-  return GEMINI_KEY;
+/* Anahtardaki tırnak, boşluk, önek ("GEMINI_KEY=") ve görünmez karakterleri temizle */
+function cleanApiKey(raw){
+  if(!raw) return "";
+  var s = String(raw).trim();
+  s = s.replace(/[\u200B-\u200D\uFEFF]/g, ""); // görünmez unicode karakterlerini temizle
+  if(s.indexOf("=") >= 0){
+    s = s.slice(s.indexOf("=") + 1).trim();
+  } else if(s.indexOf(":") >= 0 && !s.startsWith("http")){
+    s = s.slice(s.indexOf(":") + 1).trim();
+  }
+  s = s.replace(/^["'`]+|["'`]+$/g, "").trim();
+  return s;
 }
+
+function aiKey(){
+  try{
+    var ki = el("aiKeyInput");
+    if(ki && ki.value){
+      var cl = cleanApiKey(ki.value);
+      if(cl){
+        try{ localStorage.setItem("a2gram_gemini_key", cl); }catch(e){}
+        return cl;
+      }
+    }
+  }catch(e){}
+  try{
+    var k = localStorage.getItem("a2gram_gemini_key");
+    if(k){
+      var clk = cleanApiKey(k);
+      if(clk) return clk;
+    }
+  }catch(e){}
+  return cleanApiKey(GEMINI_KEY);
+}
+
+function testGeminiKey(rawKey){
+  var key = cleanApiKey(rawKey);
+  if(!key) return Promise.reject(new Error("Lütfen bir API anahtarı girin."));
+  var isAq = key.startsWith("AQ.");
+  var url = "https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL + ":generateContent" + (isAq ? "" : "?key=" + encodeURIComponent(key));
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": key
+    },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: "ping" }] }],
+      generationConfig: { maxOutputTokens: 5 }
+    })
+  }).then(function(r){
+    return r.json().then(function(j){
+      if(!r.ok){
+        var msg = (j.error && j.error.message) || ("HTTP " + r.status);
+        if(r.status === 401 || r.status === 403){
+          msg = "API anahtarı geçersiz veya yetkisiz (401/403). Lütfen aistudio.google.com üzerinden yeni bir anahtar oluşturup yapıştırın.";
+        } else if(r.status === 429){
+          msg = "API kotası dolu veya çok sık istek yapıldı (429).";
+        }
+        var err = new Error(msg);
+        err.code = r.status;
+        throw err;
+      }
+      return j;
+    });
+  });
+}
+
+function callGeminiGenerate(key, bodyPayload, modelName){
+  var model = modelName || GEMINI_MODEL;
+  var isAq = key.startsWith("AQ.");
+  var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent" + (isAq ? "" : "?key=" + encodeURIComponent(key));
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": key
+    },
+    body: JSON.stringify(bodyPayload)
+  }).then(function(r){
+    return r.json().then(function(j){
+      if(!r.ok){
+        if(r.status === 404 && model !== "gemini-2.5-flash"){
+          // Model bulunamazsa yedek modele geç
+          return callGeminiGenerate(key, bodyPayload, "gemini-2.5-flash");
+        }
+        var e = new Error((j.error && j.error.message) || ("HTTP " + r.status));
+        e.code = r.status; e.status = j.error && j.error.status;
+        throw e;
+      }
+      return j;
+    });
+  });
+}
+
 function aiCountToday(inc){
   var today = new Date().toISOString().slice(0,10), n = 0;
   try{
@@ -2665,23 +2756,10 @@ function aiCheck(text){
   return new Promise(function(resolve, reject){
     setTimeout(function(){
       aiLast = Date.now();
-      fetch("https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL + ":generateContent", {
-        method:"POST",
-        headers:{"Content-Type":"application/json", "x-goog-api-key":key},
-        body:JSON.stringify({
-          systemInstruction:{parts:[{text:AI_SYS}]},
-          contents:[{parts:[{text:"Student text:\n" + text}]}],
-          generationConfig:{responseMimeType:"application/json", responseSchema:AI_SCHEMA, temperature:0.2}
-        })
-      }).then(function(r){
-        return r.json().then(function(j){
-          if(!r.ok){
-            var e = new Error((j.error && j.error.message) || ("HTTP " + r.status));
-            e.code = r.status; e.status = j.error && j.error.status;
-            throw e;
-          }
-          return j;
-        });
+      callGeminiGenerate(key, {
+        systemInstruction:{parts:[{text:AI_SYS}]},
+        contents:[{parts:[{text:"Student text:\n" + text}]}],
+        generationConfig:{responseMimeType:"application/json", responseSchema:AI_SCHEMA, temperature:0.2}
       }).then(function(j){
         aiCountToday(true);
         var raw = j.candidates && j.candidates[0] && j.candidates[0].content.parts[0].text;
@@ -2841,12 +2919,28 @@ function showWriting(taskId){
        've ~12.500 kelimelik yazım sözlüğü — internet gerekmez, anında çalışır.<br>'+
        '<b>2. Yapay zekâ (Gemini):</b> anlam, kelime seçimi ve metin genelinde zaman tutarlılığı — kural motorunun '+
        'göremediği hatalar. Bunun için <b>yazdığın metin Google sunucusuna gönderilir</b>; kişisel bilgi yazma. '+
-       'Ulaşılamazsa LanguageTool\'a, o da olmazsa yalnızca cihaz denetimine düşer.'+
-       '<details class="keyrow"><summary>Kendi Gemini API anahtarını kullan (isteğe bağlı)</summary>'+
-       'Boş bırakırsan dosyaya gömülü anahtar kullanılır. Kendi anahtarını girersen yalnızca bu tarayıcıda saklanır '+
-       've kendi kotanı kullanırsın. Anahtar almak: aistudio.google.com/apikey'+
-       '<input id="aiKeyInput" type="password" placeholder="AQ... veya AIza..." autocomplete="off"></details>'+
-       '</div></div>';
+        '<details class="keyrow" id="keyDetails">'+
+        '<summary style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:6px 0">'+
+        '<span><b>Gemini API Anahtarı</b> <span id="keyBadge" class="src" style="margin-left:6px"></span></span>'+
+        '<span style="font-size:12px;opacity:.7">Ayarla ▾</span>'+
+        '</summary>'+
+        '<div style="margin-top:10px;padding:12px;background:var(--surface2);border-radius:10px;border:1px solid var(--line)">'+
+        '<p style="margin:0 0 8px;font-size:13px;line-height:1.5">'+
+        'Google AI Studio\'dan (<a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent);text-decoration:underline">aistudio.google.com/apikey</a>) aldığın anahtarı yapıştır. '+
+        'Anahtar yalnızca bu cihazdaki tarayıcında saklanır.'+
+        '</p>'+
+        '<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">'+
+        '<input id="aiKeyInput" type="password" placeholder="AIzaSy... veya AQ..." autocomplete="off" style="flex:1;margin:0">'+
+        '<button class="btn btn-ghost" id="toggleKeyVis" type="button" style="padding:8px 12px;font-size:13px;white-space:nowrap">Göster</button>'+
+        '</div>'+
+        '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
+        '<button class="btn" id="saveTestKeyBtn" type="button" style="padding:7px 16px;font-size:13px">Kaydet ve Test Et</button>'+
+        '<button class="btn btn-ghost" id="clearKeyBtn" type="button" style="padding:7px 12px;font-size:13px">Sil</button>'+
+        '<span id="keyStatus" style="font-size:13px;font-weight:600"></span>'+
+        '</div>'+
+        '</div>'+
+        '</details>'+
+        '</div></div>';
 
   h += '<div id="result"></div>';
 
@@ -2904,16 +2998,95 @@ function showWriting(taskId){
     if(!ta.value || confirm("Yazdıkların silinecek. Emin misin?")){ ta.value=""; count(); el("result").innerHTML=""; }
   };
   var ki = el("aiKeyInput");
-  if(ki){
-    try{ ki.value = localStorage.getItem("a2gram_gemini_key") || ""; }catch(e){}
-    ki.onchange = function(){
-      try{
-        if(this.value.trim()) localStorage.setItem("a2gram_gemini_key", this.value.trim());
-        else localStorage.removeItem("a2gram_gemini_key");
-      }catch(e){}
+  var kd = el("keyDetails");
+  var kb = el("keyBadge");
+  var ks = el("keyStatus");
+  var visBtn = el("toggleKeyVis");
+  var testBtn = el("saveTestKeyBtn");
+  var clearKeyBtn = el("clearKeyBtn");
+
+  function saveCurrentKey(){
+    if(!ki) return "";
+    var cleaned = cleanApiKey(ki.value);
+    ki.value = cleaned;
+    try{
+      if(cleaned) localStorage.setItem("a2gram_gemini_key", cleaned);
+      else localStorage.removeItem("a2gram_gemini_key");
+    }catch(e){}
+    return cleaned;
+  }
+
+  function refreshKeyUI(){
+    var k = "";
+    try{ k = localStorage.getItem("a2gram_gemini_key") || ""; }catch(e){}
+    if(ki) ki.value = k;
+    if(k){
+      if(kb){ kb.textContent = "Kaydedildi"; kb.className = "src online"; }
+      if(ks){ ks.style.color = "var(--ok)"; ks.textContent = "✓ Anahtar tarayıcıda kayıtlı"; }
+      if(kd && !kd.dataset.userOpened) kd.open = false;
+    } else {
+      if(kb){ kb.textContent = "Tanımsız"; kb.className = "src"; }
+      if(ks){ ks.style.color = "var(--muted)"; ks.textContent = "Anahtar girilmedi (LanguageTool kullanılır)"; }
+      if(kd && !kd.dataset.userOpened) kd.open = true;
+    }
+  }
+  refreshKeyUI();
+
+  if(kd){
+    kd.addEventListener("toggle", function(){ kd.dataset.userOpened = "1"; });
+  }
+
+  if(visBtn && ki){
+    visBtn.onclick = function(){
+      var isPw = ki.type === "password";
+      ki.type = isPw ? "text" : "password";
+      visBtn.textContent = isPw ? "Gizle" : "Göster";
     };
   }
-  el("checkBtn").onclick = function(){ runCheck(ta.value, task); };
+
+  if(ki){
+    ki.addEventListener("input", function(){
+      saveCurrentKey();
+      var has = !!ki.value.trim();
+      if(kb){ kb.textContent = has ? "Kaydedildi" : "Tanımsız"; kb.className = has ? "src online" : "src"; }
+      if(ks){ ks.textContent = has ? "Kaydedildi (Test etmek için butona bas)" : "Anahtar girilmedi"; ks.style.color = "var(--muted)"; }
+    });
+    ki.addEventListener("paste", function(){ setTimeout(saveCurrentKey, 30); });
+  }
+
+  if(testBtn){
+    testBtn.onclick = function(){
+      var k = saveCurrentKey();
+      if(!k){
+        if(ks){ ks.style.color = "var(--err)"; ks.textContent = "✗ Lütfen önce bir anahtar girin."; }
+        return;
+      }
+      testBtn.disabled = true;
+      if(ks){ ks.style.color = "var(--accent)"; ks.innerHTML = '<span class="spin"></span> Bağlantı test ediliyor...'; }
+      testGeminiKey(k).then(function(){
+        testBtn.disabled = false;
+        if(kb){ kb.textContent = "Çalışıyor"; kb.className = "src online"; }
+        if(ks){ ks.style.color = "var(--ok)"; ks.textContent = "✓ Bağlantı başarılı! Gemini hazır."; }
+      }).catch(function(err){
+        testBtn.disabled = false;
+        if(kb){ kb.textContent = "Hatalı"; kb.className = "src"; }
+        if(ks){ ks.style.color = "var(--err)"; ks.textContent = "✗ " + (err.message || "Bağlantı hatası"); }
+      });
+    };
+  }
+
+  if(clearKeyBtn){
+    clearKeyBtn.onclick = function(){
+      try{ localStorage.removeItem("a2gram_gemini_key"); }catch(e){}
+      if(ki) ki.value = "";
+      refreshKeyUI();
+    };
+  }
+
+  el("checkBtn").onclick = function(){
+    saveCurrentKey();
+    runCheck(ta.value, task);
+  };
 }
 
 function runCheck(text, task){
@@ -3021,10 +3194,10 @@ function buildReport(r, net, text){
     (r.sents.length ? Math.round(r.words/r.sents.length) : 0)+' kelime/cümle</div></div>';
 
   var AIFAIL = {
-    quota: "Günlük Gemini kotası dolmuş görünüyor. Kota her gün sıfırlanır — yarın tekrar dene.",
-    key:   "Gemini API anahtarı geçersiz ya da yetkisiz.",
-    nokey: "Gemini anahtarı tanımlı değil.",
-    net:   "Gemini'ye ulaşılamadı (internet ya da servis sorunu)."
+    quota: "Günlük Gemini kotası dolmuş görünüyor (429). Kota sıfırlandığında tekrar deneyebilirsiniz.",
+    key:   "Gemini API anahtarı geçersiz ya da yetkisiz (401/403). Lütfen yukarıdaki 'Gemini API Anahtarı' bölümünden anahtarınızı kontrol edip yenileyin.",
+    nokey: "Gemini anahtarı tanımlı değil. Yukarıdaki 'Gemini API Anahtarı' bölümünden anahtarınızı ekleyip kaydedebilirsiniz.",
+    net:   "Gemini servisine ulaşılamadı (bağlantı veya model yanıt vermedi)."
   };
   if(!net){
     h += '<div class="note tip"><b class="lbl">Denetleniyor…</b>Cihazdaki kural denetimi bitti. '+
