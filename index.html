@@ -215,6 +215,9 @@ audio.lau{width:100%;margin-bottom:6px}
 .playlist-desc{font-size:12.5px;color:var(--muted);margin:3px 0 0;line-height:1.4}
 .playlist-ctrls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
 .playlist-ctrls .btn{padding:7px 14px;font-size:13px}
+.btn-yt{display:inline-flex;align-items:center;gap:6px;background:#cc0000;color:#fff!important;border:none;border-radius:8px;font-weight:700;cursor:pointer;transition:.15s;text-decoration:none}
+.btn-yt:hover{background:#b20000;color:#fff}
+.mobile-yt-hint{background:rgba(204,0,0,.06);border-left:3px solid #cc0000;border-radius:6px;padding:9px 12px;margin-top:10px;font-size:12px;color:var(--text);line-height:1.45}
 .playlist-queue{margin-top:12px;max-height:240px;overflow-y:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:5px}
 .queue-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;cursor:pointer;font-size:12.5px;transition:.15s}
 .queue-item:hover{background:var(--surface2)}
@@ -2275,8 +2278,13 @@ function mountPlaylistPlayer(box, vids, startIdx){
     'referrerpolicy="strict-origin-when-cross-origin" ' +
     'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>';
 
+  h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;flex-wrap:wrap;gap:8px;padding:2px 0">' +
+       '<a class="btn btn-yt" style="padding:6px 12px;font-size:12px" target="_blank" rel="noopener noreferrer" data-yturl="' + ytPlUrl + '" href="' + ytPlUrl + '">↗ YouTube Uygulamasında Kesintisiz Aç (Arka Plan / PiP)</a>' +
+       '<span style="font-size:11.5px;color:var(--muted)">Telefonda arka planda dinlemek için YouTube uygulamasında açabilirsiniz</span>' +
+       '</div>';
+
   if(isFile){
-    h += '<div class="v-file-notice">' +
+    h += '<div class="v-file-notice" style="margin-top:6px">' +
       '<span>💡 Not: YouTube yerel dosyada (file://) engellerse:</span> ' +
       '<a href="' + ytPlUrl + '" target="_blank" rel="noopener noreferrer" data-yturl="' + ytPlUrl + '">YouTube\'da Playlist Olarak Aç ↗</a>' +
       '</div>';
@@ -2336,10 +2344,13 @@ function listenPanel(id){
        '<div class="playlist-desc">Videoları tek tek açmak yerine baştan sona sırayla, kesintisiz dinleyin.</div>' +
        '</div>' +
        '<div class="playlist-ctrls">' +
-       (vids.length > 1 ? '<button class="btn primary" id="btnTopicPl">▶ Bu Konudaki ' + vids.length + ' Videoyu Oynat</button>' : '') +
-       '<button class="btn' + (vids.length <= 1 ? ' primary' : '') + '" id="btnMasterPl">🎬 Tüm A2 Videolarını Oynat (' + allV.length + ' Video)</button>' +
-       '<a class="btn" target="_blank" rel="noopener noreferrer" data-yturl="' + (vids.length > 1 ? topicPlUrl : masterPlUrl) + '" href="' + (vids.length > 1 ? topicPlUrl : masterPlUrl) + '">YouTube\'da Playlist Olarak Aç ↗</a>' +
+       '<a class="btn btn-yt" target="_blank" rel="noopener noreferrer" data-yturl="' + (vids.length > 1 ? topicPlUrl : masterPlUrl) + '" href="' + (vids.length > 1 ? topicPlUrl : masterPlUrl) + '">▶ YouTube\'da Kesintisiz Aç (Önerilen) ↗</a>' +
+       (vids.length > 1 ? '<button class="btn" id="btnTopicPl">📺 Bu Konudaki ' + vids.length + ' Videoyu Sayfada Oynat</button>' : '') +
+       '<button class="btn" id="btnMasterPl">🎬 Tüm Videoları Sayfada Oynat (' + allV.length + ')</button>' +
        '</div></div>' +
+       '<div class="mobile-yt-hint">' +
+       '📱 <b>Telefonda Dinleyenler İçin:</b> Mobil tarayıcılar (Chrome/Safari), sayfa içi gömülü videolarda güvenlik gereği video üzerine <b>ikinci bir dokunuş</b> ister ve sekmeden ayrılınca sesi durdurur. <b>Tek dokunuşla hemen başlaması ve arka planda (PiP) çalması için kırmızı "YouTube\'da Kesintisiz Aç" butonunu kullanın.</b>' +
+       '</div>' +
        '<div id="plPlayerBox" style="margin-top:12px" hidden></div>' +
        '</div>';
 
@@ -2403,8 +2414,11 @@ function mountPlayer(box, vid){
     '?autoplay=1&playsinline=1&rel=0" title="Dinleme" frameborder="0" allowfullscreen ' +
     'referrerpolicy="strict-origin-when-cross-origin" ' +
     'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>';
+  h += '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:6px;padding:2px 4px">' +
+    '<a class="btn-yt" style="padding:4px 8px;font-size:11.5px" target="_blank" rel="noopener noreferrer" data-yturl="' + ytUrl + '" href="' + ytUrl + '">↗ YouTube Uygulamasında Aç (Arka Plan / PiP)</a>' +
+    '</div>';
   if(isFile){
-    h += '<div class="v-file-notice">' +
+    h += '<div class="v-file-notice" style="margin-top:6px">' +
       '<span>💡 Not: YouTube yerel dosyalarda gömülü oynatmayı kısıtlarsa:</span> ' +
       '<a href="' + ytUrl + '" target="_blank" rel="noopener noreferrer" data-yturl="' + ytUrl + '">YouTube\'da İzle ↗</a>' +
       '</div>';
@@ -4428,9 +4442,12 @@ function showListenHub(){
        '<div class="playlist-desc">24 konudaki tüm dinleme videolarını baştan sona tek seferde, sırayla dinleyin ve izleyin.</div>' +
        '</div>' +
        '<div class="playlist-ctrls">' +
-       '<button class="btn primary" id="hubPlayAllBtn">▶ Sayfada Sırayla Oynat</button>' +
-       '<a class="btn" target="_blank" rel="noopener noreferrer" data-yturl="' + masterPlUrl + '" href="' + masterPlUrl + '">YouTube\'da Playlist Olarak Aç ↗</a>' +
+       '<a class="btn btn-yt" target="_blank" rel="noopener noreferrer" data-yturl="' + masterPlUrl + '" href="' + masterPlUrl + '">▶ YouTube\'da Kesintisiz Aç (Önerilen) ↗</a>' +
+       '<button class="btn" id="hubPlayAllBtn">📺 Sayfada Sırayla Oynat</button>' +
        '</div></div>' +
+       '<div class="mobile-yt-hint">' +
+       '📱 <b>Telefonda Dinleyenler İçin:</b> Mobil tarayıcılar (Chrome/Safari), sayfa içi gömülü videolarda güvenlik gereği video üzerine <b>ikinci bir dokunuş</b> ister ve sekmeden ayrılınca sesi durdurur. <b>Tek dokunuşla hemen başlaması ve arka planda (PiP) çalması için kırmızı "YouTube\'da Kesintisiz Aç" butonunu kullanın.</b>' +
+       '</div>' +
        '<div id="hubPlaylistArea" style="margin-top:12px" hidden></div>' +
        '</div>';
 
