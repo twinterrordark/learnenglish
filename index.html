@@ -524,6 +524,7 @@ svg.vz .tx{fill:var(--muted);font-size:20px;font-weight:600}
 svg.vz .tn{fill:var(--accent);font-size:20px;font-weight:800}
 svg.vz .lb{fill:var(--text);font-size:22px;font-weight:700}
 svg.vz .lbs{fill:var(--muted);font-size:19px;font-weight:600}
+svg.vz .lbx{fill:var(--muted);font-size:15px;font-weight:600}
 svg.vz .dot{fill:var(--accent)}
 svg.vz .dot2{fill:var(--accent-2)}
 svg.vz .bar{fill:var(--accent);opacity:.42}
@@ -2070,73 +2071,81 @@ function vzVLink(sp){
 
 
 /* ---------- 8) MEKÂNSAL SAHNE (yer edatları) ----------
-   Her mini sahne: bir referans kutu + ona göre yerleştirilmiş top.
-   Biçim anlatır; yazı sadece etiket. */
+   Her kare: üstte çizim alanı (y 8–104), altta etiket alanı (y 132 / 154).
+   Çizim hiçbir zaman etiket alanına inmez. */
+var SP = {CW:196, CH:172, BX:66, BY:42, BW:62, BH:34, LB:134, LBS:156};
 function vzSpace(sp){
-  var COLS = sp.cols || 3, CW = 196, CH = 150, PAD = 8;
+  var COLS = sp.cols || 3, CW = SP.CW, CH = SP.CH;
   var rows = Math.ceil(sp.items.length / COLS);
   var s = "";
   sp.items.forEach(function(it, i){
-    var cx = (i % COLS) * CW + PAD, cy = Math.floor(i / COLS) * CH + PAD;
-    var g = '<g' + an(i) + ' transform="translate(' + cx + ',' + cy + ')">';
-    /* zemin çizgisi */
-    g += '<line class="ax" x1="14" y1="86" x2="' + (CW - 22) + '" y2="86"/>';
-    var bx = 62, by = 46, bw = 62, bh = 40;      /* referans kutu */
+    var cx = (i % COLS) * CW, cy = Math.floor(i / COLS) * CH;
+    var bx = SP.BX, by = SP.BY, bw = SP.BW, bh = SP.BH, mx = bx + bw/2, my = by + bh/2, fy = by + bh;
+    /* DIŞ grup konumlandırır, İÇ grup canlanır. Aynı öğede olursa CSS animasyonunun
+       transform'u SVG'nin translate'ini ezer ve tüm kareler sol üste yığılır. */
+    var g = '<g transform="translate(' + cx + ',' + cy + ')"><g' + an(i) + '>';
     var box = '<rect class="bx" x="' + bx + '" y="' + by + '" width="' + bw + '" height="' + bh + '" rx="5"/>';
-    var k = it.k, ball, extra = "";
-    function dot(x, y, r){ return '<circle class="dot pop" style="animation-delay:' + (0.12 + i*0.07) + 's" cx="' + x + '" cy="' + (y||0) + '" r="' + (r||11) + '"/>'; }
+    function dot(x, y, r){ return '<circle class="dot pop" style="animation-delay:' + (0.12 + i*0.07) + 's" cx="' + x + '" cy="' + y + '" r="' + (r||10) + '"/>'; }
+    var k = it.k, body = "";
+    /* zemin */
+    var floor = '<line class="ax" x1="18" y1="' + fy + '" x2="' + (CW - 18) + '" y2="' + fy + '"/>';
 
-    if(k === "in")            { g += box; ball = dot(bx + bw/2, by + bh/2, 10); }
-    else if(k === "on")       { g += box; ball = dot(bx + bw/2, by - 11); }
-    else if(k === "under")    { g += box; ball = dot(bx + bw/2, by + bh + 13); }
-    else if(k === "over")     { g += box; ball = dot(bx + bw/2, by - 30);
-                                extra = '<line class="nwq" x1="' + (bx+bw/2) + '" y1="' + (by-19) + '" x2="' + (bx+bw/2) + '" y2="' + (by-2) + '" stroke-dasharray="3 4"/>'; }
-    else if(k === "above")    { g += box; ball = dot(bx + bw/2 + 24, by - 34); }
-    else if(k === "below")    { g += box; ball = dot(bx + bw/2 + 24, by + bh + 22); }
-    else if(k === "next")     { g += box; ball = dot(bx + bw + 20, by + bh/2); }
-    else if(k === "behind")   { ball = dot(bx + bw/2 + 6, by + 8); g += ball + box; ball = ""; }
-    else if(k === "front")    { g += box; ball = dot(bx + bw/2 - 4, by + bh - 4); }
-    else if(k === "between")  { g += '<rect class="bx" x="26" y="' + by + '" width="40" height="' + bh + '" rx="5"/>' +
-                                     '<rect class="bx" x="120" y="' + by + '" width="40" height="' + bh + '" rx="5"/>';
-                                ball = dot(93, by + bh/2); }
-    else if(k === "among")    { g += '<rect class="bx" x="24" y="' + (by+6) + '" width="26" height="' + (bh-6) + '" rx="4"/>' +
-                                     '<rect class="bx" x="60" y="' + by + '" width="26" height="' + bh + '" rx="4"/>' +
-                                     '<rect class="bx" x="130" y="' + (by+4) + '" width="26" height="' + (bh-4) + '" rx="4"/>' +
-                                     '<rect class="bx" x="98" y="' + (by+10) + '" width="24" height="' + (bh-10) + '" rx="4"/>';
-                                ball = dot(93, by + bh/2 + 4, 9); }
-    else if(k === "opposite") { g += '<rect class="bx" x="26" y="' + by + '" width="46" height="' + bh + '" rx="5"/>' +
-                                     '<rect class="bxa" x="114" y="' + by + '" width="46" height="' + bh + '" rx="5"/>';
-                                extra = '<line class="arw" x1="78" y1="' + (by+bh/2) + '" x2="108" y2="' + (by+bh/2) + '" stroke-dasharray="4 4"/>'; }
-    else if(k === "near")     { g += box; ball = dot(bx + bw + 34, by + bh/2);
-                                extra = '<line class="nwq" x1="' + (bx+bw+4) + '" y1="' + (by+bh/2) + '" x2="' + (bx+bw+22) + '" y2="' + (by+bh/2) + '" stroke-dasharray="3 4"/>'; }
-    /* --- hareket --- */
-    else if(k === "into")     { g += box; extra = arrow(16, by + bh/2, bx + bw/2 - 4, by + bh/2, i); }
-    else if(k === "outof")    { g += box; extra = arrow(bx + bw/2, by + bh/2, CW - 30, by + bh/2, i); }
-    else if(k === "onto")     { g += box; extra = arc(20, by + bh + 10, bx + bw/2, by - 12, i); }
-    else if(k === "through")  { g += '<rect class="bx" x="' + bx + '" y="' + (by-6) + '" width="' + bw + '" height="' + (bh+12) + '" rx="5"/>';
-                                extra = arrow(16, by + bh/2, CW - 26, by + bh/2, i); }
-    else if(k === "across")   { g += '<line class="ax" x1="' + bx + '" y1="30" x2="' + bx + '" y2="94" stroke-width="7"/>' +
-                                     '<line class="ax" x1="' + (bx+bw) + '" y1="30" x2="' + (bx+bw) + '" y2="94" stroke-width="7"/>';
-                                extra = arrow(20, by + bh/2, CW - 26, by + bh/2, i); }
-    else if(k === "along")    { g += '<line class="ax" x1="14" y1="' + (by+bh+16) + '" x2="' + (CW-22) + '" y2="' + (by+bh+16) + '" stroke-width="6"/>';
-                                extra = arrow(20, by + bh/2 + 6, CW - 30, by + bh/2 + 6, i); }
-    else if(k === "past")     { g += box; extra = arc(16, by - 16, CW - 26, by - 16, i); }
-    else if(k === "around")   { g += box;
-                                extra = '<path class="arw draw" style="animation-delay:' + (0.12+i*0.07) + 's" fill="none" d="M30 ' + (by+bh/2) +
-                                        ' C30 18, ' + (CW-34) + ' 18, ' + (CW-34) + ' ' + (by+bh/2) + '"/>' +
-                                        '<polygon class="arwf" points="' + (CW-34) + ',' + (by+bh/2+10) + ' ' + (CW-40) + ',' + (by+bh/2-2) + ' ' + (CW-28) + ',' + (by+bh/2-2) + '"/>'; }
-    else if(k === "towards")  { g += box; extra = arrow(16, by + bh/2, bx - 10, by + bh/2, i); }
-    else if(k === "up")       { g += box; extra = arrow(bx + bw/2, by + bh + 22, bx + bw/2, by - 16, i); }
-    else if(k === "down")     { g += box; extra = arrow(bx + bw/2, by - 16, bx + bw/2, by + bh + 22, i); }
-    else                      { g += box; ball = dot(bx + bw/2, by + bh/2); }
+    if(k === "in")            body = floor + box + dot(mx, my, 9);
+    else if(k === "on")       body = floor + box + dot(mx, by - 10);
+    else if(k === "over")     body = floor + box + dot(mx, by - 28) +
+                                     '<line class="nwq" x1="' + mx + '" y1="' + (by-18) + '" x2="' + mx + '" y2="' + (by-3) + '" stroke-dasharray="3 3"/>';
+    else if(k === "above")    body = floor + box + dot(mx + 30, 14);
+    else if(k === "under")    body = floor + box + dot(mx, fy + 12);
+    else if(k === "below")    body = '<line class="ax" x1="18" y1="' + fy + '" x2="' + (CW-18) + '" y2="' + fy + '"/>' + box + dot(mx + 34, fy + 20, 9);
+    else if(k === "next")     body = floor + box + dot(bx + bw + 18, my);
+    else if(k === "behind")   body = floor + dot(mx + 8, by + 6) + box;
+    else if(k === "front")    body = floor + box + dot(mx - 6, fy - 6);
+    else if(k === "between")  body = floor +
+          '<rect class="bx" x="30" y="' + by + '" width="40" height="' + bh + '" rx="5"/>' +
+          '<rect class="bx" x="' + (CW-70) + '" y="' + by + '" width="40" height="' + bh + '" rx="5"/>' + dot(CW/2, my);
+    else if(k === "among")    body = floor +
+          '<rect class="bx" x="26" y="' + (by+8) + '" width="26" height="' + (bh-8) + '" rx="4"/>' +
+          '<rect class="bx" x="60" y="' + by + '" width="26" height="' + bh + '" rx="4"/>' +
+          '<rect class="bx" x="112" y="' + (by+4) + '" width="26" height="' + (bh-4) + '" rx="4"/>' +
+          '<rect class="bx" x="146" y="' + (by+10) + '" width="24" height="' + (bh-10) + '" rx="4"/>' + dot(99, my + 4, 8);
+    else if(k === "opposite") body = floor +
+          '<rect class="bx" x="28" y="' + by + '" width="46" height="' + bh + '" rx="5"/>' +
+          '<rect class="bxa" x="' + (CW-74) + '" y="' + by + '" width="46" height="' + bh + '" rx="5"/>' +
+          '<line class="arw" x1="80" y1="' + my + '" x2="' + (CW-80) + '" y2="' + my + '" stroke-dasharray="4 4"/>';
+    else if(k === "near")     body = floor + box + dot(bx + bw + 40, my) +
+          '<line class="nwq" x1="' + (bx+bw+4) + '" y1="' + my + '" x2="' + (bx+bw+28) + '" y2="' + my + '" stroke-dasharray="3 3"/>';
+    /* --- hareket: tümü y 12–96 aralığında --- */
+    else if(k === "into")     body = floor + box + arrow(16, my, mx - 2, my, i);
+    else if(k === "outof")    body = floor + box + arrow(mx, my, CW - 22, my, i);
+    else if(k === "onto")     body = floor + box + arc(22, fy - 4, mx, by - 12, i);
+    else if(k === "through")  body = '<rect class="bx" x="' + bx + '" y="' + (by-6) + '" width="' + bw + '" height="' + (bh+12) + '" rx="5"/>' +
+                                     arrow(14, my, CW - 18, my, i);
+    else if(k === "across")   body = '<line class="ax" x1="' + bx + '" y1="' + (by-8) + '" x2="' + bx + '" y2="' + (fy+8) + '" stroke-width="7"/>' +
+                                     '<line class="ax" x1="' + (bx+bw) + '" y1="' + (by-8) + '" x2="' + (bx+bw) + '" y2="' + (fy+8) + '" stroke-width="7"/>' +
+                                     arrow(20, my, CW - 20, my, i);
+    else if(k === "along")    body = '<line class="ax" x1="18" y1="' + (fy+6) + '" x2="' + (CW-18) + '" y2="' + (fy+6) + '" stroke-width="6"/>' +
+                                     arrow(22, my, CW - 22, my, i);
+    else if(k === "past")     body = floor + box + arc(18, by - 8, CW - 20, by - 8, i);
+    else if(k === "around")   body = floor + box +
+          '<path class="arw draw" style="animation-delay:' + (0.12+i*0.07) + 's" fill="none" d="M34 ' + my +
+          ' C34 12, ' + (CW-34) + ' 12, ' + (CW-34) + ' ' + my + '"/>' +
+          '<polygon class="arwf" points="' + (CW-34) + ',' + (my+9) + ' ' + (CW-40) + ',' + (my-2) + ' ' + (CW-28) + ',' + (my-2) + '"/>';
+    else if(k === "towards")  body = floor + box + arrow(16, my, bx - 8, my, i);
+    else if(k === "up")       body = floor + box + arrow(bx + bw + 22, fy + 16, bx + bw + 22, 14, i);
+    else if(k === "down")     body = floor + box + arrow(bx + bw + 22, 14, bx + bw + 22, fy + 16, i);
+    else                      body = floor + box + dot(mx, my);
 
-    g += (ball || "") + extra;
-    g += '<text class="lb" x="' + (CW/2 - 8) + '" y="112" text-anchor="middle">' + it.en + '</text>';
-    g += '<text class="lbs" x="' + (CW/2 - 8) + '" y="132" text-anchor="middle">' + it.tr + '</text>';
-    s += g + '</g>';
+    g += body;
+    g += '<text class="lb" x="' + (CW/2) + '" y="' + SP.LB + '" text-anchor="middle">' + it.en + '</text>';
+    g += '<text class="lbx" x="' + (CW/2) + '" y="' + SP.LBS + '" text-anchor="middle">' + it.tr + '</text>';
+    s += g + '</g></g>';
   });
-  return vzWrap(s, COLS * CW, rows * CH + 6);
+  /* kareler arası ince ayraç çizgileri */
+  for(var r = 1; r < rows; r++)
+    s += '<line class="nwq" x1="10" y1="' + (r*CH - 6) + '" x2="' + (COLS*CW - 10) + '" y2="' + (r*CH - 6) + '"/>';
+  return vzWrap(s, COLS * CW, rows * CH);
 }
+
 function arrow(x1, y1, x2, y2, i){
   var d = ' style="animation-delay:' + (0.12 + i*0.07) + 's"';
   var dx = x2 - x1, dy = y2 - y1, L = Math.sqrt(dx*dx + dy*dy) || 1;
