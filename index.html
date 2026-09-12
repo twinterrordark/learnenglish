@@ -55,6 +55,7 @@ nav{
   padding:16px 10px 40px;border-right:1px solid var(--line);
 }
 main{flex:1;min-width:0;padding:18px 16px 90px}
+main:has(#chShell){padding-bottom:0}   /* sohbet ekraninda sayfa kaymasin */
 
 /* ---------- SEARCH ---------- */
 .search-box{position:relative;margin-bottom:14px}
@@ -243,6 +244,71 @@ html[data-theme="dark"] .vpos.pm{color:#67e8f9}
 .fex{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:14px;line-height:1.6}
 .fex i{color:var(--muted);font-style:normal}
 .fhint{margin-top:20px;font-size:13px;color:var(--muted)}
+
+/* ---------- SOHBET ---------- */
+.chat-pre{background:var(--surface2);border:1px solid var(--line);border-radius:9px;padding:10px 12px;
+  font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;margin:0;overflow-x:auto;user-select:all}
+.chat-lbl{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.chat-inp{width:100%;padding:12px 14px;border-radius:11px;border:1px solid var(--line);
+  background:var(--surface);color:var(--text);font-size:16px;outline:none}
+.chat-inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+.chat-shell{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.chat-top{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);
+  background:var(--surface2);flex:none}
+.chtabs{display:flex;gap:5px;overflow-x:auto;flex:1;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.chtabs::-webkit-scrollbar{display:none}
+.chtab{position:relative;flex:none;padding:7px 13px;border-radius:99px;font-size:13.5px;font-weight:700;
+  background:transparent;color:var(--muted);border:1px solid transparent;white-space:nowrap}
+.chtab.on{background:var(--accent);color:#fff}
+.chbadge{display:none;background:var(--err);color:#fff;font-size:10px;font-weight:800;font-style:normal;
+  border-radius:99px;padding:1px 5px;margin-left:5px;vertical-align:1px}
+.chusers{flex:none;display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:99px;
+  background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:700}
+.chdot{width:8px;height:8px;border-radius:99px;background:var(--muted);flex:none}
+.chdot.ok{background:var(--ok)}
+.chdot.wait{background:var(--warn);animation:chPulse 1s infinite}
+@keyframes chPulse{50%{opacity:.35}}
+
+.chat-msgs{flex:1;overflow-y:auto;padding:12px 12px 4px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.chmsg{display:flex;gap:9px;margin-top:12px}
+.chav{width:32px;height:32px;border-radius:99px;flex:none;color:#fff;font-weight:800;font-size:14px;
+  display:inline-grid;place-items:center}
+.chbody{min-width:0;flex:1}
+.chhead{display:flex;align-items:baseline;gap:8px;margin-bottom:1px}
+.chhead b{font-size:14.5px}
+.chts{font-size:11px;color:var(--muted)}
+.chline{padding-left:41px;margin-top:1px}
+.chmsg .chline{padding-left:0}
+.chtext{font-size:15px;line-height:1.5;word-wrap:break-word;overflow-wrap:anywhere;white-space:pre-wrap}
+.chtext a{color:var(--accent-2)}
+.chsys{text-align:center;font-size:12px;color:var(--muted);margin:10px 0;padding:0 8px}
+
+.chat-new{position:absolute;left:50%;transform:translateX(-50%);bottom:74px;z-index:3;
+  background:var(--accent);color:#fff;border-radius:99px;padding:7px 15px;font-size:13px;font-weight:700;
+  box-shadow:0 4px 14px rgba(79,70,229,.4)}
+.chat-shell{position:relative}
+
+.chat-bar{flex:none;display:flex;gap:8px;align-items:flex-end;padding:9px 10px;
+  border-top:1px solid var(--line);background:var(--surface)}
+.chat-in{flex:1;resize:none;max-height:120px;padding:10px 13px;border-radius:18px;border:1px solid var(--line);
+  background:var(--surface2);color:var(--text);font-size:16px;font-family:inherit;line-height:1.45;outline:none}
+.chat-in:focus{border-color:var(--accent);background:var(--surface)}
+.chat-send{flex:none;width:42px;height:42px;border-radius:99px;background:var(--accent);color:#fff;
+  font-size:16px;display:grid;place-items:center}
+.chat-send:active{transform:scale(.94)}
+
+.chat-sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200;display:flex;align-items:flex-end}
+.chat-sheet[hidden]{display:none}   /* display:flex, [hidden] varsayilanini ezer */
+.chat-sheet-in{background:var(--surface);width:100%;max-height:70vh;overflow-y:auto;
+  border-radius:16px 16px 0 0;padding:14px 16px calc(env(safe-area-inset-bottom) + 16px)}
+@media(min-width:701px){ .chat-sheet{align-items:center;justify-content:center}
+  .chat-sheet-in{max-width:360px;border-radius:16px} }
+.chat-sheet-hd{display:flex;justify-content:space-between;align-items:center;font-weight:800;margin-bottom:10px}
+.chat-sheet-hd button{font-size:18px;color:var(--muted);padding:4px 8px}
+.chwho{display:flex;align-items:center;gap:9px;padding:8px 0;font-size:15px;font-weight:600}
+.chwho i{color:var(--muted);font-style:normal;font-size:12.5px;font-weight:600}
 
 /* ---------- DİNLEME PRATİĞİ ---------- */
 .lcount{background:var(--accent-soft);color:var(--accent);font-size:11.5px;font-weight:800;
@@ -597,6 +663,7 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
     <button class="nav-special" id="examBtn" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">🎓 &nbsp;Genel Değerlendirme (24 soru)</button>
     <button class="nav-special" id="vocabBtn" style="background:linear-gradient(135deg,#0891b2,#0d9488)">📚 &nbsp;Kelime Hazinesi</button>
     <button class="nav-special" id="listenBtn" style="background:linear-gradient(135deg,#e11d48,#f97316)">🎧 &nbsp;Dinleme Pratiği</button>
+    <button class="nav-special" id="chatBtn" style="background:linear-gradient(135deg,#475569,#1e293b)">💬 &nbsp;Sohbet</button>
     <div id="navList"></div>
   </nav>
   <main id="main"></main>
@@ -2920,6 +2987,9 @@ function showHome(){
   h += '<button class="node-card" data-go="__vocab" style="border-color:#0891b2">'+
        '<span class="badge" style="background:rgba(8,145,178,.15);color:#0e7490">KELİME</span>'+
        '<h4>📚 Kelime Hazinesi</h4><p>' + VOC.length + ' kelime, türemiş biçimleri, örnek cümleler + kart ve test</p></button>';
+  h += '<button class="node-card" data-go="__chat" style="border-color:#475569">'+
+       '<span class="badge" style="background:rgba(71,85,105,.15);color:#334155">TOPLULUK</span>'+
+       '<h4>💬 Sohbet</h4><p>Sunucu açıkken 20 kişiye kadar canlı yazışma — telefondan da rahat</p></button>';
   h += '<button class="node-card" data-go="__listen" style="border-color:#f97316">'+
        '<span class="badge" style="background:rgba(249,115,22,.15);color:#ea580c">DİNLEME</span>'+
        '<h4>🎧 Dinleme Pratiği</h4><p>Her konu için YouTube video listesi — kendi videolarını da ekleyebilirsin</p></button>';
@@ -5143,12 +5213,366 @@ function vocQuiz(reset){
   if(nx) nx.onclick = function(){ Q.i++; Q.ans = null; vocQuiz(); };
 }
 
+
+/* =====================================================================
+   SOHBET
+   Sunucu: server.js (aynı adresten servis edilir)
+   Sunucudan tarayıcıya SSE, tarayıcıdan sunucuya POST.
+   Sayfa dosyadan (file://) veya GitHub Pages'ten açıldıysa sunucu
+   yoktur; bu durumda kullanıcıya nasıl başlatacağı anlatılır.
+   ===================================================================== */
+var CH = {
+  id: null, me: null, ch: "genel", es: null, chans: [], users: [],
+  msgs: [], maxLen: 500, state: "idle", unread: {}, needCode: false,
+  name: "", code: "", mode: "sse", seq: 0, pollTimer: null, sseWatch: null, pollFail: 0
+};
+function chSave(k, v){ try{ localStorage.setItem("a2gram_chat_" + k, v); }catch(e){} }
+function chLoad(k){ try{ return localStorage.getItem("a2gram_chat_" + k) || ""; }catch(e){ return ""; } }
+function chTime(ts){
+  var d = new Date(ts);
+  return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+}
+function chApi(p, body){
+  return fetch(p, body ? {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)}
+                       : {cache:"no-store"})
+    .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || ("HTTP " + r.status)); return j; }); });
+}
+
+/* ---------- giriş ---------- */
+function showChat(){
+  current = null; closeNav();
+  fab.style.display = "none";
+  main.innerHTML = '<div class="crumb">Topluluk</div><h1 class="topic-title">💬 Sohbet</h1>' +
+                   '<p class="topic-sub">Sunucu kontrol ediliyor…</p>';
+  window.scrollTo(0, 0);
+  buildNav(el("search").value);
+  chApi("/api/chat/info").then(function(info){
+    CH.chans = info.channels; CH.maxLen = info.maxLen; CH.needCode = info.needCode;
+    if(CH.id && CH.state === "open") chatRoom(); else chatJoinForm(info);
+  }).catch(function(){ chatOffline(); });
+}
+
+function chatOffline(){
+  main.innerHTML = '<div class="crumb">Topluluk</div><h1 class="topic-title">💬 Sohbet</h1>' +
+    '<p class="topic-sub">Sohbet sunucusu çalışmıyor</p>' +
+    '<div class="note warn"><b class="lbl">Sunucu kapalı</b>' +
+    'Sohbet, siteyi <b>senin bilgisayarındaki sunucudan</b> açtığında çalışır. ' +
+    'Dosyayı çift tıklayarak ya da GitHub Pages üzerinden açtığında sohbet olmaz — ' +
+    'tarayıcılar güvenlik gereği https sayfasından senin bilgisayarındaki http sunucusuna bağlanmaz.</div>' +
+    '<h3 class="vh3">Nasıl açılır</h3><div class="card">' +
+    '<p style="margin:0 0 8px">Proje klasöründe komut satırını aç ve şunu yaz:</p>' +
+    '<pre class="chat-pre">node server.js</pre>' +
+    '<p style="margin:10px 0 8px">Sonra tarayıcıdan şu adresi aç:</p>' +
+    '<pre class="chat-pre">http://localhost:8765</pre>' +
+    '<p class="viz-cap" style="margin-top:10px">Aynı ağdaki telefonlar, sunucunun açılışta yazdığı ' +
+    '<b>http://192.168.x.x:8765</b> adresinden girer. İnternet üzerinden girilmesi için ' +
+    'modemde port yönlendirme ya da bir tünel aracı gerekir.</p></div>' +
+    '<div class="btn-row"><button class="btn primary" id="chRetry">Tekrar dene</button></div>';
+  el("chRetry").onclick = showChat;
+}
+
+function chatJoinForm(info){
+  var last = chLoad("name");
+  main.innerHTML = '<div class="crumb">Topluluk</div><h1 class="topic-title">💬 Sohbet</h1>' +
+    '<p class="topic-sub">Şu an ' + info.online + ' / ' + info.max + ' kişi bağlı</p>' +
+    '<div class="card"><h3 style="margin:0 0 12px;font-size:16px;font-weight:800">Sohbete katıl</h3>' +
+    '<label class="chat-lbl">Görünecek ismin</label>' +
+    '<input id="chName" class="chat-inp" maxlength="20" placeholder="ör. Mücahit" value="' + esc(last) + '" autocomplete="nickname">' +
+    (info.needCode ? '<label class="chat-lbl" style="margin-top:10px">Giriş kodu</label>' +
+       '<input id="chCode" class="chat-inp" type="password" placeholder="Sunucu sahibinden al" autocomplete="off">' : '') +
+    '<div id="chErr" class="note err" style="display:none;margin-top:10px"></div>' +
+    '<div class="btn-row" style="margin-top:12px"><button class="btn primary full" id="chGo">Katıl</button></div>' +
+    '</div>';
+  var nm = el("chName");
+  nm.focus();
+  function go(){
+    var name = nm.value.trim();
+    var code = el("chCode") ? el("chCode").value : "";
+    if(name.length < 2){ chatErr("İsim en az 2 karakter olmalı"); return; }
+    el("chGo").disabled = true; el("chGo").textContent = "Bağlanıyor…";
+    chApi("/api/chat/join", {name:name, code:code}).then(function(r){
+      CH.id = r.id; CH.me = {name:r.name, color:r.color}; CH.maxLen = r.maxLen;
+      CH.name = name; CH.code = code;   /* sunucu yeniden baslarsa gerekir */
+      chSave("name", name);
+      chatRoom(); chatConnect();
+    }).catch(function(e){
+      chatErr(e.message); el("chGo").disabled = false; el("chGo").textContent = "Katıl";
+    });
+  }
+  el("chGo").onclick = go;
+  nm.onkeydown = function(e){ if(e.key === "Enter") go(); };
+}
+function chatErr(m){
+  var d = el("chErr"); if(!d) return;
+  d.style.display = "block"; d.innerHTML = '<b class="lbl">Olmadı</b>' + esc(m);
+}
+
+/* ---------- oda ---------- */
+function chatRoom(){
+  var tabs = CH.chans.map(function(c){
+    return '<button class="chtab' + (c.id === CH.ch ? " on" : "") + '" data-ch="' + c.id + '">' +
+           esc(c.name) + '<i class="chbadge" data-badge="' + c.id + '"></i></button>';
+  }).join("");
+  main.innerHTML =
+    '<div class="chat-shell" id="chShell">' +
+      '<div class="chat-top">' +
+        '<div class="chtabs">' + tabs + '</div>' +
+        '<button class="chusers" id="chWho"><span class="chdot" id="chDot"></span><span id="chCount">0</span></button>' +
+      '</div>' +
+      '<div class="chat-msgs" id="chMsgs"></div>' +
+      '<button class="chat-new" id="chNew" hidden>↓ Yeni mesaj</button>' +
+      '<div class="chat-bar">' +
+        '<textarea id="chIn" class="chat-in" rows="1" placeholder="Mesaj yaz…" maxlength="' + CH.maxLen + '"></textarea>' +
+        '<button class="chat-send" id="chSend" aria-label="Gönder">➤</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="chat-sheet" id="chSheet" hidden><div class="chat-sheet-in">' +
+      '<div class="chat-sheet-hd">Bağlı olanlar <button id="chSheetX">✕</button></div>' +
+      '<div id="chWhoList"></div></div></div>';
+  window.scrollTo(0, 0);
+  buildNav(el("search").value);
+  chatWire();
+  chatPaint();
+  chatFit();
+}
+
+function chatWire(){
+  main.querySelectorAll("[data-ch]").forEach(function(b){
+    b.onclick = function(){
+      CH.ch = this.getAttribute("data-ch"); CH.unread[CH.ch] = 0;
+      main.querySelectorAll("[data-ch]").forEach(function(x){ x.classList.remove("on"); });
+      this.classList.add("on");
+      chatPaint(true);
+    };
+  });
+  var inp = el("chIn"), send = el("chSend");
+  function grow(){ inp.style.height = "auto"; inp.style.height = Math.min(inp.scrollHeight, 120) + "px"; chatFit(); }
+  inp.addEventListener("input", grow);
+  inp.addEventListener("keydown", function(e){
+    if(e.key === "Enter" && !e.shiftKey && window.innerWidth > 700){ e.preventDefault(); doSend(); }
+  });
+  send.onclick = doSend;
+  function doSend(){
+    var t = inp.value.trim();
+    if(!t || !CH.id) return;
+    inp.value = ""; grow();
+    chApi("/api/chat/send", {id:CH.id, text:t, ch:CH.ch}).catch(function(e){
+      chatSys("Gönderilemedi: " + e.message);
+      if(/Oturum/.test(e.message)) { CH.state = "idle"; CH.id = null; }
+    });
+  }
+  el("chNew").onclick = function(){ chatScroll(true); this.hidden = true; };
+  el("chWho").onclick = function(){ chatWho(true); };
+  el("chSheetX").onclick = function(){ el("chSheet").hidden = true; };
+  el("chSheet").onclick = function(e){ if(e.target === this) this.hidden = true; };
+  el("chMsgs").addEventListener("scroll", function(){
+    if(nearBottom()) el("chNew").hidden = true;
+  });
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize", chatFit);
+    window.visualViewport.addEventListener("scroll", chatFit);
+  }
+  window.addEventListener("resize", chatFit);
+}
+
+/* klavye açılınca yazma alanı ekranda kalsın */
+function chatFit(){
+  var shell = el("chShell"); if(!shell) return;
+  var vv = window.visualViewport;
+  var vh = vv ? vv.height : window.innerHeight;
+  /* Kabugun kendi ust kenarini olc: main'in ust bosluguyla header'in alti ayni yer degil.
+     Klavye acilinca gorunen alan kayar, offsetTop bunu telafi eder. */
+  shell.style.height = "auto";
+  var top = shell.getBoundingClientRect().top - (vv ? vv.offsetTop : 0);
+  shell.style.height = Math.max(240, vh - top - 10) + "px";
+}
+function nearBottom(){
+  var m = el("chMsgs"); if(!m) return true;
+  return m.scrollHeight - m.scrollTop - m.clientHeight < 60;
+}
+function chatScroll(force){
+  var m = el("chMsgs"); if(m) m.scrollTop = m.scrollHeight;
+}
+
+/* ---------- bağlantı ----------
+   Önce SSE denenir: yerel ağda anlık ve tek bağlantı yeter. Ama bazı
+   vekil sunucular (örneğin Cloudflare hızlı tünelleri) akışı tamponlar;
+   bağlantı açık görünür ama tek bayt gelmez. O yüzden birkaç saniye
+   içinde veri gelmezse sessizce yoklamaya geçiyoruz. Yoklama her yerden
+   geçer, sadece mesajlar birkaç yüz milisaniye geç gelir. */
+function chatHello(d){
+  CH.msgs = d.history || []; CH.users = d.users || []; if(d.you) CH.me = d.you;
+  if(typeof d.seq === "number") CH.seq = d.seq;
+  CH.state = "open"; chatDot(); chatPaint(true); chatWho(false);
+}
+function chatIncoming(m){
+  if(typeof m.seq === "number"){ if(m.seq <= CH.seq) return; CH.seq = m.seq; }
+  CH.msgs.push(m);
+  if(m.ch !== CH.ch && m.ch !== "*" && m.kind === "msg"){
+    CH.unread[m.ch] = (CH.unread[m.ch] || 0) + 1; chatBadges();
+  }
+  var stick = nearBottom();
+  chatPaint(stick);
+  if(!stick && m.kind === "msg" && m.ch === CH.ch){ var n = el("chNew"); if(n) n.hidden = false; }
+}
+function chatSetUsers(list){ CH.users = list || []; chatWho(false); }
+
+function chatStop(){
+  if(CH.es){ try{ CH.es.close(); }catch(e){} CH.es = null; }
+  if(CH.pollTimer){ clearTimeout(CH.pollTimer); CH.pollTimer = null; }
+  if(CH.sseWatch){ clearTimeout(CH.sseWatch); CH.sseWatch = null; }
+}
+
+function chatConnect(){
+  chatStop();
+  CH.state = "connecting"; CH.seq = 0; chatDot();
+
+  var es = new EventSource("/api/chat/stream?id=" + encodeURIComponent(CH.id));
+  CH.es = es;
+
+  /* SSE'den bu süre içinde tek olay bile gelmezse yoklamaya geç */
+  CH.sseWatch = setTimeout(function(){
+    if(CH.es === es && CH.state !== "open"){ CH.mode = "poll"; chatPollStart(); }
+  }, 4000);
+
+  es.addEventListener("hello", function(ev){
+    if(CH.es !== es) return;
+    CH.mode = "sse";
+    clearTimeout(CH.sseWatch); CH.sseWatch = null;
+    chatHello(JSON.parse(ev.data));
+  });
+  es.addEventListener("msg", function(ev){ if(CH.es === es) chatIncoming(JSON.parse(ev.data)); });
+  es.addEventListener("users", function(ev){ if(CH.es === es) chatSetUsers(JSON.parse(ev.data)); });
+  es.onerror = function(){
+    if(CH.es !== es) return;
+    if(CH.state === "open"){ CH.state = "connecting"; chatDot(); }
+    /* Sunucu yeniden başladıysa oturum kimliği artık yok; akış 401 döner ve
+       EventSource bir daha denemeden kapanır (readyState 2). */
+    if(es.readyState === 2){
+      try{ es.close(); }catch(e){}
+      CH.es = null;
+      clearTimeout(CH.sseWatch); CH.sseWatch = null;
+      chatRejoin();
+    }
+  };
+}
+
+/* ---------- yoklama ---------- */
+function chatPollStart(){
+  if(CH.es){ try{ CH.es.close(); }catch(e){} CH.es = null; }
+  clearTimeout(CH.sseWatch); CH.sseWatch = null;
+  chatPollOnce(true);
+}
+function chatPollOnce(ilk){
+  if(!CH.id || CH.mode !== "poll") return;
+  var yol = "/api/chat/poll?id=" + encodeURIComponent(CH.id) + (ilk ? "" : "&since=" + CH.seq);
+  fetch(yol, {cache:"no-store"}).then(function(r){
+    if(r.status === 401) throw new Error("Oturum yok");
+    return r.json();
+  }).then(function(d){
+    if(CH.mode !== "poll") return;
+    if(d.full) chatHello(d);
+    else {
+      (d.events || []).forEach(chatIncoming);
+      if(typeof d.seq === "number") CH.seq = Math.max(CH.seq, d.seq);
+      chatSetUsers(d.users);
+      if(CH.state !== "open"){ CH.state = "open"; chatDot(); }
+    }
+    CH.pollFail = 0;
+    CH.pollTimer = setTimeout(function(){ chatPollOnce(false); }, 1500);
+  }).catch(function(e){
+    if(CH.mode !== "poll") return;
+    if(/Oturum/.test(e.message)){ chatRejoin(); return; }
+    CH.state = "connecting"; chatDot();
+    CH.pollFail = (CH.pollFail || 0) + 1;
+    CH.pollTimer = setTimeout(function(){ chatPollOnce(false); },
+                              Math.min(1500 * CH.pollFail, 10000));
+  });
+}
+
+var chRejoinTimer = null, chRejoinTry = 0;
+function chatRejoin(){
+  if(chRejoinTimer || !CH.name) return;
+  chatStop();
+  var wait = Math.min(1000 * Math.pow(2, chRejoinTry++), 15000);
+  chRejoinTimer = setTimeout(function(){
+    chRejoinTimer = null;
+    chApi("/api/chat/join", {name: CH.name, code: CH.code || ""}).then(function(r){
+      CH.id = r.id; CH.me = {name:r.name, color:r.color}; CH.maxLen = r.maxLen;
+      chRejoinTry = 0;
+      /* daha önce yoklamaya düşmüşse öyle devam et, boşuna SSE bekleme */
+      if(CH.mode === "poll"){ CH.seq = 0; chatPollStart(); } else chatConnect();
+    }).catch(function(){ chatRejoin(); });   /* sunucu henüz kapalıysa tekrar dene */
+  }, wait);
+}
+
+function chatDot(){
+  var d = el("chDot"); if(!d) return;
+  d.className = "chdot " + (CH.state === "open" ? "ok" : "wait");
+  d.title = CH.state === "open" ? "Bağlı" : "Bağlanıyor…";
+}
+function chatBadges(){
+  main.querySelectorAll("[data-badge]").forEach(function(b){
+    var n = CH.unread[b.getAttribute("data-badge")] || 0;
+    b.textContent = n ? (n > 9 ? "9+" : n) : "";
+    b.style.display = n ? "inline-block" : "none";
+  });
+}
+function chatWho(open){
+  var c = el("chCount"); if(c) c.textContent = CH.users.length;
+  var l = el("chWhoList");
+  if(l) l.innerHTML = CH.users.map(function(u){
+    return '<div class="chwho"><span class="chav" style="background:' + esc(u.color) + '">' +
+           esc(u.name.charAt(0).toUpperCase()) + '</span>' + esc(u.name) +
+           (CH.me && u.name === CH.me.name ? ' <i>(sen)</i>' : '') + '</div>';
+  }).join("") || '<div class="empty">Kimse yok</div>';
+  if(open) el("chSheet").hidden = false;
+}
+function chatSys(text){
+  CH.msgs.push({id:"x" + Date.now(), kind:"sys", ch:"*", text:text, ts:Date.now()});
+  chatPaint(true);
+}
+
+/* ---------- çizim ---------- */
+function chatPaint(stick){
+  var box = el("chMsgs"); if(!box) return;
+  var list = CH.msgs.filter(function(m){ return m.ch === "*" || m.ch === CH.ch; });
+  var h = "", prev = null;
+  list.forEach(function(m){
+    if(m.kind === "sys"){
+      h += '<div class="chsys">' + esc(m.text) + '</div>'; prev = null; return;
+    }
+    var same = prev && prev.name === m.name && (m.ts - prev.ts) < 5 * 60000;
+    if(same){
+      h += '<div class="chline"><span class="chtext">' + chatText(m.text) + '</span></div>';
+    } else {
+      h += '<div class="chmsg">' +
+             '<span class="chav" style="background:' + esc(m.color) + '">' + esc(m.name.charAt(0).toUpperCase()) + '</span>' +
+             '<div class="chbody"><div class="chhead"><b style="color:' + esc(m.color) + '">' + esc(m.name) + '</b>' +
+             '<span class="chts">' + chTime(m.ts) + '</span></div>' +
+             '<div class="chline"><span class="chtext">' + chatText(m.text) + '</span></div></div></div>';
+    }
+    prev = m;
+  });
+  box.innerHTML = h || '<div class="empty">Henüz mesaj yok. İlk yazan sen ol.</div>';
+  chatBadges();
+  if(stick !== false) chatScroll();
+}
+/* metin güvenli: önce kaçış, sonra bağlantıları tıklanır yap */
+function chatText(t){
+  var s = esc(t);
+  return s.replace(/(https?:\/\/[^\s<]+)/g, function(u){
+    return '<a href="' + u + '" target="_blank" rel="noopener noreferrer">' + u + '</a>';
+  });
+}
+
 /* ---------- Yönlendirme ---------- */
 function go(id){
   if(id === "__home") showHome();
   else if(id === "__write") showWriting();
   else if(id === "__exam") showExam(true);
   else if(id === "__listen") showListenHub();
+  else if(id === "__chat") showChat();
   else if(id === "__vocab") showVocab("list");
   else showTopic(id);
 }
@@ -5166,6 +5590,7 @@ el("homeBtn").onclick = showHome;
 el("bigQuizBtn").onclick = showBigQuiz;
 el("examBtn").onclick = function(){ showExam(true); };
 el("listenBtn").onclick = showListenHub;
+el("chatBtn").onclick = showChat;
 el("vocabBtn").onclick = function(){ showVocab("list"); };
 el("writeBtn").onclick = function(){ showWriting(); };
 el("search").addEventListener("input", function(){ buildNav(this.value); });
