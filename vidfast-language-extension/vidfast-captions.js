@@ -1,6 +1,6 @@
 (function () {
   "use strict";
-  if (!/^(vidfast\.pro|vidfast\.vc)$/.test(location.hostname)) return;
+  if (!/(?:^|\.)vidfast\.(pro|vc)$/i.test(location.hostname)) return;
 
   var attachedVideos = new WeakSet();
   var lastTimeSent = 0;
@@ -108,6 +108,59 @@
     }
   }
 
+  function clickPlayButton() {
+    var selectors = [
+      ".art-state",
+      ".art-icon-play",
+      ".art-video-player .art-state",
+      ".vjs-big-play-button",
+      "button[aria-label='Play']",
+      "button[aria-label='Oynat']",
+      ".play-btn",
+      ".jw-display-icon-container",
+      ".jw-icon-playback",
+      "#player",
+      ".player"
+    ];
+    for (var i = 0; i < selectors.length; i++) {
+      var elems = document.querySelectorAll(selectors[i]);
+      for (var j = 0; j < elems.length; j++) {
+        try {
+          elems[j].click();
+          elems[j].dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
+        } catch (_) {}
+      }
+    }
+  }
+
+  function doPlayVideo(v) {
+    if (v) {
+      try {
+        var pr = v.play();
+        if (pr && typeof pr.catch === "function") {
+          pr.catch(function () {
+            try {
+              v.muted = true;
+              v.play().then(function () {
+                setTimeout(function () { v.muted = false; }, 350);
+              }).catch(function () {});
+            } catch (_) {}
+            clickPlayButton();
+          });
+        }
+      } catch (_) {
+        clickPlayButton();
+      }
+    }
+    clickPlayButton();
+    try {
+      if (window.art && typeof window.art.play === "function") window.art.play();
+      if (window.dp && typeof window.dp.play === "function") window.dp.play();
+      if (window.player && typeof window.player.play === "function") window.player.play();
+      if (window.jwplayer && typeof window.jwplayer === "function") window.jwplayer().play(true);
+    } catch (_) {}
+  }
+
   // Handle messages from parent application
   window.addEventListener("message", function (event) {
     var d = event.data;
@@ -182,12 +235,7 @@
 
     if (d.type === "PLAY") {
       var vPlay = video || findVideo();
-      if (vPlay) {
-        try {
-          var pr = vPlay.play();
-          if (pr && typeof pr.catch === "function") pr.catch(function () {});
-        } catch (_) {}
-      }
+      doPlayVideo(vPlay);
       return;
     }
 

@@ -769,9 +769,11 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
 .tauruss-party-badge{background:rgba(255,255,255,.25);padding:2px 7px;border-radius:10px;font-size:10.5px;font-weight:800;letter-spacing:.3px;margin-left:4px}
 
 /* Countdown Overlay */
-.tauruss-party-countdown{position:absolute;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;pointer-events:none}
+.tauruss-party-countdown{position:absolute;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;cursor:pointer;user-select:none;transition:opacity .25s ease}
 .tauruss-countdown-num{font-size:88px;font-weight:900;color:#fff;text-shadow:0 0 30px rgba(79,70,229,.8),0 0 60px rgba(13,148,136,.6);animation:partyPop .8s cubic-bezier(.175,.885,.32,1.275) infinite;font-family:system-ui,-apple-system,sans-serif}
-.tauruss-countdown-sub{font-size:16px;font-weight:700;color:#cbd5e1;margin-top:10px;letter-spacing:.5px}
+.tauruss-countdown-sub{font-size:16px;font-weight:700;color:#cbd5e1;margin-top:10px;letter-spacing:.5px;text-align:center}
+.tauruss-party-start-now-btn{margin-top:12px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-size:16px;font-weight:800;letter-spacing:.5px;cursor:pointer;box-shadow:0 6px 20px rgba(16,185,129,.5);display:inline-flex;align-items:center;gap:8px;transition:transform .12s,filter .12s;animation:partyBtnPulse 1.2s infinite alternate}
+@keyframes partyBtnPulse{0%{transform:scale(1)}100%{transform:scale(1.06);box-shadow:0 8px 28px rgba(16,185,129,.7)}}
 @keyframes partyPop{0%{transform:scale(.5);opacity:0}40%{transform:scale(1.15);opacity:1}80%{transform:scale(1);opacity:1}100%{transform:scale(1.25);opacity:0}}
 
 /* Flying Reactions Layer */
@@ -6889,6 +6891,8 @@ var WatchParty = {
       }
       TaurussLearning.playVideo();
       TaurussLearning.setStatus("▶️ " + senderName + " videoyu başlattı");
+      var cdEl = el("tfPartyCountdown");
+      if(cdEl) cdEl.style.display = "none";
     } else if(action === "SEEK"){
       if(Number.isFinite(time)){
         TaurussLearning.jumpToTime(time);
@@ -6912,9 +6916,16 @@ var WatchParty = {
     if(!cdEl || !numEl) return;
 
     cdEl.style.display = "flex";
+    cdEl.style.opacity = "1";
     var count = 3;
     numEl.textContent = count;
     if(subEl) subEl.textContent = starterName ? (starterName + " herkesi başlatıyor...") : "Eşzamanlı başlatılıyor...";
+
+    cdEl.onclick = function(){
+      TaurussLearning.playVideo();
+      if(typeof targetTime === "number") TaurussLearning.jumpToTime(targetTime);
+      cdEl.style.display = "none";
+    };
 
     clearInterval(self.countdownTimer);
     self.countdownTimer = setInterval(function(){
@@ -6923,12 +6934,28 @@ var WatchParty = {
         numEl.textContent = count;
       } else if(count === 0){
         numEl.textContent = "🍿";
-        if(subEl) subEl.textContent = "İyi Seyirler!";
+        if(subEl){
+          subEl.innerHTML = '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px">İyi Seyirler!</div>' +
+            '<button class="tauruss-party-start-now-btn" id="tfStartNowBtn">▶ OYNATMAYI BAŞLAT</button>' +
+            '<div style="font-size:11.5px;color:#94a3b8;margin-top:8px">Otomatik başlamadıysa butona tıklayın</div>';
+        }
+
+        var startBtn = el("tfStartNowBtn");
+        if(startBtn){
+          startBtn.onclick = function(e){
+            e.stopPropagation();
+            TaurussLearning.playVideo();
+            if(typeof targetTime === "number") TaurussLearning.jumpToTime(targetTime);
+            cdEl.style.display = "none";
+          };
+        }
+
         if(typeof targetTime === "number") TaurussLearning.jumpToTime(targetTime);
-        setTimeout(function(){
-          TaurussLearning.playVideo();
-        }, 120);
-      } else {
+        TaurussLearning.playVideo();
+        setTimeout(function(){ TaurussLearning.playVideo(); }, 250);
+        setTimeout(function(){ TaurussLearning.playVideo(); }, 600);
+        setTimeout(function(){ TaurussLearning.playVideo(); }, 1200);
+      } else if(count <= -2){
         clearInterval(self.countdownTimer);
         cdEl.style.display = "none";
       }
@@ -6937,6 +6964,12 @@ var WatchParty = {
 
   onLocalPlaybackStatus: function(d){
     if(!this.active) return;
+    if(!d.paused){
+      var cdEl = el("tfPartyCountdown");
+      if(cdEl && cdEl.style.display !== "none"){
+        cdEl.style.display = "none";
+      }
+    }
     if(Date.now() < this.suppressBroadcastUntil) return;
 
     if(d.isSeek){

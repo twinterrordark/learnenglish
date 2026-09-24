@@ -4,12 +4,16 @@
   "version": "1.0.0",
   "description": "VidFast İngilizce altyazılarını yerel öğrenme paneline aktarır.",
   "host_permissions": [
+    "https://*.vidfast.pro/*",
+    "https://*.vidfast.vc/*",
     "https://vidfast.pro/*",
     "https://vidfast.vc/*"
   ],
   "content_scripts": [
     {
       "matches": [
+        "https://*.vidfast.pro/*",
+        "https://*.vidfast.vc/*",
         "https://vidfast.pro/*",
         "https://vidfast.vc/*"
       ],
