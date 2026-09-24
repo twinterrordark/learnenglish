@@ -7,7 +7,8 @@
   var lastReady = 0;
   var lastTimeSent = 0;
   var activeLangState = "en"; // "en", "tr", "off"
-  var injectedTracks = { en: null, tr: null };
+  var overlayEl = null;
+  var storedCues = { en: [], tr: [] };
 
   function send(type, data) {
     try {
@@ -20,6 +21,67 @@
     if (/(^|[^a-z])(tr|tur|turkish|türkçe)([^a-z]|$)/.test(val)) return "tr";
     if (/(^|[^a-z])(en|eng|english|ingilizce)([^a-z]|$)/.test(val)) return "en";
     return val || "en";
+  }
+
+  function findVideo() {
+    var v = document.querySelector("video");
+    if (v) return v;
+    var allV = document.querySelectorAll("video");
+    if (allV && allV.length) return allV[0];
+
+    // Check iframes
+    var iframes = document.querySelectorAll("iframe");
+    for (var i = 0; i < iframes.length; i++) {
+      try {
+        var doc = iframes[i].contentDocument || (iframes[i].contentWindow && iframes[i].contentWindow.document);
+        if (doc) {
+          var subV = doc.querySelector("video");
+          if (subV) return subV;
+        }
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  function getOrCreateOverlay(video) {
+    if (overlayEl && overlayEl.isConnected) return overlayEl;
+    overlayEl = document.getElementById("learnenglish-inplayer-overlay");
+    if (overlayEl) return overlayEl;
+
+    overlayEl = document.createElement("div");
+    overlayEl.id = "learnenglish-inplayer-overlay";
+    overlayEl.style.cssText = "position:absolute;bottom:44px;left:50%;transform:translateX(-50%);max-width:88%;text-align:center;pointer-events:none;z-index:2147483647;display:none;transition:opacity .15s;";
+
+    var inner = document.createElement("div");
+    inner.id = "learnenglish-inplayer-text";
+    inner.style.cssText = "display:inline-block;background:rgba(0,0,0,0.82);color:#ffffff;font-size:22px;font-weight:700;line-height:1.4;padding:6px 16px;border-radius:8px;text-shadow:0 2px 4px rgba(0,0,0,0.9);box-shadow:0 4px 12px rgba(0,0,0,0.6);font-family:sans-serif;";
+    overlayEl.appendChild(inner);
+
+    var parent = (video && video.parentElement) || document.body;
+    try {
+      if (getComputedStyle(parent).position === "static") {
+        parent.style.position = "relative";
+      }
+      parent.appendChild(overlayEl);
+    } catch (_) {
+      document.body.appendChild(overlayEl);
+    }
+    return overlayEl;
+  }
+
+  function updateOverlayText(text) {
+    var v = findVideo();
+    var ov = getOrCreateOverlay(v);
+    var txtEl = document.getElementById("learnenglish-inplayer-text");
+    if (!ov || !txtEl) return;
+
+    var clean = String(text || "").trim();
+    if (clean && activeLangState !== "off") {
+      txtEl.textContent = clean;
+      ov.style.display = "block";
+    } else {
+      ov.style.display = "none";
+    }
   }
 
   function emit(video, track, cue) {
@@ -42,30 +104,46 @@
       end: Number(cue.endTime) || start + 2,
       currentTime: Number(video.currentTime) || start
     });
+
+    if (lang === activeLangState) {
+      updateOverlayText(text);
+    }
   }
 
   function setTrackModes(video, desiredLang) {
     activeLangState = desiredLang;
+    if (desiredLang === "off") {
+      updateOverlayText("");
+    }
+
+    if (!video) video = findVideo();
+    if (!video) return;
+
     var tracks = video.textTracks;
-    if (!tracks) return;
-    for (var i = 0; i < tracks.length; i++) {
-      var t = tracks[i];
-      var tLang = getLang(t);
-      if (desiredLang === "off") {
-        t.mode = "disabled";
-      } else if (tLang === desiredLang) {
-        t.mode = "showing";
-      } else {
-        t.mode = "disabled";
+    if (tracks) {
+      for (var i = 0; i < tracks.length; i++) {
+        var t = tracks[i];
+        var tLang = getLang(t);
+        if (desiredLang === "off") {
+          t.mode = "disabled";
+        } else if (tLang === desiredLang) {
+          t.mode = "showing";
+        } else {
+          t.mode = "disabled";
+        }
       }
     }
     send("TRACK_CHANGED", { activeLang: desiredLang });
   }
 
   function injectSubtitles(video, data) {
+    if (!video) video = findVideo();
     if (!video || !data) return;
 
-    // Remove existing injected tracks
+    storedCues.en = data.enCues || [];
+    storedCues.tr = data.trCues || [];
+
+    // Remove old tracks
     var existingDomTracks = video.querySelectorAll("track[data-injected='learnenglish']");
     for (var d = 0; d < existingDomTracks.length; d++) {
       existingDomTracks[d].remove();
@@ -85,7 +163,6 @@
             enCount++;
           }
         }
-        injectedTracks.en = enTrack;
       } catch (err) {
         console.warn("[VidFast Bridge] addTextTrack EN error:", err);
       }
@@ -115,7 +192,6 @@
             trCount++;
           }
         }
-        injectedTracks.tr = trTrack;
       } catch (err) {
         console.warn("[VidFast Bridge] addTextTrack TR error:", err);
       }
@@ -134,7 +210,6 @@
       }
     }
 
-    // Set initial active mode
     setTrackModes(video, data.activeLang || "en");
 
     send("INJECT_SUCCESS", {
@@ -149,30 +224,73 @@
     var d = event.data;
     if (!d || d.source !== "learnenglish-app") return;
 
-    var video = document.querySelector("video");
-    if (!video) return;
+    // Forward down to all nested child iframes
+    for (var fi = 0; fi < window.frames.length; fi++) {
+      try {
+        window.frames[fi].postMessage(d, "*");
+      } catch (_) {}
+    }
+
+    var video = findVideo();
+
+    if (d.type === "SEEK") {
+      var targetTime = Number(d.time);
+      if (Number.isFinite(targetTime)) {
+        if (video) {
+          video.currentTime = targetTime;
+          try { video.dispatchEvent(new Event("seeked")); } catch (_) {}
+          try { video.dispatchEvent(new Event("timeupdate")); } catch (_) {}
+        }
+        try {
+          if (window.player && typeof window.player.seek === "function") window.player.seek(targetTime);
+          if (window.art && typeof window.art.seek === "function") window.art.seek = targetTime;
+          if (window.dp && typeof window.dp.seek === "function") window.dp.seek(targetTime);
+        } catch (_) {}
+      }
+      return;
+    }
 
     if (d.type === "INJECT_SUBTITLES") {
       injectSubtitles(video, d);
     } else if (d.type === "SELECT_TRACK") {
       setTrackModes(video, d.lang || "en");
-    } else if (d.type === "SEEK") {
-      if (Number.isFinite(d.time)) {
-        video.currentTime = d.time;
-      }
+    } else if (d.type === "RENDER_CUE") {
+      updateOverlayText(d.text || "");
     }
   });
+
+  function syncInPlayerOverlay(time) {
+    if (activeLangState === "off") {
+      updateOverlayText("");
+      return;
+    }
+    var list = activeLangState === "tr" ? storedCues.tr : storedCues.en;
+    if (!list || !list.length) return;
+
+    for (var i = 0; i < list.length; i++) {
+      if (time >= list[i].start && time <= list[i].end) {
+        updateOverlayText(list[i].text);
+        return;
+      }
+    }
+    updateOverlayText("");
+  }
 
   function attachVideo(video) {
     if (attached.has(video)) return;
     attached.add(video);
 
+    getOrCreateOverlay(video);
+
     video.addEventListener("timeupdate", function () {
       var now = Date.now();
-      if (now - lastTimeSent > 220) {
+      var t = Number(video.currentTime) || 0;
+      syncInPlayerOverlay(t);
+
+      if (now - lastTimeSent > 200) {
         lastTimeSent = now;
         send("TIME_UPDATE", {
-          currentTime: Number(video.currentTime) || 0,
+          currentTime: t,
           duration: Number(video.duration) || 0,
           paused: Boolean(video.paused)
         });
@@ -189,13 +307,13 @@
   }
 
   function inspect() {
-    var video = document.querySelector("video");
+    var video = findVideo();
     if (!video) return;
 
     attachVideo(video);
 
     var now = Date.now();
-    if (now - lastReady > 4000) {
+    if (now - lastReady > 3500) {
       lastReady = now;
       send("READY", {
         currentTime: Number(video.currentTime) || 0,
@@ -227,5 +345,5 @@
   }
 
   inspect();
-  window.setInterval(inspect, 300);
+  window.setInterval(inspect, 280);
 })();

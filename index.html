@@ -711,6 +711,9 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
 .tauruss-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line)}
 .tauruss-toolbar strong{font-size:13px;display:flex;align-items:center;gap:6px}
 .tauruss-toolbar span{font-size:11.5px;color:var(--muted)}
+.tauruss-frame-container{position:relative;width:100%;background:#05070a}
+.tauruss-video-overlay{position:absolute;bottom:42px;left:50%;transform:translateX(-50%);max-width:88%;text-align:center;pointer-events:none;z-index:25;display:none;transition:opacity .15s}
+.tauruss-video-sub-text{display:inline-block;background:rgba(0,0,0,.84);color:#ffffff;font-size:1.42rem;font-weight:700;line-height:1.42;padding:6px 18px;border-radius:10px;text-shadow:0 2px 4px rgba(0,0,0,.95),0 0 2px #000;box-shadow:0 4px 18px rgba(0,0,0,.7);letter-spacing:.2px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
 
 /* CINEMA MODE: FULL WIDTH & LARGE SCREEN */
 .tauruss-learning-layout.cinema-mode{display:flex;flex-direction:column;gap:14px;width:100%}
@@ -5115,7 +5118,10 @@ function showTaurussCatalog(){
           '<div><strong id="taurussPlayerLabel">⚡ VidFast Player · Geniş Ekran</strong><br><span id="taurussPlayerSub">Interstellar (tt0816692) yüklendi</span></div>' +
           '<a class="ytstudy-external" id="taurussExtLink" href="https://vidfast.vc/movie/tt0816692" target="_blank" rel="noopener noreferrer">Yeni sekmede aç ↗</a>' +
         '</div>' +
-        '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidfast.vc/movie/tt0816692" title="VidFast Film Player" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
+        '<div class="tauruss-frame-container">' +
+          '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidfast.vc/movie/tt0816692" title="VidFast Film Player" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
+          '<div class="tauruss-video-overlay" id="taurussVideoOverlay"><span class="tauruss-video-sub-text" id="videoSubText"></span></div>' +
+        '</div>' +
       '</section>' +
 
       '<section class="tauruss-spotlight" id="taurussSpotlight" aria-label="Canlı Çift Altyazı">' +
@@ -5574,6 +5580,28 @@ var TaurussLearning = {
       });
   },
 
+  findBestMatchingCue: function(targetCues, start, end){
+    if(!targetCues || !targetCues.length) return null;
+    var best = null;
+    var maxOverlap = -999;
+    var minDiff = 999;
+    for(var i = 0; i < targetCues.length; i++){
+      var tc = targetCues[i];
+      var overlap = Math.min(end, tc.end) - Math.max(start, tc.start);
+      if(overlap > 0 && overlap > maxOverlap){
+        maxOverlap = overlap;
+        best = tc;
+      } else if(maxOverlap <= 0){
+        var diff = Math.abs(start - tc.start);
+        if(diff < 2.5 && diff < minDiff){
+          minDiff = diff;
+          best = tc;
+        }
+      }
+    }
+    return best;
+  },
+
   buildCombinedCues: function(){
     var self = this;
     var combined = [];
@@ -5581,13 +5609,17 @@ var TaurussLearning = {
 
     for (var i = 0; i < baseCues.length; i++) {
       var c = baseCues[i];
-      var enText = self.enCues.length ? c.text : "";
-      var trText = self.trCues.length ? (self.enCues.length ? "" : c.text) : "";
+      var enText = "";
+      var trText = "";
 
-      // Match Turkish counterpart by timeframe if both exist
       if(self.enCues.length && self.trCues.length){
-        var trMatch = self.findCue(self.trCues, c.start + 0.3);
+        enText = c.text;
+        var trMatch = self.findBestMatchingCue(self.trCues, c.start, c.end);
         if(trMatch) trText = trMatch.text;
+      } else if(self.enCues.length){
+        enText = c.text;
+      } else if(self.trCues.length){
+        trText = c.text;
       }
 
       combined.push({
@@ -5643,9 +5675,9 @@ var TaurussLearning = {
     var items = self.combinedCues.slice(0, 400); // Initial window
     var html = items.map(function(item){
       return '<article class="tauruss-cue" data-idx="' + item.id + '" data-start="' + item.start + '" onclick="TaurussLearning.jumpToTime(' + item.start + ')">' +
-        '<div class="tauruss-cue-en">' + (item.en ? self.formatClickableWords(item.en) : '<em>İngilizce hazırlanıyor…</em>') + '</div>' +
-        '<div class="tauruss-cue-tr">' + (item.tr ? item.tr : '<em>Türkçe çeviri hazırlanıyor…</em>') + '</div>' +
-        '<div class="tauruss-cue-time"><span>' + self.formatTime(item.start) + '</span><span style="opacity:.6">Oynatmak için tıkla ↗</span></div>' +
+        '<div class="tauruss-cue-en">' + (item.en ? self.formatClickableWords(item.en) : '<em>İngilizce diyalog</em>') + '</div>' +
+        '<div class="tauruss-cue-tr">' + (item.tr ? item.tr : '<em>Türkçe çeviri</em>') + '</div>' +
+        '<div class="tauruss-cue-time"><span>' + self.formatTime(item.start) + '</span><span style="opacity:.7">Tıkla ve o saniyeye git ↗</span></div>' +
       '</article>';
     }).join("");
 
@@ -5656,14 +5688,15 @@ var TaurussLearning = {
   jumpToTime: function(sec){
     var frame = el("taurussFrame");
     if(frame && frame.contentWindow){
+      var msg = { source: "learnenglish-app", type: "SEEK", time: sec };
       try {
-        frame.contentWindow.postMessage({
-          source: "learnenglish-app",
-          type: "SEEK",
-          time: sec
-        }, "*");
+        frame.contentWindow.postMessage(msg, "*");
+        for(var i = 0; i < frame.contentWindow.frames.length; i++){
+          try { frame.contentWindow.frames[i].postMessage(msg, "*"); } catch(_) {}
+        }
       } catch(_) {}
     }
+    this.syncOffset = 0.0;
     this.onTimeUpdate(sec);
   },
 
@@ -5680,11 +5713,17 @@ var TaurussLearning = {
       }
     }
 
-    if(activeIdx !== -1 && activeIdx !== this.currentCueIdx){
-      this.currentCueIdx = activeIdx;
-      var cue = this.combinedCues[activeIdx];
-      this.displayCuePair(cue);
-      this.highlightActiveRow(cue.id);
+    if(activeIdx !== -1){
+      if(activeIdx !== this.currentCueIdx){
+        this.currentCueIdx = activeIdx;
+        var cue = this.combinedCues[activeIdx];
+        this.displayCuePair(cue);
+        this.highlightActiveRow(cue.id);
+      }
+    } else {
+      this.currentCueIdx = -1;
+      var ov = el("taurussVideoOverlay");
+      if(ov) ov.style.display = "none";
     }
   },
 
@@ -5692,45 +5731,76 @@ var TaurussLearning = {
     var self = this;
     var spotPrimary = el("taurussSpotPrimary");
     var spotCounterpart = el("taurussSpotCounterpart");
-    if(!spotPrimary || !spotCounterpart) return;
+    var videoSubText = el("videoSubText");
+    var videoOverlay = el("taurussVideoOverlay");
+
+    var onVideoText = "";
 
     if(this.activeSubLang === "tr"){
-      // Player shows Turkish.
-      // Right panel & Spotlight shows English second-by-second!
-      if(cue.tr){
-        spotPrimary.textContent = cue.tr;
-      } else {
-        self.asyncTranslate(cue.en, function(trVal){
-          cue.tr = trVal;
-          if(spotPrimary.isConnected) spotPrimary.textContent = trVal;
+      // Player / on-screen shows Turkish.
+      var trText = cue.tr || "";
+      if(!trText && cue.en){
+        self.asyncTranslate(cue.en, function(val){
+          cue.tr = val;
+          if(spotPrimary && spotPrimary.isConnected) spotPrimary.textContent = val;
+          if(videoSubText && videoSubText.isConnected && self.activeSubLang === "tr") {
+            videoSubText.textContent = val;
+            if(videoOverlay) videoOverlay.style.display = val ? "block" : "none";
+          }
         });
       }
+      onVideoText = trText;
+      if(spotPrimary) spotPrimary.textContent = trText || (cue.en ? "..." : "");
 
-      if(cue.en){
-        spotCounterpart.innerHTML = '<strong>🇬🇧 İngilizce (Saniye Saniye):</strong> ' + self.formatClickableWords(cue.en);
-      } else {
-        self.asyncTranslate(cue.tr, function(enVal){
-          cue.en = enVal;
-          if(spotCounterpart.isConnected) spotCounterpart.innerHTML = '<strong>🇬🇧 İngilizce (Saniye Saniye):</strong> ' + self.formatClickableWords(enVal);
+      var enText = cue.en || "";
+      if(spotCounterpart){
+        spotCounterpart.innerHTML = '<strong>🇬🇧 İngilizce (Saniye Saniye):</strong> ' + (enText ? self.formatClickableWords(enText) : '<em>...</em>');
+      }
+    } else if(this.activeSubLang === "en"){
+      // Player / on-screen shows English.
+      var enText = cue.en || "";
+      onVideoText = enText;
+      if(spotPrimary) spotPrimary.innerHTML = enText ? self.formatClickableWords(enText) : (cue.tr || "");
+
+      var trText = cue.tr || "";
+      if(!trText && cue.en){
+        self.asyncTranslate(cue.en, function(val){
+          cue.tr = val;
+          if(spotCounterpart && spotCounterpart.isConnected) {
+            spotCounterpart.innerHTML = '<strong>🇹🇷 Türkçe (Saniye Saniye):</strong> ' + val;
+          }
         });
+      } else if(spotCounterpart){
+        spotCounterpart.innerHTML = '<strong>🇹🇷 Türkçe (Saniye Saniye):</strong> ' + (trText || '<em>...</em>');
       }
     } else {
-      // Player shows English (or off).
-      // Right panel & Spotlight shows Turkish second-by-second!
-      if(cue.en){
-        spotPrimary.innerHTML = self.formatClickableWords(cue.en);
-      } else {
-        spotPrimary.textContent = cue.tr || "";
-      }
+      // Off
+      onVideoText = "";
+      if(spotPrimary) spotPrimary.textContent = cue.en || cue.tr || "";
+      if(spotCounterpart) spotCounterpart.innerHTML = '<strong>Diyalog:</strong> ' + (cue.tr || cue.en || "");
+    }
 
-      if(cue.tr){
-        spotCounterpart.innerHTML = '<strong>🇹🇷 Türkçe (Saniye Saniye):</strong> ' + cue.tr;
-      } else if(cue.en){
-        self.asyncTranslate(cue.en, function(trVal){
-          cue.tr = trVal;
-          if(spotCounterpart.isConnected) spotCounterpart.innerHTML = '<strong>🇹🇷 Türkçe (Saniye Saniye):</strong> ' + trVal;
-        });
+    // Update on-screen video overlay
+    if(videoSubText && videoOverlay){
+      var cleanOnVideo = String(onVideoText || "").trim();
+      if(cleanOnVideo && this.activeSubLang !== "off"){
+        videoSubText.textContent = cleanOnVideo;
+        videoOverlay.style.display = "block";
+      } else {
+        videoOverlay.style.display = "none";
       }
+    }
+
+    // Forward to extension in-player overlay as well
+    var frame = el("taurussFrame");
+    if(frame && frame.contentWindow){
+      try {
+        frame.contentWindow.postMessage({
+          source: "learnenglish-app",
+          type: "RENDER_CUE",
+          text: onVideoText
+        }, "*");
+      } catch(_) {}
     }
   },
 
