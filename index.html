@@ -632,6 +632,17 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
   box-shadow:0 8px 24px rgba(79,70,229,.4);display:none;align-items:center;gap:6px;font-size:14.5px;
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .fab:active{transform:scale(.95)}
+.ytstudy-hero{background:linear-gradient(125deg,#17192b,#26244a 55%,#173d3a);color:#fff;border-radius:20px;padding:24px;margin-bottom:16px}
+.ytstudy-hero h1{font-size:clamp(24px,5vw,34px);margin:0 0 8px}.ytstudy-hero p{color:#d5d8e6;margin:0 0 16px}
+.ytstudy-form{display:flex;gap:8px}.ytstudy-form input{flex:1;min-width:0;padding:12px;border-radius:10px;border:1px solid #ffffff35;background:#10121dcc;color:#fff}
+.ytstudy-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(240px,.8fr);gap:14px}
+.ytstudy-player-card,.ytstudy-sidecard{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ytstudy-player{aspect-ratio:16/9;background:#08090d;position:relative;min-height:220px}.ytstudy-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ytstudy-player-meta{padding:12px 14px;display:flex;justify-content:space-between;gap:12px}.ytstudy-sidecard{padding:16px}
+.ytstudy-lang-row{display:flex;gap:8px;margin:12px 0}.ytstudy-lang{flex:1;padding:9px;border:1px solid var(--line);background:var(--surface2);border-radius:9px;font-weight:700}
+.ytstudy-lang.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.ytstudy-note,.ytstudy-error{margin-top:10px;padding:10px;border-radius:9px;background:var(--surface2);font-size:12px;line-height:1.5;color:var(--muted)}.ytstudy-error{color:var(--err)}
+@media(max-width:800px){.ytstudy-grid{grid-template-columns:1fr}.ytstudy-form{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -663,6 +674,7 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
     <button class="nav-special" id="examBtn" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">🎓 &nbsp;Genel Değerlendirme (24 soru)</button>
     <button class="nav-special" id="vocabBtn" style="background:linear-gradient(135deg,#0891b2,#0d9488)">📚 &nbsp;Kelime Hazinesi</button>
     <button class="nav-special" id="listenBtn" style="background:linear-gradient(135deg,#e11d48,#f97316)">🎧 &nbsp;Dinleme Pratiği</button>
+    <button class="nav-special" id="ytStudyBtn" style="background:linear-gradient(135deg,#6366f1,#0d9488)">▶ &nbsp;YouTube ile İzle</button>
     <button class="nav-special" id="chatBtn" style="background:linear-gradient(135deg,#475569,#1e293b)">💬 &nbsp;Sohbet</button>
     <div id="navList"></div>
   </nav>
@@ -2990,6 +3002,9 @@ function showHome(){
   h += '<button class="node-card" data-go="__chat" style="border-color:#475569">'+
        '<span class="badge" style="background:rgba(71,85,105,.15);color:#334155">TOPLULUK</span>'+
        '<h4>💬 Sohbet</h4><p>Sunucu açıkken 20 kişiye kadar canlı yazışma — telefondan da rahat</p></button>';
+  h += '<button class="node-card" data-go="__ytstudy" style="border-color:#6366f1">'+
+       '<span class="badge" style="background:rgba(99,102,241,.15);color:#6366f1">YOUTUBE</span>'+
+       '<h4>▶ YouTube ile İzle</h4><p>YouTube bağlantısı ekle, desteklenen altyazıları seçerek izle</p></button>';
   h += '<button class="node-card" data-go="__listen" style="border-color:#f97316">'+
        '<span class="badge" style="background:rgba(249,115,22,.15);color:#ea580c">DİNLEME</span>'+
        '<h4>🎧 Dinleme Pratiği</h4><p>Her konu için YouTube video listesi — kendi videolarını da ekleyebilirsin</p></button>';
@@ -4860,6 +4875,39 @@ function examResult(){
 /* ---------- Dinleme merkezi: bütün konuların video sayıları ---------- */
 function showListenHub(){
   current = null; closeNav();
+var YTSTUDY={player:null,videoId:"",language:"en",pending:null,apiLoading:false};
+function ytStudyParse(raw){
+  var value=String(raw||"").trim();if(!value)return null;if(/^[\w-]{11}$/.test(value))return{id:value,start:0};
+  if(!/^[a-z][a-z0-9+.-]*:\/\//i.test(value))value="https://"+value;
+  try{var u=new URL(value),host=u.hostname.toLowerCase().replace(/^www\./,"").replace(/^m\./,"");
+    if(host!=="youtube.com"&&host!=="youtu.be"&&host!=="youtube-nocookie.com")return null;
+    var id=host==="youtu.be"?u.pathname.split("/").filter(Boolean)[0]:u.searchParams.get("v");
+    if(!id){var parts=u.pathname.split("/").filter(Boolean);if(parts.length>1&&["embed","shorts","live","v"].indexOf(parts[0])>=0)id=parts[1];}
+    if(!id||! /^[\w-]{11}$/.test(id))return null;
+    var t=u.searchParams.get("start")||u.searchParams.get("t")||"",start=/^\d+$/.test(t)?Number(t):0;
+    if(!start&&t){var m,re=/(\d+)(h|m|s)/g;while((m=re.exec(t)))start+=Number(m[1])*(m[2]==="h"?3600:m[2]==="m"?60:1);}
+    return{id:id,start:start};
+  }catch(e){return null;}
+}
+function ytStudyApi(ready){
+  if(window.YT&&window.YT.Player){ready();return;}YTSTUDY.pending=ready;if(YTSTUDY.apiLoading)return;YTSTUDY.apiLoading=true;
+  var prev=window.onYouTubeIframeAPIReady;window.onYouTubeIframeAPIReady=function(){YTSTUDY.apiLoading=false;if(typeof prev==="function")try{prev();}catch(e){}var run=YTSTUDY.pending;YTSTUDY.pending=null;if(run)run();};
+  var script=document.createElement("script");script.src="https://www.youtube.com/iframe_api";script.onerror=function(){YTSTUDY.apiLoading=false;var n=el("ytStudyHelp");if(n)n.textContent="YouTube oynatıcı yüklenemedi; internet bağlantını kontrol et.";};document.head.appendChild(script);
+}
+function ytStudyMount(id,language,startAt){
+  YTSTUDY.videoId=id;YTSTUDY.language=language;ytStudyApi(function(){var target=el("ytStudyPlayer");if(!target)return;
+    if(YTSTUDY.player&&YTSTUDY.player.destroy)try{YTSTUDY.player.destroy();}catch(e){}target.innerHTML="";
+    var vars={playsinline:1,cc_load_policy:1,cc_lang_pref:language,hl:"tr",rel:0,enablejsapi:1};if(startAt>0)vars.start=Math.floor(startAt);if(location.origin&&location.origin!=="null")vars.origin=location.origin;
+    YTSTUDY.player=new YT.Player(target,{width:"100%",height:"100%",videoId:id,playerVars:vars,events:{onReady:function(){var n=el("ytStudyHelp");if(n)n.textContent=language==="tr"?"Türkçe altyazı varsa oynatıcıda gösterilir; dili ⚙ menüsünden değiştirebilirsin.":"İngilizce altyazı varsa CC düğmesinden açabilirsin.";},onError:function(e){var n=el("ytStudyHelp");if(n)n.textContent=(e.data===101||e.data===150)?"Bu video gömülü oynatmaya kapalı; YouTube'da aç.":"Video oynatılamadı; bağlantıyı ve kullanılabilirliğini kontrol et.";}}});
+  });
+}
+function showYouTubeStudy(initialUrl){
+  current=null;closeNav();var initial=esc(initialUrl||"").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  main.innerHTML='<section class="ytstudy-hero"><div class="crumb" style="color:#c7c9ff">YOUTUBE · İNGİLİZCE ÖĞRENME</div><h1>Sevdiğin videolarla İngilizce öğren.</h1><p>YouTube bağlantını ekle. Video burada açılır; varsa İngilizce veya Türkçe altyazıyı oynatıcıdan seçebilirsin.</p><form class="ytstudy-form" id="ytStudyForm"><input id="ytStudyUrl" type="url" placeholder="YouTube video bağlantısını yapıştır" value="'+initial+'" autocomplete="url"><button class="btn primary" type="submit">▶ Videoyu aç</button></form><div class="ytstudy-error" id="ytStudyError" hidden></div></section><div class="ytstudy-grid"><section class="ytstudy-player-card"><div class="ytstudy-player" id="ytStudyPlayer"><div class="ytstudy-placeholder"><b>YouTube bağlantını ekleyerek başla</b></div></div><div class="ytstudy-player-meta"><span id="ytStudyTitle">Henüz video seçilmedi</span><a id="ytStudyExternal" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">YouTube ↗</a></div></section><aside class="ytstudy-sidecard"><div class="crumb">ALTYAZI DİLİ</div><h3>İzlerken takip et</h3><p>Altyazıyı oynatıcının CC düğmesinden aç. Dil seçimi yalnızca videoda bulunan altyazılara bağlıdır.</p><div class="ytstudy-lang-row"><button class="ytstudy-lang active" id="ytStudyEn">🇬🇧 English</button><button class="ytstudy-lang" id="ytStudyTr">🇹🇷 Türkçe</button></div><div class="ytstudy-note" id="ytStudyHelp">Altyazı desteği videoya göre değişir.</div></aside></div>';
+  el("ytStudyForm").onsubmit=function(e){e.preventDefault();var r=ytStudyParse(el("ytStudyUrl").value),error=el("ytStudyError");if(!r){error.hidden=false;error.textContent="Geçerli bir YouTube video bağlantısı gir.";return;}error.hidden=true;el("ytStudyTitle").textContent="YouTube videosu";el("ytStudyExternal").href="https://www.youtube.com/watch?v="+r.id;ytStudyMount(r.id,YTSTUDY.language,r.start);};
+  el("ytStudyEn").onclick=function(){ytStudyChooseLanguage("en");};el("ytStudyTr").onclick=function(){ytStudyChooseLanguage("tr");};if(initial)el("ytStudyForm").requestSubmit();window.scrollTo(0,0);fab.style.display="none";buildNav(el("search").value);
+}
+function ytStudyChooseLanguage(language){if(!YTSTUDY.videoId){YTSTUDY.language=language;el("ytStudyEn").classList.toggle("active",language==="en");el("ytStudyTr").classList.toggle("active",language==="tr");return;}var start=0;if(YTSTUDY.player&&YTSTUDY.player.getCurrentTime)try{start=YTSTUDY.player.getCurrentTime()||0;}catch(e){}el("ytStudyEn").classList.toggle("active",language==="en");el("ytStudyTr").classList.toggle("active",language==="tr");ytStudyMount(YTSTUDY.videoId,language,start);}
   var total = 0;
   T.forEach(function(t){ total += allVids(t.id).length; });
   var allV = getAllTopicVideos();
@@ -5575,6 +5623,7 @@ function go(id){
   else if(id === "__exam") showExam(true);
   else if(id === "__listen") showListenHub();
   else if(id === "__chat") showChat();
+  else if(id === "__ytstudy") showYouTubeStudy();
   else if(id === "__vocab") showVocab("list");
   else showTopic(id);
 }
@@ -5598,6 +5647,7 @@ el("writeBtn").onclick = function(){ showWriting(); };
 el("search").addEventListener("input", function(){ buildNav(this.value); });
 window.addEventListener("resize", function(){
   if(window.innerWidth > 900){
+el("ytStudyBtn").onclick = function(){ showYouTubeStudy(); };
     closeNav();
     if(fab) fab.style.display = "none";
   } else if(current && fab){
