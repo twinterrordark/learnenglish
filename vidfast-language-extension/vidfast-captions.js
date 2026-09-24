@@ -3,13 +3,13 @@
   if (!/^(vidfast\.pro|vidfast\.vc)$/.test(location.hostname)) return;
 
   var attachedVideos = new WeakSet();
-  var readyVideos = new WeakSet();
   var lastTimeSent = 0;
   var activeLangState = "en"; // "en", "tr", "off"
   var enCues = [];
   var trCues = [];
   var syncOffset = 0.0;
   var overlayEl = null;
+  var overlayTxtEl = null;
 
   function send(type, data) {
     try {
@@ -23,7 +23,6 @@
     var allV = document.querySelectorAll("video");
     if (allV && allV.length) return allV[0];
 
-    // Check accessible iframes
     var iframes = document.querySelectorAll("iframe");
     for (var i = 0; i < iframes.length; i++) {
       try {
@@ -37,65 +36,39 @@
     return null;
   }
 
-  function disableAllNativeTracks(video) {
-    if (!video) return;
-    try {
-      if (video.textTracks) {
-        for (var i = 0; i < video.textTracks.length; i++) {
-          video.textTracks[i].mode = "disabled";
-        }
-      }
-      var domTracks = video.querySelectorAll("track");
-      for (var j = 0; j < domTracks.length; j++) {
-        domTracks[j].remove();
-      }
-    } catch (_) {}
-  }
-
   function getOrCreateOverlay(video) {
     if (overlayEl && overlayEl.isConnected) return overlayEl;
-    overlayEl = document.getElementById("vidfast-learnenglish-subtitle-overlay");
-    if (overlayEl) return overlayEl;
+    overlayEl = document.getElementById("learnenglish-inplayer-overlay");
+    if (overlayEl) {
+      overlayTxtEl = document.getElementById("learnenglish-inplayer-text");
+      return overlayEl;
+    }
 
     overlayEl = document.createElement("div");
-    overlayEl.id = "vidfast-learnenglish-subtitle-overlay";
-    overlayEl.style.cssText = [
-      "position: absolute",
-      "bottom: 50px",
-      "left: 50%",
-      "transform: translateX(-50%)",
-      "z-index: 2147483647",
-      "max-width: 86%",
-      "text-align: center",
-      "pointer-events: none",
-      "user-select: none",
-      "font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-      "font-size: 22px",
-      "font-weight: 700",
-      "line-height: 1.35",
-      "color: #ffffff",
-      "text-shadow: 0 0 3px #000, 0 1px 2px #000, 0 2px 4px #000, 0 0 8px rgba(0,0,0,0.9)",
-      "background: rgba(0, 0, 0, 0.72)",
-      "padding: 5px 14px",
-      "border-radius: 6px",
-      "display: none",
-      "box-sizing: border-box"
-    ].join("; ");
+    overlayEl.id = "learnenglish-inplayer-overlay";
+    overlayEl.style.cssText = "position:absolute;bottom:48px;left:50%;transform:translateX(-50%);max-width:88%;text-align:center;pointer-events:none;z-index:2147483647;display:none;transition:opacity .12s;";
 
-    var targetContainer = (video && video.parentElement) || document.body;
+    overlayTxtEl = document.createElement("div");
+    overlayTxtEl.id = "learnenglish-inplayer-text";
+    overlayTxtEl.style.cssText = "display:inline-block;background:rgba(0,0,0,0.78);color:#ffffff;font-size:22px;font-weight:700;line-height:1.35;padding:5px 15px;border-radius:7px;text-shadow:0 0 3px #000, 0 1px 2px #000, 0 2px 4px #000;box-shadow:0 3px 10px rgba(0,0,0,0.5);font-family:system-ui,-apple-system,sans-serif;";
+    overlayEl.appendChild(overlayTxtEl);
+
+    var parent = (video && video.parentElement) || document.body;
     try {
-      var pos = window.getComputedStyle(targetContainer).position;
-      if (pos === "static") targetContainer.style.position = "relative";
-    } catch (_) {}
-
-    targetContainer.appendChild(overlayEl);
+      if (window.getComputedStyle(parent).position === "static") {
+        parent.style.position = "relative";
+      }
+      parent.appendChild(overlayEl);
+    } catch (_) {
+      document.body.appendChild(overlayEl);
+    }
     return overlayEl;
   }
 
   function hideOverlay() {
     if (overlayEl) {
-      overlayEl.textContent = "";
       overlayEl.style.display = "none";
+      if (overlayTxtEl) overlayTxtEl.textContent = "";
     }
   }
 
@@ -105,10 +78,10 @@
       hideOverlay();
       return;
     }
-    var ov = getOrCreateOverlay(video || findVideo());
-    if (ov) {
-      ov.textContent = clean;
-      ov.style.display = "block";
+    getOrCreateOverlay(video || findVideo());
+    if (overlayTxtEl && overlayEl) {
+      overlayTxtEl.textContent = clean;
+      overlayEl.style.display = "block";
     }
   }
 
@@ -140,15 +113,11 @@
     var d = event.data;
     if (!d || d.source !== "learnenglish-app") return;
 
-    // Forward down to all child iframes
     for (var fi = 0; fi < window.frames.length; fi++) {
-      try {
-        window.frames[fi].postMessage(d, "*");
-      } catch (_) {}
+      try { window.frames[fi].postMessage(d, "*"); } catch (_) {}
     }
 
     var video = findVideo();
-    disableAllNativeTracks(video);
 
     if (d.type === "SELECT_TRACK") {
       activeLangState = d.lang || "en";
@@ -190,12 +159,6 @@
       if (video) {
         updateOverlayForTime(Number(video.currentTime) || 0, video);
       }
-
-      send("INJECT_SUCCESS", {
-        enCount: enCues.length,
-        trCount: trCues.length,
-        activeLang: activeLangState
-      });
       return;
     }
 
@@ -222,17 +185,14 @@
     if (attachedVideos.has(video)) return;
     attachedVideos.add(video);
 
-    disableAllNativeTracks(video);
     getOrCreateOverlay(video);
 
     video.addEventListener("timeupdate", function () {
       var t = Number(video.currentTime) || 0;
       var now = Date.now();
 
-      // Update overlay dynamically on video time
       updateOverlayForTime(t, video);
 
-      // Report time to parent
       if (now - lastTimeSent > 200) {
         lastTimeSent = now;
         send("TIME_UPDATE", {
@@ -250,24 +210,19 @@
     video.addEventListener("pause", function () {
       send("PLAYBACK_STATUS", { paused: true, currentTime: Number(video.currentTime) || 0 });
     });
+
+    send("READY", {
+      currentTime: Number(video.currentTime) || 0,
+      paused: Boolean(video.paused)
+    });
   }
 
   function inspect() {
     var video = findVideo();
     if (!video) return;
-
     attachVideo(video);
-    disableAllNativeTracks(video);
-
-    if (!readyVideos.has(video)) {
-      readyVideos.add(video);
-      send("READY", {
-        currentTime: Number(video.currentTime) || 0,
-        paused: Boolean(video.paused)
-      });
-    }
   }
 
   inspect();
-  window.setInterval(inspect, 350);
+  window.setInterval(inspect, 400);
 })();
