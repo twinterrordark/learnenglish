@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#4f46e5">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>A2 İngilizce Gramer Haritası</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.5.0/mqtt.min.js"></script>
 <style>
 :root{
   --bg:#f6f7fb; --surface:#ffffff; --surface2:#f0f2f8; --text:#1b1f2e; --muted:#6b7280;
@@ -760,6 +761,85 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
 }
 .tauruss-frame{display:block;width:100%;height:calc(100vh - 220px);min-height:560px;border:0;background:#090a0d}
 @media(max-width:700px){.tauruss-frame{height:calc(100vh - 195px);min-height:480px}}
+
+/* ---------- WATCH PARTY (BİRLİKTE İZLE) STYLES ---------- */
+.tauruss-party-toggle-btn{background:linear-gradient(135deg,rgba(79,70,229,.15),rgba(13,148,136,.15));border-color:rgba(79,70,229,.35);color:var(--text)}
+.tauruss-party-toggle-btn:hover{border-color:var(--accent);background:var(--accent-soft)}
+.tauruss-party-toggle-btn.in-party{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(16,185,129,.4)}
+.tauruss-party-badge{background:rgba(255,255,255,.25);padding:2px 7px;border-radius:10px;font-size:10.5px;font-weight:800;letter-spacing:.3px;margin-left:4px}
+
+/* Countdown Overlay */
+.tauruss-party-countdown{position:absolute;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;pointer-events:none}
+.tauruss-countdown-num{font-size:88px;font-weight:900;color:#fff;text-shadow:0 0 30px rgba(79,70,229,.8),0 0 60px rgba(13,148,136,.6);animation:partyPop .8s cubic-bezier(.175,.885,.32,1.275) infinite;font-family:system-ui,-apple-system,sans-serif}
+.tauruss-countdown-sub{font-size:16px;font-weight:700;color:#cbd5e1;margin-top:10px;letter-spacing:.5px}
+@keyframes partyPop{0%{transform:scale(.5);opacity:0}40%{transform:scale(1.15);opacity:1}80%{transform:scale(1);opacity:1}100%{transform:scale(1.25);opacity:0}}
+
+/* Flying Reactions Layer */
+.tauruss-reactions-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:998}
+.tauruss-fly-emoji{position:absolute;bottom:20px;font-size:36px;user-select:none;animation:partyFly 2.2s cubic-bezier(.2,.8,.4,1) forwards;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}
+@keyframes partyFly{
+  0%{transform:translateY(0) scale(.5);opacity:0}
+  15%{opacity:1;transform:translateY(-20px) scale(1.3)}
+  70%{opacity:.95}
+  100%{transform:translateY(-340px) scale(1.6);opacity:0}
+}
+
+/* Watch Party Panel / Drawer */
+.tauruss-party-drawer{position:fixed;bottom:20px;right:20px;width:370px;max-width:calc(100vw - 30px);max-height:85vh;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 36px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.15);display:flex;flex-direction:column;overflow:hidden;z-index:2147483640;font-size:13px;animation:partySlideIn .2s ease-out}
+@keyframes partySlideIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.tauruss-party-header{padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.tauruss-party-header strong{font-size:14px;display:flex;align-items:center;gap:7px}
+.tauruss-party-close{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;cursor:pointer;font-size:16px;color:var(--muted);transition:.12s}
+.tauruss-party-close:hover{background:var(--line);color:var(--text)}
+
+.tauruss-party-body{padding:14px 16px;overflow-y:auto;display:flex;flex-direction:column;gap:13px;flex:1}
+.tauruss-party-tabs{display:flex;background:var(--surface2);padding:3px;border-radius:10px;border:1px solid var(--line);gap:4px}
+.tauruss-party-tab{flex:1;padding:6px;text-align:center;font-size:12px;font-weight:700;border-radius:7px;cursor:pointer;color:var(--muted);transition:.12s}
+.tauruss-party-tab.active{background:var(--accent);color:#fff}
+
+.tauruss-party-form{display:flex;flex-direction:column;gap:9px}
+.tauruss-party-input{width:100%;padding:9px 12px;border:1px solid var(--line);background:var(--surface2);color:var(--text);border-radius:9px;font-size:13px;outline:none}
+.tauruss-party-input:focus{border-color:var(--accent)}
+.tauruss-party-submit{padding:10px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;font-size:13px;cursor:pointer;border:none;transition:transform .12s,filter .12s}
+.tauruss-party-submit:hover{filter:brightness(1.1);transform:scale(1.01)}
+
+/* In-Room Active UI */
+.tauruss-room-card{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:11px 13px;display:flex;flex-direction:column;gap:8px}
+.tauruss-room-code-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tauruss-room-code-tag{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px;font-weight:800;color:var(--accent);letter-spacing:1px;background:var(--surface);padding:4px 9px;border-radius:7px;border:1px dashed var(--accent)}
+.tauruss-room-btn{padding:5px 9px;border-radius:7px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-size:11.5px;font-weight:700;cursor:pointer;transition:.12s}
+.tauruss-room-btn:hover{border-color:var(--accent);color:var(--accent)}
+.tauruss-room-btn.danger{color:var(--err);border-color:rgba(220,38,38,.3)}
+.tauruss-room-btn.danger:hover{background:var(--err-soft);border-color:var(--err)}
+
+.tauruss-ready-banner{background:linear-gradient(135deg,rgba(79,70,229,.1),rgba(13,148,136,.1));border:1px solid rgba(79,70,229,.25);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.tauruss-btn-ready{width:100%;padding:10px;border-radius:9px;font-weight:800;font-size:13.5px;cursor:pointer;border:none;transition:.15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.tauruss-btn-ready.not-ready{background:var(--surface2);border:1px solid var(--line);color:var(--text)}
+.tauruss-btn-ready.not-ready:hover{border-color:var(--accent)}
+.tauruss-btn-ready.ready{background:linear-gradient(135deg,#059669,#10b981);color:#fff;box-shadow:0 3px 10px rgba(16,185,129,.35)}
+.tauruss-btn-start{width:100%;padding:9px;border-radius:9px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-weight:800;font-size:13px;border:none;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.tauruss-btn-start:hover{filter:brightness(1.1);transform:scale(1.01)}
+
+.tauruss-members-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:flex;align-items:center;justify-content:space-between}
+.tauruss-members-list{display:flex;flex-direction:column;gap:6px;max-height:130px;overflow-y:auto}
+.tauruss-member-item{display:flex;align-items:center;justify-content:space-between;padding:6px 9px;border-radius:8px;background:var(--surface2);border:1px solid var(--line);font-size:12px}
+.tauruss-member-name{font-weight:700;display:flex;align-items:center;gap:6px}
+.tauruss-member-badge{padding:2px 6px;border-radius:5px;font-size:10px;font-weight:800}
+.tauruss-member-badge.ready{background:var(--ok-soft);color:var(--ok)}
+.tauruss-member-badge.waiting{background:var(--warn-soft);color:var(--warn)}
+
+/* Party Chat & Reactions */
+.tauruss-party-chat{display:flex;flex-direction:column;gap:7px;border-top:1px solid var(--line);padding-top:10px}
+.tauruss-party-reactions{display:flex;gap:5px;overflow-x:auto;padding-bottom:3px}
+.tauruss-react-btn{padding:4px 8px;border-radius:6px;background:var(--surface2);border:1px solid var(--line);font-size:14px;cursor:pointer;transition:transform .12s}
+.tauruss-react-btn:hover{transform:scale(1.2);background:var(--accent-soft);border-color:var(--accent)}
+.tauruss-party-messages{height:110px;overflow-y:auto;background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:5px;font-size:11.5px}
+.tauruss-msg-item{line-height:1.35;word-break:break-word}
+.tauruss-msg-item.sys{color:var(--muted);font-style:italic;font-size:11px}
+.tauruss-msg-author{font-weight:800;color:var(--accent)}
+.tauruss-party-chat-bar{display:flex;gap:6px}
+.tauruss-party-chat-input{flex:1;padding:6px 9px;border-radius:7px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-size:12px;outline:none}
+.tauruss-party-chat-send{padding:6px 11px;border-radius:7px;background:var(--accent);color:#fff;border:none;font-weight:700;font-size:12px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -5070,6 +5150,7 @@ function showTaurussCatalog(){
           '<button class="tauruss-pill-btn" id="tfBtnCinema" title="Geniş Sinema Modu">🎬 Sinema Modu</button>' +
           '<button class="tauruss-pill-btn" id="tfBtnSplit" title="Yan Yana Bölünmüş Mod">◫ Yan Yana</button>' +
           '<button class="tauruss-pill-btn" id="tfBtnFull" title="Tam Ekran">⛶ Tam Ekran</button>' +
+          '<button class="tauruss-pill-btn tauruss-party-toggle-btn" id="tfBtnParty" title="Arkadaşlarınla beraber aynı anda izle">👥 Birlikte İzle <span class="tauruss-party-badge" id="tfPartyBadge" style="display:none">● 0</span></button>' +
         '</div>' +
       '</div>' +
 
@@ -5120,8 +5201,13 @@ function showTaurussCatalog(){
           '<div><strong id="taurussPlayerLabel">⚡ VidFast Player · Geniş Ekran</strong><br><span id="taurussPlayerSub">Interstellar (tt0816692) yüklendi</span></div>' +
           '<a class="ytstudy-external" id="taurussExtLink" href="https://vidfast.vc/movie/tt0816692" target="_blank" rel="noopener noreferrer">Yeni sekmede aç ↗</a>' +
         '</div>' +
-        '<div class="tauruss-frame-container">' +
+        '<div class="tauruss-frame-container" style="position:relative">' +
           '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidfast.vc/movie/tt0816692" title="VidFast Film Player" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
+          '<div class="tauruss-party-countdown" id="tfPartyCountdown" style="display:none">' +
+            '<div class="tauruss-countdown-num" id="tfCountdownNum">3</div>' +
+            '<div class="tauruss-countdown-sub" id="tfCountdownSub">Eşzamanlı başlatılıyor...</div>' +
+          '</div>' +
+          '<div class="tauruss-reactions-layer" id="tfReactionsLayer"></div>' +
         '</div>' +
       '</section>' +
 
@@ -5139,6 +5225,14 @@ function showTaurussCatalog(){
         '<div class="tauruss-cues" id="taurussCues" aria-live="polite"></div>' +
         '<div class="tauruss-learning-foot">💡 <strong>Otomatik Senkron:</strong> Konuşulan sesi duyduğunuz an <strong>"🎯 Sesi Duyunca Bas"</strong> butonuna (veya klavyeden <strong>S</strong> tuşuna) basın; ya da sağdaki konuşulan satırdan <strong>"🎯 Sese Eşitle"</strong>ye tıklayın. Sistem tüm filmi tek tıkla sese eşitler. İnce ayar için <strong>[</strong> ve <strong>]</strong> tuşlarını kullanabilirsiniz.</div>' +
       '</aside>' +
+    '</div>' +
+
+    '<div class="tauruss-party-drawer" id="taurussPartyDrawer" style="display:none">' +
+      '<div class="tauruss-party-header">' +
+        '<strong><span>👥</span> Birlikte İzle <span id="tfPartyHeaderStatus" style="font-size:11.5px;color:var(--muted);font-weight:normal"></span></strong>' +
+        '<button class="tauruss-party-close" id="tfPartyClose" title="Kapat">✕</button>' +
+      '</div>' +
+      '<div class="tauruss-party-body" id="taurussPartyBody"></div>' +
     '</div>' +
   '</div>';
 
@@ -5173,6 +5267,7 @@ var TaurussLearning = {
     this.root = main;
     this.bindEvents();
     this.fetchSubtitles(this.currentId, this.season, this.episode);
+    if(window.WatchParty) window.WatchParty.init();
   },
 
   setStatus: function(text){
@@ -5196,6 +5291,15 @@ var TaurussLearning = {
     var btnCinema = el("tfBtnCinema");
     var btnSplit = el("tfBtnSplit");
     var btnFull = el("tfBtnFull");
+    var btnParty = el("tfBtnParty");
+    var partyClose = el("tfPartyClose");
+
+    if(btnParty) btnParty.onclick = function(){
+      if(window.WatchParty) window.WatchParty.toggleDrawer();
+    };
+    if(partyClose) partyClose.onclick = function(){
+      if(window.WatchParty) window.WatchParty.toggleDrawer(false);
+    };
     var typeMovie = el("tfTypeMovie");
     var typeTv = el("tfTypeTv");
     var seriesPick = el("tfSeriesPick");
@@ -5854,6 +5958,36 @@ var TaurussLearning = {
     if(extLink) extLink.href = targetUrl;
     this.setStatus("Oynatıcı yüklendi · Altyazılar aranıyor…");
     this.fetchSubtitles(this.currentId, this.season, this.episode);
+
+    if(window.WatchParty && window.WatchParty.active && window.WatchParty.isHost){
+      window.WatchParty.broadcastMediaChange();
+    }
+  },
+
+  playVideo: function(){
+    var frame = el("taurussFrame");
+    if(frame && frame.contentWindow){
+      var msg = { source: "learnenglish-app", type: "PLAY" };
+      try {
+        frame.contentWindow.postMessage(msg, "*");
+        for(var i = 0; i < frame.contentWindow.frames.length; i++){
+          try { frame.contentWindow.frames[i].postMessage(msg, "*"); } catch(_) {}
+        }
+      } catch(_) {}
+    }
+  },
+
+  pauseVideo: function(){
+    var frame = el("taurussFrame");
+    if(frame && frame.contentWindow){
+      var msg = { source: "learnenglish-app", type: "PAUSE" };
+      try {
+        frame.contentWindow.postMessage(msg, "*");
+        for(var i = 0; i < frame.contentWindow.frames.length; i++){
+          try { frame.contentWindow.frames[i].postMessage(msg, "*"); } catch(_) {}
+        }
+      } catch(_) {}
+    }
   },
 
   parseSrt: function(raw){
@@ -6397,6 +6531,719 @@ var TaurussLearning = {
   }
 };
 
+var WatchParty = {
+  active: false,
+  client: null,
+  roomCode: "",
+  userId: "",
+  userName: "",
+  isHost: false,
+  isReady: false,
+  participants: {},
+  activeTab: "create",
+  pingTimer: null,
+  countdownTimer: null,
+  broadcastChannel: null,
+  suppressBroadcastUntil: 0,
+  chatMessages: [],
+  knownMessageIds: new Set(),
+
+  init: function(){
+    var self = this;
+    if(!self.userId){
+      self.userId = "u_" + Math.random().toString(36).slice(2, 9);
+    }
+    if(!self.userName){
+      self.userName = localStorage.getItem("tauruss_party_name") || ("İzleyici #" + Math.floor(100 + Math.random() * 900));
+    }
+    if(!window._taurussHashBound){
+      window._taurussHashBound = true;
+      window.addEventListener("hashchange", function(){ self.checkUrlHash(); });
+    }
+    self.checkUrlHash();
+  },
+
+  setUserName: function(name){
+    var clean = String(name || "").trim().slice(0, 24);
+    if(clean){
+      this.userName = clean;
+      try { localStorage.setItem("tauruss_party_name", clean); } catch(_) {}
+      if(this.participants[this.userId]){
+        this.participants[this.userId].name = clean;
+      }
+      this.sendPing();
+    }
+  },
+
+  checkUrlHash: function(){
+    var hash = location.hash || "";
+    var search = location.search || "";
+    var m = hash.match(/party=([a-zA-Z0-9_-]+)/i) || search.match(/party=([a-zA-Z0-9_-]+)/i);
+    if(m && m[1]){
+      var code = m[1].toUpperCase();
+      this.activeTab = "join";
+      this.toggleDrawer(true);
+      setTimeout(function(){
+        var input = el("tfPartyCodeInput");
+        if(input) input.value = code;
+      }, 80);
+    }
+  },
+
+  toggleDrawer: function(forceOpen){
+    var drawer = el("taurussPartyDrawer");
+    if(!drawer) return;
+    var isOpen = drawer.style.display !== "none";
+    if(forceOpen === true || (!isOpen && forceOpen !== false)){
+      drawer.style.display = "flex";
+      this.render();
+    } else {
+      drawer.style.display = "none";
+    }
+  },
+
+  createRoom: function(customName){
+    if(customName) this.setUserName(customName);
+    var code = "PAR-" + Math.floor(1000 + Math.random() * 9000);
+    this.joinRoom(code, true);
+  },
+
+  joinRoom: function(code, asHost){
+    var self = this;
+    var cleanCode = String(code || "").trim().toUpperCase();
+    if(!cleanCode) return;
+
+    self.leaveRoom(false);
+    self.roomCode = cleanCode;
+    self.isHost = Boolean(asHost);
+    self.isReady = false;
+    self.participants = {};
+    self.chatMessages = [
+      { sender: "Sistem", text: cleanCode + " odasına katıldınız! Arkadaşlarınızla beraber izleyebilirsiniz.", sys: true }
+    ];
+
+    self.participants[self.userId] = {
+      id: self.userId,
+      name: self.userName,
+      isHost: self.isHost,
+      isReady: self.isReady,
+      lastSeen: Date.now()
+    };
+
+    self.active = true;
+    self.updateBadge();
+    self.connectTransport();
+    self.toggleDrawer(true);
+
+    if(self.isHost && TaurussLearning.currentId){
+      setTimeout(function(){
+        self.broadcastMediaChange();
+      }, 700);
+    }
+  },
+
+  leaveRoom: function(notify){
+    if(notify !== false && this.active){
+      this.sendMessage("LEAVE", { name: this.userName });
+    }
+    this.active = false;
+    this.roomCode = "";
+    this.isHost = false;
+    this.isReady = false;
+    this.participants = {};
+    clearInterval(this.pingTimer);
+    clearInterval(this.countdownTimer);
+
+    if(this.broadcastChannel){
+      try { this.broadcastChannel.close(); } catch(_) {}
+      this.broadcastChannel = null;
+    }
+    if(this.client){
+      try { this.client.end(true); } catch(_) {}
+      this.client = null;
+    }
+
+    var countdownEl = el("tfPartyCountdown");
+    if(countdownEl) countdownEl.style.display = "none";
+
+    this.updateBadge();
+    this.render();
+  },
+
+  connectTransport: function(){
+    var self = this;
+
+    // 1. BroadcastChannel (local tabs in same browser)
+    if(typeof BroadcastChannel !== "undefined"){
+      try {
+        self.broadcastChannel = new BroadcastChannel("learnenglish_party_" + self.roomCode);
+        self.broadcastChannel.onmessage = function(ev){
+          self.handleIncomingPacket(ev.data);
+        };
+      } catch(_) {}
+    }
+
+    // 2. Public MQTT over WebSocket
+    if(typeof mqtt !== "undefined" && mqtt.connect){
+      try {
+        var brokerUrl = "wss://broker.hivemq.com:8884/mqtt";
+        var clientId = "tauruss_" + self.userId + "_" + Math.floor(Math.random() * 10000);
+        self.client = mqtt.connect(brokerUrl, {
+          clientId: clientId,
+          clean: true,
+          connectTimeout: 5000,
+          reconnectPeriod: 3000
+        });
+
+        self.client.on("connect", function(){
+          var topic = "learnenglish/party/" + self.roomCode;
+          self.client.subscribe(topic, { qos: 0 });
+          self.sendMessage("JOIN", { name: self.userName, isHost: self.isHost });
+        });
+
+        self.client.on("message", function(topic, msgBuffer){
+          try {
+            var packet = JSON.parse(msgBuffer.toString());
+            self.handleIncomingPacket(packet);
+          } catch(_) {}
+        });
+
+        self.client.on("error", function(){
+          // Fallback to EMQX broker if HiveMQ fails
+          if(self.client && brokerUrl.indexOf("hivemq") > -1){
+            try { self.client.end(true); } catch(_) {}
+            brokerUrl = "wss://broker.emqx.io:8084/mqtt";
+            self.client = mqtt.connect(brokerUrl, { clientId: clientId, clean: true, connectTimeout: 5000 });
+          }
+        });
+      } catch(err) {
+        console.warn("[WatchParty] MQTT error:", err);
+      }
+    } else {
+      self.sendMessage("JOIN", { name: self.userName, isHost: self.isHost });
+    }
+
+    clearInterval(self.pingTimer);
+    self.pingTimer = setInterval(function(){
+      self.sendPing();
+      self.cleanStaleParticipants();
+    }, 4000);
+  },
+
+  sendMessage: function(type, data){
+    if(!this.roomCode) return;
+    var msgId = this.userId + "_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
+    var packet = {
+      msgId: msgId,
+      room: this.roomCode,
+      senderId: this.userId,
+      senderName: this.userName,
+      isHost: this.isHost,
+      type: type,
+      data: data || {},
+      ts: Date.now()
+    };
+
+    this.knownMessageIds.add(msgId);
+    if(this.knownMessageIds.size > 200) this.knownMessageIds.clear();
+
+    if(this.broadcastChannel){
+      try { this.broadcastChannel.postMessage(packet); } catch(_) {}
+    }
+
+    if(this.client && this.client.connected){
+      try {
+        var topic = "learnenglish/party/" + this.roomCode;
+        this.client.publish(topic, JSON.stringify(packet));
+      } catch(_) {}
+    }
+  },
+
+  handleIncomingPacket: function(packet){
+    var self = this;
+    if(!packet || packet.room !== self.roomCode) return;
+    if(packet.senderId === self.userId) return;
+    if(packet.msgId && self.knownMessageIds.has(packet.msgId)) return;
+    if(packet.msgId) self.knownMessageIds.add(packet.msgId);
+
+    var senderId = packet.senderId;
+    var senderName = packet.senderName || "Arkadaş";
+
+    if(!self.participants[senderId]){
+      self.participants[senderId] = {
+        id: senderId,
+        name: senderName,
+        isHost: Boolean(packet.isHost),
+        isReady: false,
+        lastSeen: Date.now()
+      };
+      self.addChatMessage("Sistem", senderName + " odaya katıldı. 👋", true);
+
+      self.sendMessage("PONG", {
+        name: self.userName,
+        isHost: self.isHost,
+        isReady: self.isReady
+      });
+
+      if(self.isHost){
+        setTimeout(function(){
+          self.sendMessage("SYNC_MEDIA", {
+            id: TaurussLearning.currentId,
+            type: TaurussLearning.currentType,
+            season: TaurussLearning.season,
+            episode: TaurussLearning.episode,
+            title: TaurussLearning.currentTitle,
+            currentTime: TaurussLearning.lastCurrentTime || 0
+          });
+        }, 500);
+      }
+    }
+
+    self.participants[senderId].lastSeen = Date.now();
+    self.participants[senderId].name = senderName;
+    if(typeof packet.isHost === "boolean") self.participants[senderId].isHost = packet.isHost;
+
+    switch(packet.type){
+      case "JOIN":
+      case "PONG":
+        self.updateBadge();
+        self.renderMembersList();
+        break;
+
+      case "LEAVE":
+        delete self.participants[senderId];
+        self.addChatMessage("Sistem", senderName + " odadan ayrıldı.", true);
+        self.updateBadge();
+        self.renderMembersList();
+        break;
+
+      case "PING":
+        if(packet.data){
+          self.participants[senderId].isReady = Boolean(packet.data.isReady);
+          self.participants[senderId].currentTime = Number(packet.data.currentTime) || 0;
+        }
+        self.renderMembersList();
+        break;
+
+      case "READY_CHANGE":
+        self.participants[senderId].isReady = Boolean(packet.data.isReady);
+        self.renderMembersList();
+        break;
+
+      case "MEDIA_CHANGE":
+      case "SYNC_MEDIA":
+        self.onRemoteMediaChange(packet.data, senderName);
+        break;
+
+      case "PLAYBACK_SYNC":
+        self.onRemotePlaybackSync(packet.data, senderName);
+        break;
+
+      case "START_COUNTDOWN":
+        self.startCountdown(packet.data.startTime || 0, senderName);
+        break;
+
+      case "CHAT":
+        self.addChatMessage(senderName, packet.data.text || "");
+        break;
+
+      case "REACTION":
+        self.spawnFloatingEmoji(packet.data.emoji || "🍿");
+        break;
+    }
+  },
+
+  onRemoteMediaChange: function(data, senderName){
+    if(!data || !data.id) return;
+    if(data.id !== TaurussLearning.currentId || data.season !== TaurussLearning.season || data.episode !== TaurussLearning.episode){
+      TaurussLearning.currentId = data.id;
+      TaurussLearning.currentType = data.type || "movie";
+      TaurussLearning.season = data.season || 1;
+      TaurussLearning.episode = data.episode || 1;
+      TaurussLearning.currentTitle = data.title || data.id;
+      TaurussLearning.updateTypeUI();
+      TaurussLearning.reloadPlayer();
+
+      this.isReady = false;
+      this.sendMessage("READY_CHANGE", { isReady: false });
+      this.render();
+      this.addChatMessage("Sistem", senderName + " içeriği değiştirdi: " + TaurussLearning.currentTitle, true);
+      TaurussLearning.setStatus("👥 Oda içeriği: " + TaurussLearning.currentTitle);
+    }
+  },
+
+  onRemotePlaybackSync: function(data, senderName){
+    this.suppressBroadcastUntil = Date.now() + 1500;
+    var action = data.action;
+    var time = Number(data.currentTime);
+
+    if(action === "PAUSE"){
+      TaurussLearning.pauseVideo();
+      TaurussLearning.setStatus("⏸️ " + senderName + " videoyu durdurdu");
+    } else if(action === "PLAY"){
+      if(Number.isFinite(time)){
+        var current = TaurussLearning.lastCurrentTime || 0;
+        if(Math.abs(current - time) > 2.5){
+          TaurussLearning.jumpToTime(time);
+        }
+      }
+      TaurussLearning.playVideo();
+      TaurussLearning.setStatus("▶️ " + senderName + " videoyu başlattı");
+    } else if(action === "SEEK"){
+      if(Number.isFinite(time)){
+        TaurussLearning.jumpToTime(time);
+        TaurussLearning.setStatus("⏩ " + senderName + " videoyu " + TaurussLearning.formatTime(time) + " saniyesine sardı");
+      }
+    }
+  },
+
+  startAll: function(){
+    if(!this.isHost) return;
+    var cur = TaurussLearning.lastCurrentTime || 0;
+    this.sendMessage("START_COUNTDOWN", { startTime: cur });
+    this.startCountdown(cur, this.userName);
+  },
+
+  startCountdown: function(targetTime, starterName){
+    var self = this;
+    var cdEl = el("tfPartyCountdown");
+    var numEl = el("tfCountdownNum");
+    var subEl = el("tfCountdownSub");
+    if(!cdEl || !numEl) return;
+
+    cdEl.style.display = "flex";
+    var count = 3;
+    numEl.textContent = count;
+    if(subEl) subEl.textContent = starterName ? (starterName + " herkesi başlatıyor...") : "Eşzamanlı başlatılıyor...";
+
+    clearInterval(self.countdownTimer);
+    self.countdownTimer = setInterval(function(){
+      count--;
+      if(count > 0){
+        numEl.textContent = count;
+      } else if(count === 0){
+        numEl.textContent = "🍿";
+        if(subEl) subEl.textContent = "İyi Seyirler!";
+        if(typeof targetTime === "number") TaurussLearning.jumpToTime(targetTime);
+        setTimeout(function(){
+          TaurussLearning.playVideo();
+        }, 120);
+      } else {
+        clearInterval(self.countdownTimer);
+        cdEl.style.display = "none";
+      }
+    }, 1000);
+  },
+
+  onLocalPlaybackStatus: function(d){
+    if(!this.active) return;
+    if(Date.now() < this.suppressBroadcastUntil) return;
+
+    if(d.isSeek){
+      this.sendMessage("PLAYBACK_SYNC", { action: "SEEK", currentTime: d.currentTime });
+    } else if(d.paused){
+      this.sendMessage("PLAYBACK_SYNC", { action: "PAUSE", currentTime: d.currentTime });
+    } else {
+      this.sendMessage("PLAYBACK_SYNC", { action: "PLAY", currentTime: d.currentTime });
+    }
+  },
+
+  broadcastMediaChange: function(){
+    if(this.active){
+      this.sendMessage("MEDIA_CHANGE", {
+        id: TaurussLearning.currentId,
+        type: TaurussLearning.currentType,
+        season: TaurussLearning.season,
+        episode: TaurussLearning.episode,
+        title: TaurussLearning.currentTitle
+      });
+    }
+  },
+
+  toggleReady: function(){
+    this.isReady = !this.isReady;
+    if(this.participants[this.userId]){
+      this.participants[this.userId].isReady = this.isReady;
+    }
+    this.sendMessage("READY_CHANGE", { isReady: this.isReady });
+    this.render();
+  },
+
+  sendPing: function(){
+    if(!this.active) return;
+    this.sendMessage("PING", {
+      isReady: this.isReady,
+      currentTime: TaurussLearning.lastCurrentTime || 0,
+      paused: true
+    });
+  },
+
+  cleanStaleParticipants: function(){
+    var now = Date.now();
+    var changed = false;
+    for(var id in this.participants){
+      if(id === this.userId) continue;
+      if(now - (this.participants[id].lastSeen || 0) > 15000){
+        delete this.participants[id];
+        changed = true;
+      }
+    }
+    if(changed){
+      this.updateBadge();
+      this.renderMembersList();
+    }
+  },
+
+  updateBadge: function(){
+    var b = el("tfPartyBadge");
+    var btn = el("tfBtnParty");
+    var hdr = el("tfPartyHeaderStatus");
+    if(!b || !btn) return;
+
+    if(this.active){
+      var count = Object.keys(this.participants).length || 1;
+      b.style.display = "inline-block";
+      b.textContent = "● " + count;
+      btn.classList.add("in-party");
+      if(hdr) hdr.textContent = "· " + this.roomCode + " (" + count + " kişi)";
+    } else {
+      b.style.display = "none";
+      btn.classList.remove("in-party");
+      if(hdr) hdr.textContent = "";
+    }
+  },
+
+  spawnFloatingEmoji: function(emoji){
+    var layer = el("tfReactionsLayer");
+    if(!layer) return;
+    var div = document.createElement("div");
+    div.className = "tauruss-fly-emoji";
+    div.textContent = emoji;
+    div.style.left = (15 + Math.random() * 70) + "%";
+    layer.appendChild(div);
+    setTimeout(function(){
+      if(div.parentNode) div.parentNode.removeChild(div);
+    }, 2300);
+  },
+
+  sendReaction: function(emoji){
+    this.sendMessage("REACTION", { emoji: emoji });
+    this.spawnFloatingEmoji(emoji);
+  },
+
+  addChatMessage: function(sender, text, isSys){
+    this.chatMessages.push({ sender: sender, text: text, sys: Boolean(isSys), time: new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" }) });
+    if(this.chatMessages.length > 50) this.chatMessages.shift();
+
+    var box = el("tfPartyMessages");
+    if(box){
+      var item = document.createElement("div");
+      item.className = "tauruss-msg-item" + (isSys ? " sys" : "");
+      if(isSys){
+        item.textContent = text;
+      } else {
+        item.innerHTML = '<strong class="tauruss-msg-author">' + sender + ':</strong> ' + text;
+      }
+      box.appendChild(item);
+      box.scrollTop = box.scrollHeight;
+    }
+  },
+
+  sendChat: function(){
+    var input = el("tfPartyChatInput");
+    if(!input) return;
+    var txt = input.value.trim();
+    if(!txt) return;
+    input.value = "";
+    this.sendMessage("CHAT", { text: txt });
+    this.addChatMessage(this.userName + " (Sen)", txt);
+  },
+
+  copyInviteLink: function(){
+    var url = window.location.origin + window.location.pathname + "#party=" + this.roomCode;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url);
+    }
+    TaurussLearning.setStatus("📋 Davet bağlantısı panoya kopyalandı!");
+    var btn = el("tfBtnCopyLink");
+    if(btn){
+      btn.textContent = "✅ Kopyalandı!";
+      setTimeout(function(){ btn.textContent = "🔗 Davet Linki"; }, 2000);
+    }
+  },
+
+  copyRoomCode: function(){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(this.roomCode);
+    }
+    TaurussLearning.setStatus("📋 Oda kodu (" + this.roomCode + ") kopyalandı!");
+    var btn = el("tfBtnCopyCode");
+    if(btn){
+      btn.textContent = "✅";
+      setTimeout(function(){ btn.textContent = "📋"; }, 2000);
+    }
+  },
+
+  renderMembersList: function(){
+    var list = el("tfPartyMembersList");
+    if(!list) return;
+
+    var keys = Object.keys(this.participants);
+    var html = keys.map(function(id){
+      var m = WatchParty.participants[id];
+      var isMe = id === WatchParty.userId;
+      var roleIcon = m.isHost ? "👑 " : "👤 ";
+      var badgeCls = m.isReady ? "ready" : "waiting";
+      var badgeText = m.isReady ? "✅ Hazır" : "⏳ Bekliyor";
+      return '<div class="tauruss-member-item">' +
+        '<div class="tauruss-member-name">' +
+          '<span>' + roleIcon + '</span>' +
+          '<span>' + m.name + (isMe ? " <small style='opacity:.7'>(Sen)</small>" : "") + '</span>' +
+        '</div>' +
+        '<span class="tauruss-member-badge ' + badgeCls + '">' + badgeText + '</span>' +
+      '</div>';
+    }).join("");
+
+    list.innerHTML = html;
+  },
+
+  render: function(){
+    var body = el("taurussPartyBody");
+    if(!body) return;
+
+    if(!this.active){
+      var html = '<div class="tauruss-party-tabs">' +
+        '<button class="tauruss-party-tab ' + (this.activeTab === "create" ? "active" : "") + '" id="tfTabCreate">Oda Kur</button>' +
+        '<button class="tauruss-party-tab ' + (this.activeTab === "join" ? "active" : "") + '" id="tfTabJoin">Odaya Katıl</button>' +
+      '</div>' +
+      '<div class="tauruss-party-form">' +
+        '<label style="font-size:12px;font-weight:700;color:var(--muted)">Takma Adınız:</label>' +
+        '<input type="text" class="tauruss-party-input" id="tfPartyNameInput" value="' + this.userName + '" placeholder="Adınızı yazın (ör: Ahmet)" maxlength="24">' +
+      '</div>';
+
+      if(this.activeTab === "create"){
+        html += '<div style="background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:12px;color:var(--muted);line-height:1.5">' +
+          'Arkadaşlarınızla aynı anda film veya dizi izlemek için tek tıkla oda oluşturun. Siz oynattığınızda herkes aynı anda izleyecektir.' +
+        '</div>' +
+        '<button class="tauruss-party-submit" id="tfBtnCreateSubmit">🚀 Yeni Oda Oluştur</button>';
+      } else {
+        html += '<div class="tauruss-party-form">' +
+          '<label style="font-size:12px;font-weight:700;color:var(--muted)">Oda Kodu:</label>' +
+          '<input type="text" class="tauruss-party-input" id="tfPartyCodeInput" placeholder="Ör: PAR-7821" style="text-transform:uppercase;font-family:monospace;letter-spacing:1px">' +
+        '</div>' +
+        '<button class="tauruss-party-submit" id="tfBtnJoinSubmit">🔗 Odaya Katıl</button>';
+      }
+
+      body.innerHTML = html;
+
+      var tabC = el("tfTabCreate");
+      var tabJ = el("tfTabJoin");
+      var nameIn = el("tfPartyNameInput");
+      var btnCreate = el("tfBtnCreateSubmit");
+      var btnJoin = el("tfBtnJoinSubmit");
+
+      if(nameIn) nameIn.oninput = function(){ WatchParty.setUserName(nameIn.value); };
+      if(tabC) tabC.onclick = function(){ WatchParty.activeTab = "create"; WatchParty.render(); };
+      if(tabJ) tabJ.onclick = function(){ WatchParty.activeTab = "join"; WatchParty.render(); };
+      if(btnCreate) btnCreate.onclick = function(){
+        if(nameIn && nameIn.value.trim()) WatchParty.setUserName(nameIn.value.trim());
+        WatchParty.createRoom();
+      };
+      if(btnJoin) btnJoin.onclick = function(){
+        if(nameIn && nameIn.value.trim()) WatchParty.setUserName(nameIn.value.trim());
+        var codeIn = el("tfPartyCodeInput");
+        if(codeIn && codeIn.value.trim()){
+          WatchParty.joinRoom(codeIn.value.trim(), false);
+        }
+      };
+
+    } else {
+      var html = '<div class="tauruss-room-card">' +
+        '<div class="tauruss-room-code-row">' +
+          '<div><span style="font-size:11px;color:var(--muted);font-weight:700">ODA KODU: </span><span class="tauruss-room-code-tag">' + this.roomCode + '</span></div>' +
+          '<div style="display:flex;gap:4px">' +
+            '<button class="tauruss-room-btn" id="tfBtnCopyCode" title="Kodu Kopyala">📋</button>' +
+            '<button class="tauruss-room-btn" id="tfBtnCopyLink">🔗 Davet Linki</button>' +
+            '<button class="tauruss-room-btn danger" id="tfBtnLeaveRoom">Ayrıl</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="tauruss-ready-banner">' +
+        '<button class="tauruss-btn-ready ' + (this.isReady ? 'ready' : 'not-ready') + '" id="tfBtnReadyToggle">' +
+          (this.isReady ? '✅ Hazırım! (Bekle / İptal Et)' : '⏳ Hazır Değilim (Hazırım Demek İçin Bas)') +
+        '</button>' +
+        (this.isHost ? '<button class="tauruss-btn-start" id="tfBtnStartAll">🎬 Herkesi Başlat (3-2-1 Geri Sayım)</button>' : '') +
+      '</div>' +
+
+      '<div>' +
+        '<div class="tauruss-members-title"><span>👥 Katılımcılar (' + Object.keys(this.participants).length + ')</span>' +
+        '<span style="font-size:10px;text-transform:none;opacity:.8">' + (this.isHost ? '👑 Senkron Sende' : '👤 Senkron Dinleniyor') + '</span></div>' +
+        '<div class="tauruss-members-list" id="tfPartyMembersList"></div>' +
+      '</div>' +
+
+      '<div class="tauruss-party-chat">' +
+        '<div class="tauruss-party-reactions">' +
+          '<button class="tauruss-react-btn" data-e="🍿" title="Patlamış mısır">🍿</button>' +
+          '<button class="tauruss-react-btn" data-e="👏" title="Alkış">👏</button>' +
+          '<button class="tauruss-react-btn" data-e="😂" title="Kahkaha">😂</button>' +
+          '<button class="tauruss-react-btn" data-e="🔥" title="Ateş">🔥</button>' +
+          '<button class="tauruss-react-btn" data-e="❤️" title="Kalp">❤️</button>' +
+          '<button class="tauruss-react-btn" data-e="😱" title="Şok">😱</button>' +
+        '</div>' +
+        '<div class="tauruss-party-messages" id="tfPartyMessages"></div>' +
+        '<div class="tauruss-party-chat-bar">' +
+          '<input type="text" class="tauruss-party-chat-input" id="tfPartyChatInput" placeholder="Mesaj yazın..." maxlength="120">' +
+          '<button class="tauruss-party-chat-send" id="tfPartyChatSend">Gönder</button>' +
+        '</div>' +
+      '</div>';
+
+      body.innerHTML = html;
+
+      this.renderMembersList();
+
+      var msgBox = el("tfPartyMessages");
+      if(msgBox){
+        msgBox.innerHTML = this.chatMessages.map(function(m){
+          if(m.sys){
+            return '<div class="tauruss-msg-item sys">' + m.text + '</div>';
+          }
+          return '<div class="tauruss-msg-item"><strong class="tauruss-msg-author">' + m.sender + ':</strong> ' + m.text + '</div>';
+        }).join("");
+        msgBox.scrollTop = msgBox.scrollHeight;
+      }
+
+      var btnReady = el("tfBtnReadyToggle");
+      var btnStart = el("tfBtnStartAll");
+      var btnLeave = el("tfBtnLeaveRoom");
+      var btnCopyL = el("tfBtnCopyLink");
+      var btnCopyC = el("tfBtnCopyCode");
+      var btnSend = el("tfPartyChatSend");
+      var chatIn = el("tfPartyChatInput");
+
+      if(btnReady) btnReady.onclick = function(){ WatchParty.toggleReady(); };
+      if(btnStart) btnStart.onclick = function(){ WatchParty.startAll(); };
+      if(btnLeave) btnLeave.onclick = function(){ WatchParty.leaveRoom(); };
+      if(btnCopyL) btnCopyL.onclick = function(){ WatchParty.copyInviteLink(); };
+      if(btnCopyC) btnCopyC.onclick = function(){ WatchParty.copyRoomCode(); };
+      if(btnSend) btnSend.onclick = function(){ WatchParty.sendChat(); };
+      if(chatIn){
+        chatIn.onkeydown = function(e){
+          if(e.key === "Enter") WatchParty.sendChat();
+        };
+      }
+
+      var reactBtns = body.querySelectorAll(".tauruss-react-btn");
+      reactBtns.forEach(function(rBtn){
+        rBtn.onclick = function(){
+          var emoji = rBtn.getAttribute("data-e");
+          if(emoji) WatchParty.sendReaction(emoji);
+        };
+      });
+    }
+  }
+};
+
 window.addEventListener("message", function(event){
   var d = event.data;
   if(!d || d.source !== "learnenglish-vidfast-bridge") return;
@@ -6409,6 +7256,12 @@ window.addEventListener("message", function(event){
   }
   if(d.type === "TIME_UPDATE"){
     TaurussLearning.onTimeUpdate(d.currentTime || 0);
+    return;
+  }
+  if(d.type === "PLAYBACK_STATUS"){
+    if(window.WatchParty && window.WatchParty.active){
+      window.WatchParty.onLocalPlaybackStatus(d);
+    }
     return;
   }
   if(d.type === "CAPTION"){
@@ -7486,7 +8339,7 @@ window.addEventListener("resize", function(){
 
 /* ---------- Başlat ---------- */
 buildNav("");
-if(location.hash === "#tauruss" || location.search.indexOf("tauruss") !== -1) showTaurussCatalog();
+if(location.hash.indexOf("party") !== -1 || location.search.indexOf("party") !== -1 || location.hash === "#tauruss" || location.search.indexOf("tauruss") !== -1) showTaurussCatalog();
 else if(location.hash === "#ytstudy" || location.search.indexOf("ytstudy") !== -1) showYouTubeStudy();
 else if(location.hash === "#chat" || location.search.indexOf("chat") !== -1) showChat();
 else showHome();

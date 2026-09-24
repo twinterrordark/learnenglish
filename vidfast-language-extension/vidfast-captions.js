@@ -179,6 +179,25 @@
       }
       return;
     }
+
+    if (d.type === "PLAY") {
+      var vPlay = video || findVideo();
+      if (vPlay) {
+        try {
+          var pr = vPlay.play();
+          if (pr && typeof pr.catch === "function") pr.catch(function () {});
+        } catch (_) {}
+      }
+      return;
+    }
+
+    if (d.type === "PAUSE") {
+      var vPause = video || findVideo();
+      if (vPause) {
+        try { vPause.pause(); } catch (_) {}
+      }
+      return;
+    }
   });
 
   function attachVideo(video) {
@@ -209,6 +228,10 @@
 
     video.addEventListener("pause", function () {
       send("PLAYBACK_STATUS", { paused: true, currentTime: Number(video.currentTime) || 0 });
+    });
+
+    video.addEventListener("seeked", function () {
+      send("PLAYBACK_STATUS", { paused: Boolean(video.paused), currentTime: Number(video.currentTime) || 0, isSeek: true });
     });
 
     send("READY", {
