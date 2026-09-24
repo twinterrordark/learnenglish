@@ -5240,17 +5240,28 @@ var TaurussLearning = {
 
     if(typeMovie) typeMovie.onclick = function(){
       self.currentType = "movie";
-      typeMovie.classList.add("active");
-      if(typeTv) typeTv.classList.remove("active");
-      if(seriesPick) seriesPick.classList.remove("show");
+      self.updateTypeUI();
     };
 
     if(typeTv) typeTv.onclick = function(){
       self.currentType = "tv";
-      typeTv.classList.add("active");
-      if(typeMovie) typeMovie.classList.remove("active");
-      if(seriesPick) seriesPick.classList.add("show");
+      self.updateTypeUI();
     };
+
+    var seasonInput = el("tfSeason");
+    var episodeInput = el("tfEpisode");
+    if(seasonInput){
+      seasonInput.onchange = function(){
+        self.season = Math.max(1, parseInt(seasonInput.value, 10) || 1);
+        if(self.currentType === "tv") self.reloadPlayer();
+      };
+    }
+    if(episodeInput){
+      episodeInput.onchange = function(){
+        self.episode = Math.max(1, parseInt(episodeInput.value, 10) || 1);
+        if(self.currentType === "tv") self.reloadPlayer();
+      };
+    }
 
     if(searchGo) searchGo.onclick = function(){ self.handleSearch(); };
     if(searchInput) {
@@ -5458,12 +5469,77 @@ var TaurussLearning = {
     this.updateLiveDisplay(this.lastCurrentTime);
   },
 
+  updateTypeUI: function(){
+    var typeMovie = el("tfTypeMovie");
+    var typeTv = el("tfTypeTv");
+    var seriesPick = el("tfSeriesPick");
+    var seasonInput = el("tfSeason");
+    var episodeInput = el("tfEpisode");
+
+    if(this.currentType === "tv"){
+      if(typeTv) typeTv.classList.add("active");
+      if(typeMovie) typeMovie.classList.remove("active");
+      if(seriesPick) seriesPick.classList.add("show");
+      if(seasonInput && String(seasonInput.value) !== String(this.season)) seasonInput.value = this.season || 1;
+      if(episodeInput && String(episodeInput.value) !== String(this.episode)) episodeInput.value = this.episode || 1;
+    } else {
+      if(typeMovie) typeMovie.classList.add("active");
+      if(typeTv) typeTv.classList.remove("active");
+      if(seriesPick) seriesPick.classList.remove("show");
+    }
+  },
+
+  scoreSearchResult: function(item, query, preferredType){
+    var score = 0;
+    var q = String(query || "").toLowerCase().trim();
+    var name = String(item.name || "").toLowerCase().trim();
+    var itemType = item.itemType || (item.type === "series" ? "tv" : "movie");
+
+    if(name === q){
+      score += 100;
+    } else if(name.indexOf(q) === 0){
+      score += 50;
+    } else if(name.indexOf(q) > -1){
+      score += 25;
+    }
+
+    if(preferredType && itemType === preferredType){
+      score += 15;
+    }
+
+    var rawYear = String(item.year || item.releaseInfo || "");
+    var isOngoing = rawYear.indexOf("-") > -1;
+    var numYear = parseInt(rawYear.replace(/[^0-9]/g, "").slice(0, 4), 10);
+    var currentYear = new Date().getFullYear();
+
+    if(numYear){
+      if(numYear > currentYear && !isOngoing){
+        score -= 60;
+      } else if(isOngoing){
+        score += 40;
+      } else if(numYear <= currentYear && numYear >= currentYear - 4){
+        score += 25;
+      } else if(numYear <= currentYear){
+        score += 15;
+      }
+    }
+
+    if(item.behaviorHints && item.behaviorHints.hasScheduledVideos){
+      score += 25;
+    }
+
+    return score;
+  },
+
   handleSearch: function(){
     var self = this;
     var input = el("tfSearchInput");
     if(!input) return;
     var query = input.value.trim();
     if(!query) return;
+
+    var suggBox = el("tfSuggestions");
+    if(suggBox) suggBox.style.display = "none";
 
     if(el("tfSeason")) self.season = parseInt(el("tfSeason").value || "1", 10);
     if(el("tfEpisode")) self.episode = parseInt(el("tfEpisode").value || "1", 10);
@@ -5475,6 +5551,7 @@ var TaurussLearning = {
       if(urlMatch[3]) self.season = parseInt(urlMatch[3], 10);
       if(urlMatch[4]) self.episode = parseInt(urlMatch[4], 10);
       self.currentTitle = "Özel Video (" + self.currentId + ")";
+      self.updateTypeUI();
       self.reloadPlayer();
       return;
     }
@@ -5490,49 +5567,45 @@ var TaurussLearning = {
     if(MOVIE_DICT[clean]){
       self.currentId = MOVIE_DICT[clean];
       self.currentTitle = query.charAt(0).toUpperCase() + query.slice(1);
+      self.currentType = "movie";
+      self.updateTypeUI();
       self.reloadPlayer();
       return;
     }
 
     self.setStatus("'" + query + "' aranıyor…");
-    var endpoint = self.currentType === "tv"
-      ? "https://v3-cinemeta.strem.io/catalog/series/top/search=" + encodeURIComponent(query) + ".json"
-      : "https://v3-cinemeta.strem.io/catalog/movie/top/search=" + encodeURIComponent(query) + ".json";
 
-    fetch(endpoint)
-      .then(function(res){ return res.json(); })
-      .then(function(data){
-        var list = (data && data.metas) || [];
-        if(list.length > 0){
-          var item = list[0];
-          self.currentId = item.id;
-          self.currentTitle = item.name;
+    var pMovie = fetch("https://v3-cinemeta.strem.io/catalog/movie/top/search=" + encodeURIComponent(query) + ".json")
+      .then(function(r){ return r.json(); })
+      .catch(function(){ return { metas: [] }; });
+
+    var pSeries = fetch("https://v3-cinemeta.strem.io/catalog/series/top/search=" + encodeURIComponent(query) + ".json")
+      .then(function(r){ return r.json(); })
+      .catch(function(){ return { metas: [] }; });
+
+    Promise.all([pMovie, pSeries])
+      .then(function(res){
+        var movies = (res[0] && res[0].metas) || [];
+        var series = (res[1] && res[1].metas) || [];
+        var all = [];
+        movies.forEach(function(m){ all.push(Object.assign({ itemType: "movie" }, m)); });
+        series.forEach(function(s){ all.push(Object.assign({ itemType: "tv" }, s)); });
+
+        if(all.length > 0){
+          all.forEach(function(it){
+            it._score = self.scoreSearchResult(it, query, self.currentType);
+          });
+          all.sort(function(a, b){ return b._score - a._score; });
+
+          var top = all[0];
+          self.currentId = top.id;
+          self.currentTitle = top.name;
+          self.currentType = top.itemType || (top.type === "series" ? "tv" : "movie");
+          self.updateTypeUI();
           self.reloadPlayer();
         } else {
-          var altEndpoint = self.currentType === "tv"
-            ? "https://v3-cinemeta.strem.io/catalog/movie/top/search=" + encodeURIComponent(query) + ".json"
-            : "https://v3-cinemeta.strem.io/catalog/series/top/search=" + encodeURIComponent(query) + ".json";
-          fetch(altEndpoint)
-            .then(function(r){ return r.json(); })
-            .then(function(d2){
-              var l2 = (d2 && d2.metas) || [];
-              if(l2.length > 0){
-                var item2 = l2[0];
-                self.currentId = item2.id;
-                self.currentTitle = item2.name;
-                self.currentType = self.currentType === "tv" ? "movie" : "tv";
-                if(self.currentType === "tv" && el("tfTypeTv")) el("tfTypeTv").click();
-                if(self.currentType === "movie" && el("tfTypeMovie")) el("tfTypeMovie").click();
-                self.reloadPlayer();
-              } else {
-                self.currentTitle = query;
-                self.reloadPlayer();
-              }
-            })
-            .catch(function(){
-              self.currentTitle = query;
-              self.reloadPlayer();
-            });
+          self.currentTitle = query;
+          self.reloadPlayer();
         }
       })
       .catch(function(){
@@ -5581,19 +5654,19 @@ var TaurussLearning = {
       .then(function(res){
         var movies = (res[0] && res[0].metas) || [];
         var series = (res[1] && res[1].metas) || [];
-        var combined = [];
+        var all = [];
+        movies.forEach(function(m){ all.push(Object.assign({ itemType: "movie" }, m)); });
+        series.forEach(function(s){ all.push(Object.assign({ itemType: "tv" }, s)); });
 
-        if(self.currentType === "tv"){
-          series.slice(0, 5).forEach(function(m){ combined.push(Object.assign({ itemType: "tv" }, m)); });
-          movies.slice(0, 4).forEach(function(m){ combined.push(Object.assign({ itemType: "movie" }, m)); });
-        } else {
-          movies.slice(0, 5).forEach(function(m){ combined.push(Object.assign({ itemType: "movie" }, m)); });
-          series.slice(0, 4).forEach(function(m){ combined.push(Object.assign({ itemType: "tv" }, m)); });
-        }
+        all.forEach(function(it){
+          it._score = self.scoreSearchResult(it, query, self.currentType);
+        });
+        all.sort(function(a, b){ return b._score - a._score; });
 
-        self.activeSuggestions = combined;
+        var topSuggestions = all.slice(0, 8);
+        self.activeSuggestions = topSuggestions;
         self.selectedSuggestionIdx = -1;
-        self.renderSuggestions(combined);
+        self.renderSuggestions(topSuggestions);
       })
       .catch(function(){
         if(suggBox) suggBox.style.display = "none";
@@ -5656,21 +5729,7 @@ var TaurussLearning = {
     this.currentId = item.id;
     this.currentTitle = item.name;
     this.currentType = item.itemType || (item.type === "series" ? "tv" : "movie");
-
-    var typeMovie = el("tfTypeMovie");
-    var typeTv = el("tfTypeTv");
-    var seriesPick = el("tfSeriesPick");
-
-    if(this.currentType === "tv"){
-      if(typeTv) typeTv.classList.add("active");
-      if(typeMovie) typeMovie.classList.remove("active");
-      if(seriesPick) seriesPick.classList.add("show");
-    } else {
-      if(typeMovie) typeMovie.classList.add("active");
-      if(typeTv) typeTv.classList.remove("active");
-      if(seriesPick) seriesPick.classList.remove("show");
-    }
-
+    this.updateTypeUI();
     this.reloadPlayer();
   },
 
