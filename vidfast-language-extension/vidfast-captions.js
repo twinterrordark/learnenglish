@@ -98,7 +98,7 @@
       hideOverlay();
       return;
     }
-    var eff = t + syncOffset;
+    var eff = t - syncOffset;
     var activeCues = (activeLangState === "tr") ? trCues : enCues;
     var cue = findCueAtTime(activeCues, eff);
     if (cue && cue.text) {
@@ -144,7 +144,7 @@
         hideOverlay();
       } else if (d.text) {
         showOverlay(d.text, video);
-      } else {
+      } else if (!enCues.length && !trCues.length) {
         hideOverlay();
       }
       return;
