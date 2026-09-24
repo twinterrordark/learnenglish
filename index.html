@@ -703,9 +703,25 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
 .tauruss-sub-badge{font-size:11.5px;font-weight:700;color:var(--muted);padding:5px 9px;border-radius:6px;background:var(--surface);display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line)}
 .tauruss-sub-badge.found{color:var(--ok);background:var(--ok-soft);border-color:rgba(22,163,74,.25)}
 .tauruss-sub-badge.loading{color:var(--warn);background:var(--warn-soft);border-color:rgba(217,119,6,.25)}
-.tauruss-sync-box{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--muted)}
+.tauruss-sync-box{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--muted);flex-wrap:wrap}
 .tauruss-sync-btn{padding:4px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;transition:.12s}
 .tauruss-sync-btn:hover{border-color:var(--accent)}
+.tauruss-auto-sync-btn{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;padding:5px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:transform .12s,box-shadow .12s;box-shadow:0 2px 6px rgba(16,185,129,.35)}
+.tauruss-auto-sync-btn:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(16,185,129,.55)}
+.tauruss-cue-sync-btn{background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.35);border-radius:5px;font-size:10.5px;font-weight:700;padding:2px 7px;cursor:pointer;transition:.12s;margin-left:6px}
+.tauruss-cue-sync-btn:hover{background:#10b981;color:#fff;border-color:#10b981}
+
+.tauruss-search-box-wrap{position:relative;flex:1;min-width:240px}
+.tauruss-suggestions-dropdown{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#0d1117;border:1px solid rgba(255,255,255,.16);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.75);max-height:380px;overflow-y:auto;z-index:9999;display:none}
+.tauruss-sugg-item{display:flex;align-items:center;gap:12px;padding:9px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06);transition:background .14s ease}
+.tauruss-sugg-item:hover, .tauruss-sugg-item.selected{background:rgba(99,102,241,.24)}
+.tauruss-sugg-poster{width:36px;height:52px;object-fit:cover;border-radius:5px;background:#1e293b;flex-shrink:0}
+.tauruss-sugg-info{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.tauruss-sugg-title{font-weight:700;font-size:13.5px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tauruss-sugg-meta{font-size:11px;color:#94a3b8;display:flex;gap:8px;align-items:center}
+.tauruss-sugg-badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700}
+.tauruss-sugg-badge.movie{background:rgba(56,189,248,.18);color:#38bdf8}
+.tauruss-sugg-badge.series{background:rgba(244,63,94,.18);color:#f43f5e}
 
 .tauruss-wrap{background:#090a0d;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);position:relative;display:flex;flex-direction:column}
 .tauruss-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line)}
@@ -5066,7 +5082,10 @@ function showTaurussCatalog(){
           '<span>Sezon:</span><input type="number" id="tfSeason" min="1" max="99" value="1">' +
           '<span>Bölüm:</span><input type="number" id="tfEpisode" min="1" max="99" value="1">' +
         '</div>' +
-        '<input type="text" class="tauruss-search-input" id="tfSearchInput" placeholder="Film/Dizi Adı (ör. Inception, Breaking Bad) veya IMDb ID (ör. tt1375666)...">' +
+        '<div class="tauruss-search-box-wrap">' +
+          '<input type="text" class="tauruss-search-input" id="tfSearchInput" placeholder="Film veya Dizi adı yazın (ör: Interstellar, Inception, Breaking Bad)..." autocomplete="off">' +
+          '<div class="tauruss-suggestions-dropdown" id="tfSuggestions"></div>' +
+        '</div>' +
         '<button class="tauruss-go-btn" id="tfSearchGo">▶ Oynat</button>' +
       '</div>' +
 
@@ -5089,6 +5108,7 @@ function showTaurussCatalog(){
             '<button class="tauruss-sync-btn" id="tfSyncZero" title="Senkronu sıfırla (Kısayol: \)"><span id="tfSyncVal" style="min-width:36px;text-align:center">0.0s</span></button>' +
             '<button class="tauruss-sync-btn" id="tfSyncPlus" title="Altyazıyı 0.2s ileri al (Kısayol: ])">+0.2s</button>' +
             '<button class="tauruss-sync-btn" id="tfSyncPlus1" title="Altyazıyı 1s ileri al">+1s</button>' +
+            '<button class="tauruss-auto-sync-btn" id="tfAutoSync" title="Konuşulan sesi duyduğunuz an bu butona (veya S tuşuna) basın; sistem zaman farkını otomatik hesaplayıp tüm filmi anında eşitler.">🎯 Sesi Duyunca Bas (Oto-Senkron)</button>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -5117,7 +5137,7 @@ function showTaurussCatalog(){
         '</div>' +
         '<div class="tauruss-learning-state" id="taurussLearningState"><span>Altyazı köprüsü devrede</span><span id="taurussCueCount">0 diyalog</span></div>' +
         '<div class="tauruss-cues" id="taurussCues" aria-live="polite"></div>' +
-        '<div class="tauruss-learning-foot">💡 Sağdaki diyaloglara tıklayarak doğrudan o saniyeye atlayabilir, kelimelere tıklayarak telaffuz ve sözlük anlamına bakabilirsin.</div>' +
+        '<div class="tauruss-learning-foot">💡 <strong>Otomatik Senkron:</strong> Konuşulan sesi duyduğunuz an <strong>"🎯 Sesi Duyunca Bas"</strong> butonuna (veya klavyeden <strong>S</strong> tuşuna) basın; ya da sağdaki konuşulan satırdan <strong>"🎯 Sese Eşitle"</strong>ye tıklayın. Sistem tüm filmi tek tıkla sese eşitler. İnce ayar için <strong>[</strong> ve <strong>]</strong> tuşlarını kullanabilirsiniz.</div>' +
       '</aside>' +
     '</div>' +
   '</div>';
@@ -5145,6 +5165,9 @@ var TaurussLearning = {
   cache: Object.create(null),
   mode: "cinema",
   currentCueIdx: -1,
+  searchTimer: null,
+  activeSuggestions: [],
+  selectedSuggestionIdx: -1,
 
   mount: function(){
     this.root = main;
@@ -5230,7 +5253,44 @@ var TaurussLearning = {
     };
 
     if(searchGo) searchGo.onclick = function(){ self.handleSearch(); };
-    if(searchInput) searchInput.onkeydown = function(e){ if(e.key === "Enter") self.handleSearch(); };
+    if(searchInput) {
+      searchInput.oninput = function(){ self.onSearchInput(searchInput.value); };
+      searchInput.onkeydown = function(e){
+        var suggBox = el("tfSuggestions");
+        var items = suggBox ? suggBox.querySelectorAll(".tauruss-sugg-item") : [];
+
+        if(e.key === "ArrowDown" && items.length > 0){
+          e.preventDefault();
+          self.selectedSuggestionIdx = Math.min(self.selectedSuggestionIdx + 1, items.length - 1);
+          items.forEach(function(it, i){ it.classList.toggle("selected", i === self.selectedSuggestionIdx); });
+          if(items[self.selectedSuggestionIdx]) items[self.selectedSuggestionIdx].scrollIntoView({ block: "nearest" });
+        } else if(e.key === "ArrowUp" && items.length > 0){
+          e.preventDefault();
+          self.selectedSuggestionIdx = Math.max(self.selectedSuggestionIdx - 1, 0);
+          items.forEach(function(it, i){ it.classList.toggle("selected", i === self.selectedSuggestionIdx); });
+          if(items[self.selectedSuggestionIdx]) items[self.selectedSuggestionIdx].scrollIntoView({ block: "nearest" });
+        } else if(e.key === "Enter"){
+          if(self.selectedSuggestionIdx >= 0 && self.activeSuggestions[self.selectedSuggestionIdx]){
+            e.preventDefault();
+            self.pickSuggestion(self.selectedSuggestionIdx);
+          } else {
+            self.handleSearch();
+          }
+        } else if(e.key === "Escape"){
+          if(suggBox) suggBox.style.display = "none";
+        }
+      };
+    }
+
+    if(!window._taurussDocBound){
+      window._taurussDocBound = true;
+      document.addEventListener("click", function(e){
+        if(!e.target.closest(".tauruss-search-box-wrap")){
+          var s = el("tfSuggestions");
+          if(s) s.style.display = "none";
+        }
+      });
+    }
 
     if(chipsContainer) {
       chipsContainer.onclick = function(e){
@@ -5273,12 +5333,14 @@ var TaurussLearning = {
     var syncZero = el("tfSyncZero");
     var syncPlus = el("tfSyncPlus");
     var syncPlus1 = el("tfSyncPlus1");
+    var autoSyncBtn = el("tfAutoSync");
 
     if(syncMinus1) syncMinus1.onclick = function(){ self.adjustSync(-1.0); };
     if(syncMinus) syncMinus.onclick = function(){ self.adjustSync(-0.2); };
     if(syncZero) syncZero.onclick = function(){ self.adjustSync(0, 0.0); };
     if(syncPlus) syncPlus.onclick = function(){ self.adjustSync(0.2); };
     if(syncPlus1) syncPlus1.onclick = function(){ self.adjustSync(1.0); };
+    if(autoSyncBtn) autoSyncBtn.onclick = function(){ self.autoSyncCurrent(); };
 
     if(!window._taurussKeyBound){
       window._taurussKeyBound = true;
@@ -5288,6 +5350,7 @@ var TaurussLearning = {
         if(e.key === "["){ self.adjustSync(-0.2); }
         else if(e.key === "]"){ self.adjustSync(0.2); }
         else if(e.key === "\\"){ self.adjustSync(0, 0.0); }
+        else if(e.key === "s" || e.key === "S"){ self.autoSyncCurrent(); }
       });
     }
   },
@@ -5432,24 +5495,254 @@ var TaurussLearning = {
     }
 
     self.setStatus("'" + query + "' aranıyor…");
-    fetch("https://api.tvmaze.com/singlesearch/shows?q=" + encodeURIComponent(query))
+    var endpoint = self.currentType === "tv"
+      ? "https://v3-cinemeta.strem.io/catalog/series/top/search=" + encodeURIComponent(query) + ".json"
+      : "https://v3-cinemeta.strem.io/catalog/movie/top/search=" + encodeURIComponent(query) + ".json";
+
+    fetch(endpoint)
       .then(function(res){ return res.json(); })
       .then(function(data){
-        if(data && data.externals && data.externals.imdb){
-          self.currentId = data.externals.imdb;
-          self.currentType = "tv";
-          self.currentTitle = data.name + " (Dizi S" + self.season + "E" + self.episode + ")";
-          if(el("tfTypeTv")) el("tfTypeTv").click();
+        var list = (data && data.metas) || [];
+        if(list.length > 0){
+          var item = list[0];
+          self.currentId = item.id;
+          self.currentTitle = item.name;
           self.reloadPlayer();
         } else {
-          self.currentTitle = query;
-          self.reloadPlayer();
+          var altEndpoint = self.currentType === "tv"
+            ? "https://v3-cinemeta.strem.io/catalog/movie/top/search=" + encodeURIComponent(query) + ".json"
+            : "https://v3-cinemeta.strem.io/catalog/series/top/search=" + encodeURIComponent(query) + ".json";
+          fetch(altEndpoint)
+            .then(function(r){ return r.json(); })
+            .then(function(d2){
+              var l2 = (d2 && d2.metas) || [];
+              if(l2.length > 0){
+                var item2 = l2[0];
+                self.currentId = item2.id;
+                self.currentTitle = item2.name;
+                self.currentType = self.currentType === "tv" ? "movie" : "tv";
+                if(self.currentType === "tv" && el("tfTypeTv")) el("tfTypeTv").click();
+                if(self.currentType === "movie" && el("tfTypeMovie")) el("tfTypeMovie").click();
+                self.reloadPlayer();
+              } else {
+                self.currentTitle = query;
+                self.reloadPlayer();
+              }
+            })
+            .catch(function(){
+              self.currentTitle = query;
+              self.reloadPlayer();
+            });
         }
       })
       .catch(function(){
         self.currentTitle = query;
         self.reloadPlayer();
       });
+  },
+
+  onSearchInput: function(q){
+    var self = this;
+    clearTimeout(self.searchTimer);
+    var clean = String(q || "").trim();
+    var suggBox = el("tfSuggestions");
+    if(!suggBox) return;
+
+    if(clean.length < 2){
+      suggBox.style.display = "none";
+      suggBox.innerHTML = "";
+      self.activeSuggestions = [];
+      self.selectedSuggestionIdx = -1;
+      return;
+    }
+
+    self.searchTimer = setTimeout(function(){
+      self.fetchSuggestions(clean);
+    }, 220);
+  },
+
+  fetchSuggestions: function(query){
+    var self = this;
+    var suggBox = el("tfSuggestions");
+    if(!suggBox) return;
+
+    suggBox.innerHTML = '<div style="padding:12px;color:#94a3b8;font-size:12px;display:flex;align-items:center;gap:6px"><span>⏳</span> "' + query + '" aranıyor…</div>';
+    suggBox.style.display = "block";
+
+    var pMovie = fetch("https://v3-cinemeta.strem.io/catalog/movie/top/search=" + encodeURIComponent(query) + ".json")
+      .then(function(r){ return r.json(); })
+      .catch(function(){ return { metas: [] }; });
+
+    var pSeries = fetch("https://v3-cinemeta.strem.io/catalog/series/top/search=" + encodeURIComponent(query) + ".json")
+      .then(function(r){ return r.json(); })
+      .catch(function(){ return { metas: [] }; });
+
+    Promise.all([pMovie, pSeries])
+      .then(function(res){
+        var movies = (res[0] && res[0].metas) || [];
+        var series = (res[1] && res[1].metas) || [];
+        var combined = [];
+
+        if(self.currentType === "tv"){
+          series.slice(0, 5).forEach(function(m){ combined.push(Object.assign({ itemType: "tv" }, m)); });
+          movies.slice(0, 4).forEach(function(m){ combined.push(Object.assign({ itemType: "movie" }, m)); });
+        } else {
+          movies.slice(0, 5).forEach(function(m){ combined.push(Object.assign({ itemType: "movie" }, m)); });
+          series.slice(0, 4).forEach(function(m){ combined.push(Object.assign({ itemType: "tv" }, m)); });
+        }
+
+        self.activeSuggestions = combined;
+        self.selectedSuggestionIdx = -1;
+        self.renderSuggestions(combined);
+      })
+      .catch(function(){
+        if(suggBox) suggBox.style.display = "none";
+      });
+  },
+
+  renderSuggestions: function(items){
+    var self = this;
+    var suggBox = el("tfSuggestions");
+    if(!suggBox) return;
+
+    if(!items || !items.length){
+      suggBox.innerHTML = '<div style="padding:12px;color:#94a3b8;font-size:12px">Sonuç bulunamadı. IMDb ID (ör: tt1375666) girebilirsiniz.</div>';
+      suggBox.style.display = "block";
+      return;
+    }
+
+    var html = items.map(function(item, idx){
+      var isMovie = item.itemType === "movie";
+      var badgeCls = isMovie ? "movie" : "series";
+      var badgeText = isMovie ? "🎬 Film" : "📺 Dizi";
+      var posterImg = item.poster
+        ? '<img class="tauruss-sugg-poster" src="' + item.poster + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">'
+        : '<div class="tauruss-sugg-poster" style="display:flex;align-items:center;justify-content:center;font-size:18px">' + (isMovie ? '🎬' : '📺') + '</div>';
+
+      return '<div class="tauruss-sugg-item" data-idx="' + idx + '">' +
+        posterImg +
+        '<div class="tauruss-sugg-info">' +
+          '<div class="tauruss-sugg-title">' + item.name + '</div>' +
+          '<div class="tauruss-sugg-meta">' +
+            '<span class="tauruss-sugg-badge ' + badgeCls + '">' + badgeText + '</span>' +
+            (item.year || item.releaseInfo ? '<span>' + (item.year || item.releaseInfo) + '</span>' : '') +
+            '<span style="opacity:.6">' + item.id + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+
+    suggBox.innerHTML = html;
+    suggBox.style.display = "block";
+
+    var els = suggBox.querySelectorAll(".tauruss-sugg-item");
+    els.forEach(function(elem){
+      elem.onclick = function(e){
+        e.stopPropagation();
+        var idx = parseInt(elem.getAttribute("data-idx"), 10);
+        self.pickSuggestion(idx);
+      };
+    });
+  },
+
+  pickSuggestion: function(idx){
+    var item = this.activeSuggestions[idx];
+    var suggBox = el("tfSuggestions");
+    var input = el("tfSearchInput");
+    if(suggBox) suggBox.style.display = "none";
+    if(!item) return;
+
+    if(input) input.value = item.name;
+    this.currentId = item.id;
+    this.currentTitle = item.name;
+    this.currentType = item.itemType || (item.type === "series" ? "tv" : "movie");
+
+    var typeMovie = el("tfTypeMovie");
+    var typeTv = el("tfTypeTv");
+    var seriesPick = el("tfSeriesPick");
+
+    if(this.currentType === "tv"){
+      if(typeTv) typeTv.classList.add("active");
+      if(typeMovie) typeMovie.classList.remove("active");
+      if(seriesPick) seriesPick.classList.add("show");
+    } else {
+      if(typeMovie) typeMovie.classList.add("active");
+      if(typeTv) typeTv.classList.remove("active");
+      if(seriesPick) seriesPick.classList.remove("show");
+    }
+
+    this.reloadPlayer();
+  },
+
+  autoSyncCurrent: function(){
+    if(!this.combinedCues || !this.combinedCues.length){
+      this.setStatus("Senkronlanacak altyazı bulunamadı.");
+      return;
+    }
+    var currentTime = this.lastCurrentTime || 0;
+    var nearestCue = null;
+    var minDistance = 999999;
+    var eff = currentTime - this.syncOffset;
+
+    for(var i = 0; i < this.combinedCues.length; i++){
+      var c = this.combinedCues[i];
+      var dist = Math.abs(c.start - eff);
+      if(dist < minDistance){
+        minDistance = dist;
+        nearestCue = c;
+      }
+    }
+
+    if(nearestCue){
+      var diff = currentTime - nearestCue.start;
+      var rounded = Math.round(diff * 10) / 10;
+      this.adjustSync(0, rounded);
+      var sign = rounded > 0 ? "+" : "";
+      this.setStatus("🎯 Otomatik Senkronlandı: " + sign + rounded.toFixed(1) + "s ('" + (nearestCue.en || nearestCue.tr).slice(0, 32) + "...')");
+      var badge = el("tfSubStatus");
+      if(badge){
+        badge.textContent = "🎯 Senkron: " + sign + rounded.toFixed(1) + "s";
+        badge.className = "tauruss-sub-badge found";
+      }
+    }
+  },
+
+  autoSyncToCue: function(cueId){
+    var cue = this.combinedCues.find(function(c){ return c.id === cueId; });
+    if(!cue) return;
+    var currentTime = this.lastCurrentTime || 0;
+    var diff = currentTime - cue.start;
+    var rounded = Math.round(diff * 10) / 10;
+    this.adjustSync(0, rounded);
+
+    var sign = rounded > 0 ? "+" : "";
+    this.setStatus("🎯 Otomatik Senkronlandı: " + sign + rounded.toFixed(1) + "s ('" + (cue.en || cue.tr).slice(0, 32) + "...')");
+    var badge = el("tfSubStatus");
+    if(badge){
+      badge.textContent = "🎯 Senkron: " + sign + rounded.toFixed(1) + "s";
+      badge.className = "tauruss-sub-badge found";
+    }
+  },
+
+  handleNativeCue: function(d){
+    if(!d || !d.text || !this.combinedCues || !this.combinedCues.length) return;
+    var cleanNative = String(d.text).toLowerCase().replace(/[^a-z0-9]/g, "");
+    if(cleanNative.length < 5) return;
+
+    for(var i = 0; i < Math.min(80, this.combinedCues.length); i++){
+      var c = this.combinedCues[i];
+      var cleanEn = String(c.en || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+      if(cleanEn.includes(cleanNative) || cleanNative.includes(cleanEn)){
+        var diff = d.currentTime - c.start;
+        var rounded = Math.round(diff * 10) / 10;
+        if(Math.abs(rounded) <= 20.0){
+          window._nativeSyncApplied = true;
+          this.adjustSync(0, rounded);
+          this.setStatus("🎯 Yerleşik altyazıyla otomatik eşitlendi (" + (rounded > 0 ? "+" : "") + rounded.toFixed(1) + "s)");
+        }
+        break;
+      }
+    }
   },
 
   reloadPlayer: function(){
@@ -5844,7 +6137,7 @@ var TaurussLearning = {
       return '<article class="tauruss-cue" data-idx="' + item.id + '" data-start="' + item.start + '" onclick="TaurussLearning.jumpToTime(' + item.start + ')">' +
         '<div class="tauruss-cue-en">' + (item.en ? self.formatClickableWords(item.en) : '<em>İngilizce diyalog</em>') + '</div>' +
         '<div class="tauruss-cue-tr">' + (item.tr ? item.tr : '<span style="color:#64748b;font-style:italic">Çevirisi yükleniyor…</span>') + '</div>' +
-        '<div class="tauruss-cue-time"><span>' + self.formatTime(item.start) + '</span><span style="opacity:.7">O saniyeye git ↗</span></div>' +
+        '<div class="tauruss-cue-time"><span>' + self.formatTime(item.start) + '</span><button type="button" class="tauruss-cue-sync-btn" onclick="event.stopPropagation(); TaurussLearning.autoSyncToCue(' + item.id + ');" title="Şu an bu cümle konuşuluyor — senkronu buraya kilitle">🎯 Sese Eşitle</button><span style="opacity:.7">O saniyeye git ↗</span></div>' +
       '</article>';
     }).join("");
 
@@ -6043,6 +6336,10 @@ window.addEventListener("message", function(event){
   }
   if(d.type === "CAPTION"){
     TaurussLearning.addLiveCaption(d);
+    return;
+  }
+  if(d.type === "NATIVE_CUE" && !window._nativeSyncApplied){
+    TaurussLearning.handleNativeCue(d);
     return;
   }
 });
