@@ -5226,6 +5226,8 @@ var CH = {
   msgs: [], maxLen: 500, state: "idle", unread: {}, needCode: false,
   name: "", code: "", mode: "sse", seq: 0, pollTimer: null, sseWatch: null, pollFail: 0
 };
+var CHAT_API_BASE = "https://learnenglish-chat-twinterrordark.onrender.com";
+function chatUrl(path){ return CHAT_API_BASE + path; }
 function chSave(k, v){ try{ localStorage.setItem("a2gram_chat_" + k, v); }catch(e){} }
 function chLoad(k){ try{ return localStorage.getItem("a2gram_chat_" + k) || ""; }catch(e){ return ""; } }
 function chTime(ts){
@@ -5233,7 +5235,7 @@ function chTime(ts){
   return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
 }
 function chApi(p, body){
-  return fetch(p, body ? {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)}
+  return fetch(chatUrl(p), body ? {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)}
                        : {cache:"no-store"})
     .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || ("HTTP " + r.status)); return j; }); });
 }
@@ -5427,7 +5429,7 @@ function chatConnect(){
   chatStop();
   CH.state = "connecting"; CH.seq = 0; chatDot();
 
-  var es = new EventSource("/api/chat/stream?id=" + encodeURIComponent(CH.id));
+  var es = new EventSource(chatUrl("/api/chat/stream?id=" + encodeURIComponent(CH.id)));
   CH.es = es;
 
   /* SSE'den bu süre içinde tek olay bile gelmezse yoklamaya geç */
@@ -5466,7 +5468,7 @@ function chatPollStart(){
 function chatPollOnce(ilk){
   if(!CH.id || CH.mode !== "poll") return;
   var yol = "/api/chat/poll?id=" + encodeURIComponent(CH.id) + (ilk ? "" : "&since=" + CH.seq);
-  fetch(yol, {cache:"no-store"}).then(function(r){
+  fetch(chatUrl(yol), {cache:"no-store"}).then(function(r){
     if(r.status === 401) throw new Error("Oturum yok");
     return r.json();
   }).then(function(d){

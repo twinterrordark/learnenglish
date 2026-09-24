@@ -3,3 +3,6 @@ chat-log.json
 
 # O anki tünel adresi, her çalıştırmada değişir.
 link.txt
+
+# Yönetici anahtarı (kendiliğinden oluşur, depoya girmesin)
+.admin-key
