@@ -751,13 +751,32 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
 .tauruss-learning-foot{padding:8px 12px;border-top:1px solid var(--line);font-size:10.5px;line-height:1.4;color:var(--muted)}
 
 @media(max-width:960px){
-  .tauruss-learning-layout{grid-template-columns:1fr}
-  .tauruss-learning-frame{height:55vh;min-height:350px}
-  .tauruss-learning-panel{min-height:360px;max-height:55vh}
+  .tauruss-learning-layout{grid-template-columns:1fr;gap:12px}
+  .tauruss-learning-frame{width:100%;aspect-ratio:16/9;height:auto;min-height:220px;max-height:60vh}
+  .tauruss-learning-panel{min-height:300px;max-height:60vh}
 }
-@media(max-width:700px){
-  .tauruss-hero{padding:12px 14px}
-  .tauruss-search-row{flex-direction:column;align-items:stretch}
+@media(max-width:768px){
+  .tauruss-hero{padding:12px;border-radius:12px}
+  .tauruss-hero-top{flex-direction:column;align-items:stretch;gap:8px}
+  .tauruss-btn-group{display:grid;grid-template-columns:repeat(auto-fit, minmax(110px, 1fr));gap:6px}
+  .tauruss-pill-btn{justify-content:center;padding:8px;font-size:11.5px;min-height:36px}
+  .tauruss-search-row{flex-direction:column;align-items:stretch;gap:8px;padding:8px}
+  .tauruss-search-box-wrap{width:100%}
+  .tauruss-search-input{font-size:13.5px;padding:7px 4px}
+  .tauruss-type-toggle{width:100%;display:flex}
+  .tauruss-type-btn{flex:1;text-align:center;padding:7px}
+  .tauruss-series-pick{width:100%;justify-content:space-between;padding:4px 0}
+  .tauruss-series-pick input{width:52px;padding:5px;font-size:13px}
+  .tauruss-go-btn{width:100%;padding:9px;font-size:13.5px}
+  .tauruss-sub-strip{flex-direction:column;align-items:stretch;gap:8px;padding:10px}
+  .tauruss-sub-group{width:100%;justify-content:space-between}
+  .tauruss-sub-btn{flex:1;min-height:36px;justify-content:center;font-size:11px;padding:6px 4px}
+  .tauruss-sync-box{width:100%;justify-content:space-between}
+  .tauruss-sync-btn{padding:5px 8px;font-size:11px;min-height:32px}
+  .tauruss-auto-sync-btn{width:100%;justify-content:center;padding:7px 10px;font-size:11.5px;min-height:34px}
+  .tauruss-party-drawer{position:fixed;bottom:0;right:0;left:0;width:100%;max-width:100%;border-radius:18px 18px 0 0;max-height:84vh}
+  .tauruss-learning-frame{aspect-ratio:16/9;min-height:200px}
+  .tauruss-party-start-now-btn{padding:14px 24px;font-size:15px;width:90%}
 }
 .tauruss-frame{display:block;width:100%;height:calc(100vh - 220px);min-height:560px;border:0;background:#090a0d}
 @media(max-width:700px){.tauruss-frame{height:calc(100vh - 195px);min-height:480px}}
@@ -5204,7 +5223,7 @@ function showTaurussCatalog(){
           '<a class="ytstudy-external" id="taurussExtLink" href="https://vidfast.vc/movie/tt0816692" target="_blank" rel="noopener noreferrer">Yeni sekmede aç ↗</a>' +
         '</div>' +
         '<div class="tauruss-frame-container" style="position:relative">' +
-          '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidfast.vc/movie/tt0816692" title="VidFast Film Player" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
+          '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidfast.vc/movie/tt0816692" title="VidFast Film Player" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
           '<div class="tauruss-party-countdown" id="tfPartyCountdown" style="display:none">' +
             '<div class="tauruss-countdown-num" id="tfCountdownNum">3</div>' +
             '<div class="tauruss-countdown-sub" id="tfCountdownSub">Eşzamanlı başlatılıyor...</div>' +
@@ -6823,6 +6842,15 @@ var WatchParty = {
         if(packet.data){
           self.participants[senderId].isReady = Boolean(packet.data.isReady);
           self.participants[senderId].currentTime = Number(packet.data.currentTime) || 0;
+          if(!self.isHost && packet.isHost && !packet.data.paused && typeof packet.data.currentTime === "number"){
+            var cur = TaurussLearning.lastCurrentTime || 0;
+            var drift = Math.abs(cur - packet.data.currentTime);
+            if(drift > 3.5 && Date.now() > self.suppressBroadcastUntil){
+              self.suppressBroadcastUntil = Date.now() + 2000;
+              TaurussLearning.jumpToTime(packet.data.currentTime);
+              TaurussLearning.playVideo();
+            }
+          }
         }
         self.renderMembersList();
         break;
@@ -6955,7 +6983,13 @@ var WatchParty = {
         setTimeout(function(){ TaurussLearning.playVideo(); }, 250);
         setTimeout(function(){ TaurussLearning.playVideo(); }, 600);
         setTimeout(function(){ TaurussLearning.playVideo(); }, 1200);
-      } else if(count <= -2){
+
+        setTimeout(function(){
+          if(cdEl && cdEl.style.display !== "none"){
+            cdEl.style.display = "none";
+          }
+        }, 1800);
+      } else if(count <= -1){
         clearInterval(self.countdownTimer);
         cdEl.style.display = "none";
       }
@@ -7007,7 +7041,7 @@ var WatchParty = {
     this.sendMessage("PING", {
       isReady: this.isReady,
       currentTime: TaurussLearning.lastCurrentTime || 0,
-      paused: true
+      paused: Boolean(TaurussLearning.isPaused)
     });
   },
 
@@ -7209,6 +7243,10 @@ var WatchParty = {
         (this.isHost ? '<button class="tauruss-btn-start" id="tfBtnStartAll">🎬 Herkesi Başlat (3-2-1 Geri Sayım)</button>' : '') +
       '</div>' +
 
+      '<div style="background:rgba(79,70,229,.12);border:1px solid rgba(79,70,229,.25);border-radius:10px;padding:8px 12px;font-size:11.5px;color:var(--text);margin-bottom:10px;line-height:1.45">' +
+        '📱 <strong>Mobil Uyarısı:</strong> Telefonda tarayıcı güvenlik politikası nedeniyle geri sayım bitince videoya bir kez dokunmanız gerekebilir. Tüm açılır reklamlar otomatik engellenmiştir.' +
+      '</div>' +
+
       '<div>' +
         '<div class="tauruss-members-title"><span>👥 Katılımcılar (' + Object.keys(this.participants).length + ')</span>' +
         '<span style="font-size:10px;text-transform:none;opacity:.8">' + (this.isHost ? '👑 Senkron Sende' : '👤 Senkron Dinleniyor') + '</span></div>' +
@@ -7292,6 +7330,7 @@ window.addEventListener("message", function(event){
     return;
   }
   if(d.type === "PLAYBACK_STATUS"){
+    TaurussLearning.isPaused = Boolean(d.paused);
     if(window.WatchParty && window.WatchParty.active){
       window.WatchParty.onLocalPlaybackStatus(d);
     }

@@ -2,6 +2,22 @@
   "use strict";
   if (!/(?:^|\.)vidfast\.(pro|vc)$/i.test(location.hostname)) return;
 
+  // Block ad popups inside VidFast
+  try {
+    window.open = function () { return null; };
+  } catch (_) {}
+
+  document.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest("a");
+    if (a && a.target === "_blank") {
+      var href = String(a.href || "");
+      if (!href.includes("vidfast")) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
+  }, true);
+
   var attachedVideos = new WeakSet();
   var lastTimeSent = 0;
   var activeLangState = "en"; // "en", "tr", "off"
