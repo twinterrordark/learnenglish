@@ -666,25 +666,86 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
 .ytstudy-lang.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
 .ytstudy-note{margin-top:13px;padding:11px 12px;border-radius:10px;background:var(--surface2);font-size:11.5px;line-height:1.55;color:var(--muted)}
 .ytstudy-error{color:var(--err);font-size:12px;margin-top:8px}
-.tauruss-wrap{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
-.tauruss-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;border-bottom:1px solid var(--line)}
-.tauruss-toolbar strong{font-size:13px}
-.tauruss-toolbar span{font-size:11px;color:var(--muted)}
+.wrap:has(.tauruss-theater){max-width:1560px}
+.tauruss-theater{display:flex;flex-direction:column;gap:14px;width:100%}
+.tauruss-hero{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 20px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
+.tauruss-hero-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.tauruss-title-block h1{margin:0;font-size:20px;font-weight:800;letter-spacing:-.3px}
+.tauruss-title-block p{margin:3px 0 0;font-size:12.5px;color:var(--muted)}
+.tauruss-btn-group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tauruss-pill-btn{padding:7px 13px;border-radius:9px;font-size:12px;font-weight:700;border:1px solid var(--line);background:var(--surface2);color:var(--text);transition:.15s;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.tauruss-pill-btn:hover{border-color:var(--accent)}
+.tauruss-pill-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(79,70,229,.28)}
+
+.tauruss-search-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--surface2);padding:8px 10px;border-radius:12px;border:1px solid var(--line)}
+.tauruss-search-input{flex:1;min-width:220px;border:none;background:transparent;color:var(--text);font-size:13.5px;outline:none;padding:5px 6px}
+.tauruss-type-toggle{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:2px}
+.tauruss-type-btn{padding:5px 10px;border-radius:6px;font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer;transition:.12s}
+.tauruss-type-btn.active{background:var(--accent);color:#fff}
+.tauruss-series-pick{display:none;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--muted)}
+.tauruss-series-pick.show{display:flex}
+.tauruss-series-pick input{width:46px;padding:4px 6px;text-align:center;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-size:12px;font-weight:700}
+.tauruss-go-btn{padding:7px 15px;border-radius:8px;background:var(--accent);color:#fff;font-size:12.5px;font-weight:700;border:none;cursor:pointer;transition:.15s}
+.tauruss-go-btn:hover{filter:brightness(1.1);transform:scale(1.02)}
+
+.tauruss-chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tauruss-chips::-webkit-scrollbar{display:none}
+.tauruss-chip{flex:none;padding:6px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-size:12px;font-weight:650;color:var(--text);cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:5px}
+.tauruss-chip:hover{border-color:var(--accent);transform:translateY(-1px)}
+.tauruss-chip.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:800}
+
+.tauruss-wrap{background:#090a0d;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);position:relative;display:flex;flex-direction:column}
+.tauruss-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line)}
+.tauruss-toolbar strong{font-size:13px;display:flex;align-items:center;gap:6px}
+.tauruss-toolbar span{font-size:11.5px;color:var(--muted)}
+
+/* CINEMA MODE: FULL WIDTH & LARGE SCREEN */
+.tauruss-learning-layout.cinema-mode{display:flex;flex-direction:column;gap:14px;width:100%}
+.tauruss-learning-layout.cinema-mode .tauruss-learning-frame{display:block;width:100%;height:min(78vh, 820px);min-height:580px;border:0;background:#05070a}
+
+/* SPLIT MODE */
+.tauruss-learning-layout.split-mode{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(320px,.9fr);gap:14px;align-items:stretch}
+.tauruss-learning-layout.split-mode .tauruss-learning-frame{display:block;width:100%;height:calc(100vh - 250px);min-height:540px;border:0;background:#05070a}
+.tauruss-learning-layout.split-mode .tauruss-spotlight{display:none}
+.tauruss-learning-layout.cinema-mode .tauruss-learning-panel{display:none}
+
+/* SPOTLIGHT BAR IN CINEMA MODE */
+.tauruss-spotlight{background:linear-gradient(180deg,#0d111a,#141926);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:16px 20px;display:flex;flex-direction:column;gap:8px;box-shadow:0 6px 24px rgba(0,0,0,.3)}
+.tauruss-spotlight-top{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:700;letter-spacing:.7px;color:#94a3b8;text-transform:uppercase}
+.tauruss-spotlight-en{font-size:1.32rem;line-height:1.45;font-weight:700;color:#f8fafc;user-select:text}
+.sub-word{cursor:pointer;border-radius:4px;padding:1px 3px;margin:0 1px;transition:.12s;display:inline-block}
+.sub-word:hover{background:rgba(99,102,241,.35);color:#a5b4fc;text-decoration:underline}
+.tauruss-spotlight-tr{font-size:1.12rem;line-height:1.45;font-weight:600;color:#38bdf8}
+.tauruss-spotlight-word{margin-top:4px;padding:7px 12px;border-radius:8px;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.35);color:#e0e7ff;font-size:12.5px;display:flex;align-items:center;justify-content:space-between}
+
+/* PANEL & DIALOGUE LIST */
+.tauruss-learning-panel{display:flex;flex-direction:column;min-height:540px;max-height:calc(100vh - 250px);background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tauruss-learning-head{padding:13px 15px;border-bottom:1px solid var(--line)}
+.tauruss-learning-head strong{font-size:14.5px}.tauruss-learning-head p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.45}
+.tauruss-learning-state{padding:9px 14px;background:var(--surface2);color:var(--muted);font-size:11.5px;line-height:1.5;display:flex;align-items:center;justify-content:space-between}
+.tauruss-cues{overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;flex:1}
+.tauruss-cue{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);transition:.12s}
+.tauruss-cue:hover{border-color:var(--accent)}
+.tauruss-cue-en{font-size:13.5px;line-height:1.45;font-weight:700}.tauruss-cue-tr{font-size:12.5px;line-height:1.45;color:var(--accent);margin-top:4px;font-weight:600}
+.tauruss-cue-time{font-size:10.5px;color:var(--muted);margin-top:4px}
+.tauruss-learning-foot{padding:9px 12px;border-top:1px solid var(--line);font-size:11px;line-height:1.45;color:var(--muted)}
+
+/* COLLAPSIBLE HISTORY DRAWER FOR CINEMA MODE */
+.tauruss-drawer{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tauruss-drawer-summary{padding:12px 16px;cursor:pointer;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between;list-style:none}
+.tauruss-drawer-summary::-webkit-details-marker{display:none}
+
+@media(max-width:900px){
+  .tauruss-learning-layout.split-mode{grid-template-columns:1fr}
+  .tauruss-learning-layout.cinema-mode .tauruss-learning-frame{height:58vh;min-height:350px}
+  .tauruss-spotlight-en{font-size:1.15rem}
+  .tauruss-spotlight-tr{font-size:1rem}
+}
+@media(max-width:700px){
+  .tauruss-hero{padding:12px 14px}
+  .tauruss-search-row{flex-direction:column;align-items:stretch}
+}
 .tauruss-frame{display:block;width:100%;height:calc(100vh - 220px);min-height:560px;border:0;background:#090a0d}
-.tauruss-learning-layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(280px,.82fr);gap:14px;align-items:stretch}
-.tauruss-learning-frame{display:block;width:100%;height:calc(100vh - 260px);min-height:540px;border:0;background:#090a0d}
-.tauruss-learning-panel{display:flex;flex-direction:column;min-height:540px;max-height:calc(100vh - 260px);background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.tauruss-learning-head{padding:15px;border-bottom:1px solid var(--line)}
-.tauruss-learning-head strong{font-size:15px}.tauruss-learning-head p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
-.tauruss-learning-state{padding:9px 12px;background:var(--surface2);color:var(--muted);font-size:11px;line-height:1.5}
-.tauruss-cues{overflow:auto;padding:10px;display:flex;flex-direction:column;gap:8px;flex:1}
-.tauruss-cue{padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface2)}
-.tauruss-cue-en{font-size:13px;line-height:1.45;font-weight:650}.tauruss-cue-tr{font-size:12px;line-height:1.45;color:var(--accent);margin-top:5px}
-.tauruss-cue-time{font-size:10px;color:var(--muted);margin-top:5px}
-.tauruss-learning-foot{padding:10px 12px;border-top:1px solid var(--line);font-size:10px;line-height:1.45;color:var(--muted)}
-@media(max-width:900px){.tauruss-learning-layout{grid-template-columns:1fr}.tauruss-learning-panel{min-height:350px;max-height:55vh}.tauruss-learning-frame{height:65vh;min-height:400px}}
-@media(max-width:800px){.ytstudy-grid{grid-template-columns:1fr}.ytstudy-hero{padding:21px 17px}.ytstudy-player-meta{padding:12px}}
-@media(max-width:520px){.ytstudy-form{flex-direction:column}.ytstudy-form .btn{width:100%}.ytstudy-player{min-height:200px}}
 @media(max-width:700px){.tauruss-frame{height:calc(100vh - 195px);min-height:480px}}
 </style>
 </head>
@@ -718,7 +779,7 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
     <button class="nav-special" id="vocabBtn" style="background:linear-gradient(135deg,#0891b2,#0d9488)">📚 &nbsp;Kelime Hazinesi</button>
     <button class="nav-special" id="listenBtn" style="background:linear-gradient(135deg,#e11d48,#f97316)">🎧 &nbsp;Dinleme Pratiği</button>
     <button class="nav-special" id="ytStudyBtn" style="background:linear-gradient(135deg,#6366f1,#0d9488)">▶ &nbsp;YouTube ile İzle</button>
-    <button class="nav-special" id="taurussBtn" style="background:linear-gradient(135deg,#191919,#3a3a3a)">🎬 &nbsp;Film + Çift Altyazı</button>
+    <button class="nav-special" id="taurussBtn" style="background:linear-gradient(135deg,#0284c7,#2563eb)">🎬 &nbsp;Film & Dizi İzle (VidFast)</button>
     <button class="nav-special" id="chatBtn" style="background:linear-gradient(135deg,#475569,#1e293b)">💬 &nbsp;Sohbet</button>
     <div id="navList"></div>
   </nav>
@@ -4923,69 +4984,506 @@ function examResult(){
 }
 
 /* ---------- Dinleme merkezi: bütün konuların video sayıları ---------- */
+/* ---------- VidFast & Tauruss Sinema Modu & Çift Altyazı ---------- */
+var POPULAR_MOVIES = [
+  { id: "tt0816692", title: "Interstellar", tr: "Yıldızlararası", icon: "🚀", type: "movie" },
+  { id: "tt1375666", title: "Inception", tr: "Başlangıç", icon: "🌀", type: "movie" },
+  { id: "tt0468569", title: "The Dark Knight", tr: "Kara Şövalye", icon: "🦇", type: "movie" },
+  { id: "tt0133093", title: "The Matrix", tr: "The Matrix", icon: "🕶️", type: "movie" },
+  { id: "tt0137523", title: "Fight Club", tr: "Dövüş Kulübü", icon: "🥊", type: "movie" },
+  { id: "tt0110912", title: "Pulp Fiction", tr: "Pulp Fiction", icon: "☕", type: "movie" },
+  { id: "tt0109830", title: "Forrest Gump", tr: "Forrest Gump", icon: "🍫", type: "movie" },
+  { id: "tt0111161", title: "Shawshank Redemption", tr: "Esaretin Bedeli", icon: "🔨", type: "movie" },
+  { id: "tt0172495", title: "Gladiator", tr: "Gladyatör", icon: "⚔️", type: "movie" },
+  { id: "tt15398776", title: "Oppenheimer", tr: "Oppenheimer", icon: "💣", type: "movie" },
+  { id: "tt4633694", title: "Spider-Man", tr: "Spider-Verse", icon: "🕷️", type: "movie" },
+  { id: "tt0241527", title: "Harry Potter 1", tr: "Felsefe Taşı", icon: "⚡", type: "movie" },
+  { id: "tt0120737", title: "Lord of the Rings 1", tr: "Yüzük Kardeşliği", icon: "💍", type: "movie" },
+  { id: "tt0993846", title: "Wolf of Wall Street", tr: "Para Avcısı", icon: "📈", type: "movie" },
+  { id: "tt0903747", title: "Breaking Bad", tr: "Breaking Bad (S1E1)", icon: "🧪", type: "tv", s: 1, e: 1 },
+  { id: "tt4574334", title: "Stranger Things", tr: "Stranger Things (S1E1)", icon: "🚲", type: "tv", s: 1, e: 1 },
+  { id: "tt0108778", title: "Friends", tr: "Friends (S1E1)", icon: "☕", type: "tv", s: 1, e: 1 }
+];
+
+var MOVIE_DICT = {
+  "interstellar": "tt0816692", "yildizlararasi": "tt0816692",
+  "inception": "tt1375666", "baslangic": "tt1375666",
+  "dark knight": "tt0468569", "batman": "tt0468569", "kara sovalye": "tt0468569",
+  "matrix": "tt0133093", "the matrix": "tt0133093",
+  "fight club": "tt0137523", "dovus kulubu": "tt0137523",
+  "pulp fiction": "tt0110912", "ucuz roman": "tt0110912",
+  "forrest gump": "tt0109830",
+  "shawshank": "tt0111161", "shawshank redemption": "tt0111161", "esaretin bedeli": "tt0111161",
+  "gladiator": "tt0172495", "gladyator": "tt0172495",
+  "oppenheimer": "tt15398776",
+  "godfather": "tt0068646", "the godfather": "tt0068646", "baba": "tt0068646",
+  "titanic": "tt0120338",
+  "avatar": "tt0499549",
+  "whiplash": "tt2582802",
+  "dune": "tt1160419", "dune 2": "tt15239678",
+  "barbie": "tt1517268",
+  "spider man": "tt4633694", "spiderman": "tt4633694",
+  "harry potter": "tt0241527",
+  "lord of the rings": "tt0120737", "yuzuklerin efendisi": "tt0120737",
+  "wolf of wall street": "tt0993846",
+  "breaking bad": "tt0903747",
+  "stranger things": "tt4574334",
+  "friends": "tt0108778",
+  "game of thrones": "tt0944947", "got": "tt0944947",
+  "the office": "tt0386676", "office": "tt0386676",
+  "sherlock": "tt1475582",
+  "peaky blinders": "tt2442560",
+  "chernobyl": "tt8236336",
+  "better call saul": "tt3032476"
+};
+
 function showTaurussCatalog(){
   current = null; closeNav();
-  main.innerHTML = '<div class="crumb">FİLMLE İNGİLİZCE · TAURUSS</div>'+
-    '<h1 class="topic-title">Filmi izle, altyazıyı öğren</h1>'+
-    '<p class="topic-sub">Tauruss sayfasını solda aç. Filmi başlatıp VidFast player’da English subtitles’ı etkinleştir; altyazı ve Türkçe karşılığı sağ panelde görünür.</p>'+
-    '<div class="tauruss-learning-layout"><section class="tauruss-wrap"><div class="tauruss-toolbar"><div><strong>Tauruss · Film ve diziler</strong><br><span>Sayfa bağlantısı doğrudan yüklenir</span></div><a class="ytstudy-external" href="https://tauruss.top/movies" target="_blank" rel="noopener noreferrer">Yeni sekmede aç ↗</a></div>'+
-    '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://tauruss.top/movies" title="Tauruss filmler ve player" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe></section>'+
-    '<aside class="tauruss-learning-panel" aria-label="Çift altyazı paneli"><div class="tauruss-learning-head"><strong>🇬🇧 İngilizce · 🇹🇷 Türkçe</strong><p>VidFast altyazıları burada canlı görünür. Bir kelimeyi seçince yerel çevirisini görürsün.</p></div>'+
-    '<div class="tauruss-learning-state" id="taurussLearningState">Altyazı köprüsü bekleniyor…</div><div class="tauruss-cues" id="taurussCues" aria-live="polite"></div>'+
-    '<div class="tauruss-learning-foot" id="taurussLearningFoot">Chrome’da LearnEnglish eklentisini etkinleştir; Tauruss player’da VidFast’i seçip English subtitles’ı aç. İlk kullanımda yerel çeviri modeli indirilir; altyazı metni çeviri servisine gönderilmez.</div></aside></div>';
-  window.scrollTo(0,0); fab.style.display="none"; buildNav(el("search").value);
+  var chipsHtml = POPULAR_MOVIES.map(function(m, idx){
+    return '<button class="tauruss-chip' + (idx === 0 ? ' active' : '') + '" data-id="' + m.id + '" data-type="' + m.type + '"' + (m.s ? ' data-s="' + m.s + '" data-e="' + m.e + '"' : '') + '>' + m.icon + ' ' + m.title + '</button>';
+  }).join("");
+
+  main.innerHTML = '<div class="tauruss-theater">' +
+    '<div class="crumb">FİLMLE İNGİLİZCE · VİDFAST SİNEMA MODU</div>' +
+    '<div class="tauruss-hero">' +
+      '<div class="tauruss-hero-top">' +
+        '<div class="tauruss-title-block">' +
+          '<h1 id="taurussMediaTitle">🚀 Interstellar (Yıldızlararası)</h1>' +
+          '<p id="taurussMediaDesc">Varsayılan VidFast geniş ekran oynatıcısı devrede. Konuşulan İngilizce altyazılar anında yakalanır, kelimeye tıklayarak anlamını ve telaffuzunu öğrenebilirsin.</p>' +
+        '</div>' +
+        '<div class="tauruss-btn-group">' +
+          '<button class="tauruss-pill-btn active" id="tfBtnVidfast" title="Doğrudan VidFast Player">⚡ VidFast Player</button>' +
+          '<button class="tauruss-pill-btn" id="tfBtnTauruss" title="Tauruss.top sayfasını aç">🌐 Tauruss Kataloğu</button>' +
+          '<button class="tauruss-pill-btn" id="tfBtnCinema" title="Geniş Sinema Modu">🎬 Sinema Modu</button>' +
+          '<button class="tauruss-pill-btn" id="tfBtnSplit" title="Yan Yana Bölünmüş Mod">◫ Yan Yana</button>' +
+          '<button class="tauruss-pill-btn" id="tfBtnFull" title="Tam Ekran">⛶ Tam Ekran</button>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="tauruss-search-row">' +
+        '<div class="tauruss-type-toggle">' +
+          '<button class="tauruss-type-btn active" id="tfTypeMovie">Film</button>' +
+          '<button class="tauruss-type-btn" id="tfTypeTv">Dizi</button>' +
+        '</div>' +
+        '<div class="tauruss-series-pick" id="tfSeriesPick">' +
+          '<span>Sezon:</span><input type="number" id="tfSeason" min="1" max="99" value="1">' +
+          '<span>Bölüm:</span><input type="number" id="tfEpisode" min="1" max="99" value="1">' +
+        '</div>' +
+        '<input type="text" class="tauruss-search-input" id="tfSearchInput" placeholder="Film/Dizi Adı (ör. Inception, Breaking Bad) veya IMDb ID (ör. tt1375666)...">' +
+        '<button class="tauruss-go-btn" id="tfSearchGo">▶ Oynat</button>' +
+      '</div>' +
+
+      '<div class="tauruss-chips" id="taurussChips">' + chipsHtml + '</div>' +
+    '</div>' +
+
+    '<div class="tauruss-learning-layout cinema-mode" id="taurussLayout">' +
+      '<section class="tauruss-wrap" id="taurussWrap">' +
+        '<div class="tauruss-toolbar">' +
+          '<div><strong id="taurussPlayerLabel">⚡ VidFast Player · Geniş Ekran</strong><br><span id="taurussPlayerSub">Interstellar (tt0816692) yüklendi</span></div>' +
+          '<a class="ytstudy-external" id="taurussExtLink" href="https://vidfast.vc/movie/tt0816692" target="_blank" rel="noopener noreferrer">Yeni sekmede aç ↗</a>' +
+        '</div>' +
+        '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidfast.vc/movie/tt0816692" title="VidFast Film Player" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
+      '</section>' +
+
+      '<section class="tauruss-spotlight" id="taurussSpotlight" aria-label="Canlı Çift Altyazı">' +
+        '<div class="tauruss-spotlight-top">' +
+          '<span>🎙️ CANLI ÇİFT ALTYAZI (ENG + TR)</span>' +
+          '<span id="taurussLiveStatus" style="color:#38bdf8">Eklenti hazır · English altyazısı bekleniyor</span>' +
+        '</div>' +
+        '<div class="tauruss-spotlight-en" id="taurussSpotEn">"Playback started. Subtitles will appear here dynamically as characters speak."</div>' +
+        '<div class="tauruss-spotlight-tr" id="taurussSpotTr">Oynatma başladı. Karakterler konuştukça altyazılar Türkçe çevirisiyle burada belirecektir.</div>' +
+        '<div class="tauruss-spotlight-word" id="taurussSpotWord" style="display:none"></div>' +
+      '</section>' +
+
+      '<aside class="tauruss-learning-panel" aria-label="Çift altyazı paneli">' +
+        '<div class="tauruss-learning-head"><strong>🇬🇧 İngilizce · 🇹🇷 Türkçe</strong><p>VidFast altyazıları burada canlı görünür. Bir kelimeye tıklayarak anlamını öğren.</p></div>' +
+        '<div class="tauruss-learning-state" id="taurussLearningState">Altyazı köprüsü devrede</div>' +
+        '<div class="tauruss-cues" id="taurussCuesSplit" aria-live="polite"></div>' +
+        '<div class="tauruss-learning-foot">LearnEnglish eklentisiyle VidFast altyazıları otomatik senkronize edilir.</div>' +
+      '</aside>' +
+
+      '<details class="tauruss-drawer" id="taurussHistoryDrawer">' +
+        '<summary class="tauruss-drawer-summary"><span>📜 Son Konuşmalar & Altyazı Geçmişi (<span id="taurussCueCount">0</span>)</span><span>▼</span></summary>' +
+        '<div class="tauruss-cues" id="taurussCues" aria-live="polite"></div>' +
+      '</details>' +
+    '</div>' +
+  '</div>';
+
+  window.scrollTo(0,0);
+  if(typeof fab !== "undefined" && fab) fab.style.display = "none";
+  buildNav(el("search").value);
   TaurussLearning.mount();
 }
 
-var TaurussLearning={
-  seen:Object.create(null),translator:null,loading:false,loadError:"",queue:[],busy:false,root:null,
-  mount:function(){this.root=main;this.seen=Object.create(null);this.queue=[];this.busy=false;},
-  setStatus:function(text){var n=el("taurussLearningState");if(n)n.textContent=text;},
-  asyncTranslate:function(text,done){
-    var self=this;
-    if(this.translator){this.translator(text).then(done).catch(function(){done("Çeviri üretilemedi.");});return;}
-    if(this.loadError){done(this.loadError);return;}
-    if(!this.loading){this.loading=true;this.setStatus("Yerel İngilizce–Türkçe model indiriliyor (ilk kullanımda)…");
-      import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1").then(function(mod){
-        return mod.pipeline("translation","Xenova/nllb-200-distilled-600M",{dtype:"q8"});
-        }).then(function(pipe){self.translator=function(s){return pipe(s,{src_lang:"eng_Latn",tgt_lang:"tur_Latn"}).then(function(out){return out[0].translation_text;});};self.loading=false;self.setStatus("Canlı İngilizce altyazı alınıyor · çeviri bu cihazda çalışır");self.runQueue();
-      }).catch(function(error){
-        self.loading=false;
-        self.loadError="Yerel çeviri modeli yüklenemedi"+(error&&error.message?": "+error.message:".");
-        self.setStatus(self.loadError+". Sayfayı yenileyip tekrar deneyebilirsin.");
-        self.queue.splice(0).forEach(function(item){item.done(self.loadError);});
-      });
+var TaurussLearning = {
+  root: null,
+  currentSource: "vidfast",
+  currentType: "movie",
+  currentId: "tt0816692",
+  currentTitle: "Interstellar",
+  currentDesc: "Varsayılan VidFast geniş ekran oynatıcısı devrede.",
+  season: 1,
+  episode: 1,
+  seen: Object.create(null),
+  cache: Object.create(null),
+  cueCount: 0,
+  mode: "cinema",
+
+  mount: function(){
+    this.root = main;
+    this.seen = Object.create(null);
+    this.cueCount = 0;
+    this.bindEvents();
+  },
+
+  setStatus: function(text){
+    var n1 = el("taurussLiveStatus");
+    if(n1) n1.textContent = text;
+    var n2 = el("taurussLearningState");
+    if(n2) n2.textContent = text;
+  },
+
+  bindEvents: function(){
+    var self = this;
+    var btnVidfast = el("tfBtnVidfast");
+    var btnTauruss = el("tfBtnTauruss");
+    var btnCinema = el("tfBtnCinema");
+    var btnSplit = el("tfBtnSplit");
+    var btnFull = el("tfBtnFull");
+    var typeMovie = el("tfTypeMovie");
+    var typeTv = el("tfTypeTv");
+    var seriesPick = el("tfSeriesPick");
+    var searchGo = el("tfSearchGo");
+    var searchInput = el("tfSearchInput");
+    var chipsContainer = el("taurussChips");
+
+    if(btnVidfast) btnVidfast.onclick = function(){
+      self.currentSource = "vidfast";
+      btnVidfast.classList.add("active");
+      if(btnTauruss) btnTauruss.classList.remove("active");
+      self.reloadPlayer();
+    };
+
+    if(btnTauruss) btnTauruss.onclick = function(){
+      self.currentSource = "tauruss";
+      btnTauruss.classList.add("active");
+      if(btnVidfast) btnVidfast.classList.remove("active");
+      self.reloadPlayer();
+    };
+
+    if(btnCinema) btnCinema.onclick = function(){
+      self.setLayout("cinema");
+    };
+
+    if(btnSplit) btnSplit.onclick = function(){
+      self.setLayout("split");
+    };
+
+    if(btnFull) btnFull.onclick = function(){
+      var wrap = el("taurussWrap");
+      if(!wrap) return;
+      if(document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        if(wrap.requestFullscreen) wrap.requestFullscreen();
+        else if(wrap.webkitRequestFullscreen) wrap.webkitRequestFullscreen();
+      }
+    };
+
+    if(typeMovie) typeMovie.onclick = function(){
+      self.currentType = "movie";
+      typeMovie.classList.add("active");
+      if(typeTv) typeTv.classList.remove("active");
+      if(seriesPick) seriesPick.classList.remove("show");
+    };
+
+    if(typeTv) typeTv.onclick = function(){
+      self.currentType = "tv";
+      typeTv.classList.add("active");
+      if(typeMovie) typeMovie.classList.remove("active");
+      if(seriesPick) seriesPick.classList.add("show");
+    };
+
+    if(searchGo) searchGo.onclick = function(){
+      self.handleSearch();
+    };
+
+    if(searchInput) searchInput.onkeydown = function(e){
+      if(e.key === "Enter") self.handleSearch();
+    };
+
+    if(chipsContainer) {
+      chipsContainer.onclick = function(e){
+        var chip = e.target.closest(".tauruss-chip");
+        if(!chip) return;
+        chipsContainer.querySelectorAll(".tauruss-chip").forEach(function(c){ c.classList.remove("active"); });
+        chip.classList.add("active");
+
+        var id = chip.getAttribute("data-id");
+        var type = chip.getAttribute("data-type") || "movie";
+        var s = parseInt(chip.getAttribute("data-s") || "1", 10);
+        var ep = parseInt(chip.getAttribute("data-e") || "1", 10);
+        var title = chip.textContent.trim();
+
+        self.currentId = id;
+        self.currentType = type;
+        self.season = s;
+        self.episode = ep;
+        self.currentTitle = title;
+
+        if(type === "tv") {
+          if(typeTv) typeTv.click();
+          if(el("tfSeason")) el("tfSeason").value = s;
+          if(el("tfEpisode")) el("tfEpisode").value = ep;
+        } else {
+          if(typeMovie) typeMovie.click();
+        }
+
+        self.reloadPlayer();
+      };
     }
-    this.queue.push({text:text,done:done});
   },
-  runQueue:function(){if(this.busy||!this.translator||!this.queue.length)return;this.busy=true;var self=this,item=this.queue.shift();this.translator(item.text).then(item.done).catch(function(){item.done("Çeviri üretilemedi.");}).finally(function(){self.busy=false;self.runQueue();});},
-  addCue:function(data){
-    if(!this.root||!main.contains(el("taurussCues")))return;
-    var text=String(data.text||"").replace(/\s+/g," ").trim();if(!text)return;
-    var key=String(data.start||0)+"|"+text;if(this.seen[key])return;this.seen[key]=true;
-    var list=el("taurussCues"),row=document.createElement("article");row.className="tauruss-cue";
-    row.innerHTML='<div class="tauruss-cue-en"></div><div class="tauruss-cue-tr">Çeviri hazırlanıyor…</div><div class="tauruss-cue-time"></div>';
-    row.querySelector(".tauruss-cue-en").textContent=text;
-    row.querySelector(".tauruss-cue-time").textContent=this.formatTime(data.start)+" · Kelimeye çift tıkla";
-    row.onmouseup=function(){setTimeout(function(){TaurussLearning.lookupWord(text,row);},0);};
-    list.appendChild(row);while(list.children.length>36)list.firstElementChild.remove();list.scrollTop=list.scrollHeight;
-    var tr=row.querySelector(".tauruss-cue-tr");this.asyncTranslate(text,function(value){tr.textContent=value;});
-    this.setStatus("Altyazı bağlı · "+(data.language||"English"));
+
+  setLayout: function(mode){
+    this.mode = mode;
+    var layout = el("taurussLayout");
+    var btnCinema = el("tfBtnCinema");
+    var btnSplit = el("tfBtnSplit");
+    if(!layout) return;
+
+    if(mode === "cinema"){
+      layout.classList.remove("split-mode");
+      layout.classList.add("cinema-mode");
+      if(btnCinema) btnCinema.classList.add("active");
+      if(btnSplit) btnSplit.classList.remove("active");
+    } else {
+      layout.classList.remove("cinema-mode");
+      layout.classList.add("split-mode");
+      if(btnSplit) btnSplit.classList.add("active");
+      if(btnCinema) btnCinema.classList.remove("active");
+    }
   },
-  formatTime:function(value){var s=Math.max(0,Math.floor(Number(value)||0));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");},
-  lookupWord:function(text,row){
-    var selection=window.getSelection().toString().trim();var word=selection||text;
-    var note=el("taurussLearningState");if(!note)return;
-    if(!selection)return;
-    note.textContent="‘"+word+"’ için kelime çevirisi hazırlanıyor…";
-    this.asyncTranslate(word,function(value){if(note.isConnected)note.textContent="'"+word+"': "+value;});
+
+  handleSearch: function(){
+    var self = this;
+    var input = el("tfSearchInput");
+    if(!input) return;
+    var query = input.value.trim();
+    if(!query) return;
+
+    if(el("tfSeason")) self.season = parseInt(el("tfSeason").value || "1", 10);
+    if(el("tfEpisode")) self.episode = parseInt(el("tfEpisode").value || "1", 10);
+
+    // Direct VidFast URL check
+    var urlMatch = query.match(/vidfast\.(?:pro|vc)\/(movie|tv)\/([^/?#]+)(?:\/(\d+)\/(\d+))?/i);
+    if(urlMatch){
+      self.currentType = urlMatch[1].toLowerCase();
+      self.currentId = urlMatch[2];
+      if(urlMatch[3]) self.season = parseInt(urlMatch[3], 10);
+      if(urlMatch[4]) self.episode = parseInt(urlMatch[4], 10);
+      self.currentTitle = "Özel Video (" + self.currentId + ")";
+      self.reloadPlayer();
+      return;
+    }
+
+    // Direct IMDb ID or TMDB ID
+    if(/^tt\d+$/i.test(query) || /^\d{4,9}$/.test(query)){
+      self.currentId = query;
+      self.currentTitle = (self.currentType === "tv" ? "Dizi (S" + self.season + "E" + self.episode + ")" : "Film") + " [" + query + "]";
+      self.reloadPlayer();
+      return;
+    }
+
+    // Dictionary lookup
+    var clean = query.toLowerCase().replace(/[^a-z0-9\s]/g, "").trim();
+    if(MOVIE_DICT[clean]){
+      self.currentId = MOVIE_DICT[clean];
+      self.currentTitle = query.charAt(0).toUpperCase() + query.slice(1);
+      self.reloadPlayer();
+      return;
+    }
+
+    // Live search via TVMaze for series or query
+    self.setStatus("'" + query + "' aranıyor…");
+    fetch("https://api.tvmaze.com/singlesearch/shows?q=" + encodeURIComponent(query))
+      .then(function(res){ return res.json(); })
+      .then(function(data){
+        if(data && data.externals && data.externals.imdb){
+          self.currentId = data.externals.imdb;
+          self.currentType = "tv";
+          self.currentTitle = data.name + " (Dizi S" + self.season + "E" + self.episode + ")";
+          if(el("tfTypeTv")) el("tfTypeTv").click();
+          self.reloadPlayer();
+        } else {
+          // Default treat as title
+          self.currentTitle = query;
+          self.reloadPlayer();
+        }
+      })
+      .catch(function(){
+        self.currentTitle = query;
+        self.reloadPlayer();
+      });
+  },
+
+  reloadPlayer: function(){
+    var frame = el("taurussFrame");
+    var titleEl = el("taurussMediaTitle");
+    var labelEl = el("taurussPlayerLabel");
+    var subEl = el("taurussPlayerSub");
+    var extLink = el("taurussExtLink");
+    if(!frame) return;
+
+    var targetUrl = "";
+    if(this.currentSource === "tauruss"){
+      targetUrl = "https://tauruss.top/movies";
+      if(titleEl) titleEl.textContent = "🌐 Tauruss.top Kataloğu";
+      if(labelEl) labelEl.textContent = "🌐 Tauruss.top · Canlı Arama";
+      if(subEl) subEl.textContent = "Tauruss üzerinden filmini seç, VidFast oynatıcıda altyazı açıldığında otomatik çift altyazı çalışacaktır.";
+    } else {
+      if(this.currentType === "tv"){
+        targetUrl = "https://vidfast.vc/tv/" + this.currentId + "/" + this.season + "/" + this.episode;
+        if(titleEl) titleEl.textContent = "📺 " + this.currentTitle + " · S" + this.season + " B" + this.episode;
+        if(labelEl) labelEl.textContent = "⚡ VidFast Dizi Player · S" + this.season + " E" + this.episode;
+        if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor";
+      } else {
+        targetUrl = "https://vidfast.vc/movie/" + this.currentId;
+        if(titleEl) titleEl.textContent = "🎬 " + this.currentTitle;
+        if(labelEl) labelEl.textContent = "⚡ VidFast Sinema Player";
+        if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor";
+      }
+    }
+
+    frame.src = targetUrl;
+    if(extLink) extLink.href = targetUrl;
+    this.setStatus("Oynatıcı yüklendi · Altyazı dinleniyor…");
+  },
+
+  asyncTranslate: function(text, done){
+    var self = this;
+    text = String(text || "").trim();
+    if(!text){ done(""); return; }
+    if(this.cache[text]){ done(this.cache[text]); return; }
+
+    var url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=tr&dt=t&q=" + encodeURIComponent(text);
+    fetch(url)
+      .then(function(res){ return res.json(); })
+      .then(function(data){
+        var translated = "";
+        if(Array.isArray(data) && Array.isArray(data[0])){
+          translated = data[0].map(function(item){ return item[0]; }).join("").trim();
+        }
+        if(translated){
+          self.cache[text] = translated;
+          done(translated);
+        } else {
+          done(text);
+        }
+      })
+      .catch(function(){
+        done("Çeviri alınamadı.");
+      });
+  },
+
+  speakWord: function(word){
+    try {
+      if("speechSynthesis" in window && word){
+        window.speechSynthesis.cancel();
+        var ut = new SpeechSynthesisUtterance(word);
+        ut.lang = "en-US";
+        ut.rate = 0.92;
+        window.speechSynthesis.speak(ut);
+      }
+    } catch(_){}
+  },
+
+  onWordClick: function(wordClean){
+    var self = this;
+    var wordCard = el("taurussSpotWord");
+    if(!wordCard) return;
+
+    self.speakWord(wordClean);
+    wordCard.style.display = "flex";
+    wordCard.innerHTML = '<span>🔊 <strong>' + wordClean + '</strong>: <em>çevriliyor…</em></span><button style="color:var(--accent);font-weight:700;font-size:11px" onclick="el(\'taurussSpotWord\').style.display=\'none\'">✕ Kapat</button>';
+
+    self.asyncTranslate(wordClean, function(trVal){
+      if(wordCard.isConnected){
+        wordCard.innerHTML = '<span>🔊 <strong>' + wordClean + '</strong>: <span style="color:#38bdf8;font-weight:700">' + trVal + '</span></span><div style="display:flex;gap:6px"><button style="padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.1);color:#fff;font-size:11px" onclick="TaurussLearning.speakWord(\'' + wordClean.replace(/'/g,"\\'") + '\')">Dinle</button><button style="color:#94a3b8;font-size:11px" onclick="el(\'taurussSpotWord\').style.display=\'none\'">✕</button></div>';
+      }
+    });
+  },
+
+  formatClickableWords: function(text){
+    var self = this;
+    var tokens = text.split(/([A-Za-z0-9'-]+)/);
+    return tokens.map(function(tok){
+      if(/[A-Za-z0-9]/.test(tok)){
+        var clean = tok.replace(/[^A-Za-z0-9]/g, "");
+        return '<span class="sub-word" onclick="TaurussLearning.onWordClick(\'' + clean.replace(/'/g, "\\'") + '\')">' + tok + '</span>';
+      }
+      return tok;
+    }).join("");
+  },
+
+  addCue: function(data){
+    var self = this;
+    var text = String(data.text || "").replace(/\s+/g, " ").trim();
+    if(!text) return;
+    var key = String(Math.floor((data.start || 0) * 2)) + "|" + text;
+    if(this.seen[key]) return;
+    this.seen[key] = true;
+
+    // Update Spotlight (Cinema view)
+    var spotEn = el("taurussSpotEn");
+    var spotTr = el("taurussSpotTr");
+    if(spotEn) spotEn.innerHTML = this.formatClickableWords(text);
+    if(spotTr) spotTr.textContent = "Çevriliyor…";
+
+    self.asyncTranslate(text, function(val){
+      if(spotTr) spotTr.textContent = val;
+    });
+
+    // Update History & Split view
+    this.cueCount++;
+    var countEl = el("taurussCueCount");
+    if(countEl) countEl.textContent = this.cueCount;
+
+    var list1 = el("taurussCues");
+    var list2 = el("taurussCuesSplit");
+
+    [list1, list2].forEach(function(list){
+      if(!list) return;
+      var row = document.createElement("article");
+      row.className = "tauruss-cue";
+      row.innerHTML = '<div class="tauruss-cue-en">' + self.formatClickableWords(text) + '</div><div class="tauruss-cue-tr">Çeviri hazırlanıyor…</div><div class="tauruss-cue-time">' + self.formatTime(data.start) + ' · Kelimeye dokun</div>';
+      list.appendChild(row);
+      while(list.children.length > 50) list.firstElementChild.remove();
+      list.scrollTop = list.scrollHeight;
+
+      var trBox = row.querySelector(".tauruss-cue-tr");
+      self.asyncTranslate(text, function(value){
+        if(trBox) trBox.textContent = value;
+      });
+    });
+
+    this.setStatus("🎙️ Canlı Altyazı Senkronize (" + (data.language || "English") + ")");
+  },
+
+  formatTime: function(value){
+    var s = Math.max(0, Math.floor(Number(value) || 0));
+    return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
   }
 };
-window.addEventListener("message",function(event){
-  var d=event.data;if(!d||d.source!=="learnenglish-vidfast-bridge")return;
-  if(event.origin!=="https://vidfast.pro"&&event.origin!=="https://vidfast.vc")return;
-  if(d.type==="READY"){TaurussLearning.setStatus("Eklenti bağlı · VidFast altyazısı bekleniyor");return;}
-  if(d.type==="CAPTION")TaurussLearning.addCue(d);
+
+window.addEventListener("message", function(event){
+  var d = event.data;
+  if(!d || d.source !== "learnenglish-vidfast-bridge") return;
+  if(event.origin !== "https://vidfast.pro" && event.origin !== "https://vidfast.vc") return;
+  if(d.type === "READY"){
+    TaurussLearning.setStatus("⚡ Eklenti bağlandı · VidFast oynatılıyor");
+    return;
+  }
+  if(d.type === "CAPTION") TaurussLearning.addCue(d);
 });
 
 var YTSTUDY = { player:null, videoId:"", language:"en", pending:null, apiLoading:false };
