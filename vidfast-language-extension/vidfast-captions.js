@@ -8,6 +8,7 @@
   var activeLangState = "en"; // "en", "tr", "off"
   var enCues = [];
   var trCues = [];
+  var syncOffset = 0.0;
   var overlayEl = null;
 
   function send(type, data) {
@@ -74,7 +75,7 @@
       "line-height: 1.35",
       "color: #ffffff",
       "text-shadow: 0 0 3px #000, 0 1px 2px #000, 0 2px 4px #000, 0 0 8px rgba(0,0,0,0.9)",
-      "background: rgba(0, 0, 0, 0.7)",
+      "background: rgba(0, 0, 0, 0.72)",
       "padding: 5px 14px",
       "border-radius: 6px",
       "display: none",
@@ -124,8 +125,9 @@
       hideOverlay();
       return;
     }
+    var eff = t + syncOffset;
     var activeCues = (activeLangState === "tr") ? trCues : enCues;
-    var cue = findCueAtTime(activeCues, t);
+    var cue = findCueAtTime(activeCues, eff);
     if (cue && cue.text) {
       showOverlay(cue.text, video);
     } else {
@@ -150,12 +152,20 @@
 
     if (d.type === "SELECT_TRACK") {
       activeLangState = d.lang || "en";
+      if (typeof d.syncOffset === "number") syncOffset = d.syncOffset;
       if (activeLangState === "off") {
         hideOverlay();
       } else if (video) {
         updateOverlayForTime(Number(video.currentTime) || 0, video);
       }
-      send("TRACK_CHANGED", { activeLang: activeLangState });
+      return;
+    }
+
+    if (d.type === "SET_SYNC_OFFSET") {
+      syncOffset = Number(d.syncOffset) || 0.0;
+      if (video && activeLangState !== "off") {
+        updateOverlayForTime(Number(video.currentTime) || 0, video);
+      }
       return;
     }
 
@@ -175,6 +185,7 @@
       enCues = Array.isArray(d.enCues) ? d.enCues : [];
       trCues = Array.isArray(d.trCues) ? d.trCues : [];
       activeLangState = d.activeLang || "en";
+      if (typeof d.syncOffset === "number") syncOffset = d.syncOffset;
 
       if (video) {
         updateOverlayForTime(Number(video.currentTime) || 0, video);

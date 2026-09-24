@@ -5084,9 +5084,11 @@ function showTaurussCatalog(){
           '<div class="tauruss-sub-badge loading" id="tfSubStatus">⏳ Altyazı aranıyor...</div>' +
           '<div class="tauruss-sync-box">' +
             '<span>Senkron:</span>' +
-            '<button class="tauruss-sync-btn" id="tfSyncMinus" title="Altyazıyı 0.5s geri al">-0.5s</button>' +
-            '<span id="tfSyncVal" style="min-width:36px;text-align:center">0.0s</span>' +
-            '<button class="tauruss-sync-btn" id="tfSyncPlus" title="Altyazıyı 0.5s ileri al">+0.5s</button>' +
+            '<button class="tauruss-sync-btn" id="tfSyncMinus1" title="Altyazıyı 1s geri al">-1s</button>' +
+            '<button class="tauruss-sync-btn" id="tfSyncMinus" title="Altyazıyı 0.2s geri al (Kısayol: [)">-0.2s</button>' +
+            '<button class="tauruss-sync-btn" id="tfSyncZero" title="Senkronu sıfırla (Kısayol: \)"><span id="tfSyncVal" style="min-width:36px;text-align:center">0.0s</span></button>' +
+            '<button class="tauruss-sync-btn" id="tfSyncPlus" title="Altyazıyı 0.2s ileri al (Kısayol: ])">+0.2s</button>' +
+            '<button class="tauruss-sync-btn" id="tfSyncPlus1" title="Altyazıyı 1s ileri al">+1s</button>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -5266,8 +5268,28 @@ var TaurussLearning = {
     if(subOff) subOff.onclick = function(){ self.setSubtitleLang("off"); };
     if(subFetch) subFetch.onclick = function(){ self.fetchSubtitles(self.currentId, self.season, self.episode, true); };
 
-    if(syncMinus) syncMinus.onclick = function(){ self.adjustSync(-0.5); };
-    if(syncPlus) syncPlus.onclick = function(){ self.adjustSync(0.5); };
+    var syncMinus1 = el("tfSyncMinus1");
+    var syncMinus = el("tfSyncMinus");
+    var syncZero = el("tfSyncZero");
+    var syncPlus = el("tfSyncPlus");
+    var syncPlus1 = el("tfSyncPlus1");
+
+    if(syncMinus1) syncMinus1.onclick = function(){ self.adjustSync(-1.0); };
+    if(syncMinus) syncMinus.onclick = function(){ self.adjustSync(-0.2); };
+    if(syncZero) syncZero.onclick = function(){ self.adjustSync(0, 0.0); };
+    if(syncPlus) syncPlus.onclick = function(){ self.adjustSync(0.2); };
+    if(syncPlus1) syncPlus1.onclick = function(){ self.adjustSync(1.0); };
+
+    if(!window._taurussKeyBound){
+      window._taurussKeyBound = true;
+      window.addEventListener("keydown", function(e){
+        if(e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+        if(!el("taurussFrame")) return;
+        if(e.key === "["){ self.adjustSync(-0.2); }
+        else if(e.key === "]"){ self.adjustSync(0.2); }
+        else if(e.key === "\\"){ self.adjustSync(0, 0.0); }
+      });
+    }
   },
 
   setLayout: function(mode){
@@ -5290,13 +5312,32 @@ var TaurussLearning = {
     }
   },
 
-  adjustSync: function(delta){
-    this.syncOffset = Math.round((this.syncOffset + delta) * 10) / 10;
+  adjustSync: function(delta, absolute){
+    if(absolute !== undefined){
+      this.syncOffset = absolute;
+    } else {
+      this.syncOffset = Math.round((this.syncOffset + delta) * 10) / 10;
+    }
     var valEl = el("tfSyncVal");
     if(valEl){
       var sign = this.syncOffset > 0 ? "+" : "";
       valEl.textContent = sign + this.syncOffset.toFixed(1) + "s";
+      valEl.style.color = this.syncOffset === 0 ? "inherit" : "var(--accent)";
     }
+
+    // Send updated syncOffset to extension in iframe so on-video overlay syncs instantly
+    var frame = el("taurussFrame");
+    if(frame && frame.contentWindow){
+      var msg = { source: "learnenglish-app", type: "SET_SYNC_OFFSET", syncOffset: this.syncOffset };
+      try {
+        frame.contentWindow.postMessage(msg, "*");
+        for(var i = 0; i < frame.contentWindow.frames.length; i++){
+          try { frame.contentWindow.frames[i].postMessage(msg, "*"); } catch(_) {}
+        }
+      } catch(_) {}
+    }
+
+    this.currentCueIdx = -1;
     this.updateLiveDisplay(this.lastCurrentTime);
   },
 
@@ -5514,30 +5555,81 @@ var TaurussLearning = {
         var turList = subs.filter(function(s){ return s.lang === "tur"; });
 
         var engUrl = engList.length ? engList[0].url : "";
-        var turUrl = turList.length ? turList[0].url : "";
+        var turCandidates = turList.slice(0, 5);
 
-        var promises = [];
+        var pEn = engUrl
+          ? fetch(engUrl).then(function(r){ return r.text(); }).then(function(t){ return self.parseSrt(t); }).catch(function(){ return []; })
+          : Promise.resolve([]);
 
-        if(engUrl){
-          promises.push(fetch(engUrl).then(function(r){ return r.text(); }).then(function(txt){ return { lang: "en", cues: self.parseSrt(txt) }; }));
-        } else {
-          promises.push(Promise.resolve({ lang: "en", cues: [] }));
-        }
+        var pTrCandidates = Promise.all(turCandidates.map(function(s){
+          return fetch(s.url)
+            .then(function(r){ return r.text(); })
+            .then(function(t){ return self.parseSrt(t); })
+            .catch(function(){ return []; });
+        }));
 
-        if(turUrl){
-          promises.push(fetch(turUrl).then(function(r){ return r.text(); }).then(function(txt){ return { lang: "tr", cues: self.parseSrt(txt) }; }));
-        } else {
-          promises.push(Promise.resolve({ lang: "tr", cues: [] }));
-        }
-
-        return Promise.all(promises);
+        return Promise.all([pEn, pTrCandidates]);
       })
       .then(function(results){
-        var enResult = results.find(function(r){ return r.lang === "en"; }) || { cues: [] };
-        var trResult = results.find(function(r){ return r.lang === "tr"; }) || { cues: [] };
+        var enCues = results[0] || [];
+        var trCandidates = results[1] || [];
 
-        self.enCues = enResult.cues;
-        self.trCues = trResult.cues;
+        // Score each candidate against enCues to find the best aligned release
+        var bestTrCues = [];
+        var bestScore = -1;
+        var sampleEn = enCues.slice(0, 120);
+
+        for (var i = 0; i < trCandidates.length; i++) {
+          var candCues = trCandidates[i];
+          if (!candCues || !candCues.length) continue;
+          var score = 0;
+          for (var j = 0; j < sampleEn.length; j++) {
+            var ec = sampleEn[j];
+            for (var k = 0; k < Math.min(250, candCues.length); k++) {
+              if (Math.abs(candCues[k].start - ec.start) <= 2.8) {
+                score++;
+                break;
+              }
+            }
+          }
+          if (score > bestScore) {
+            bestScore = score;
+            bestTrCues = candCues;
+          }
+        }
+
+        if (!bestTrCues.length && trCandidates.length) {
+          bestTrCues = trCandidates[0] || [];
+        }
+
+        // Auto-detect and align median time difference between EN and TR
+        if (enCues.length && bestTrCues.length) {
+          var diffs = [];
+          for (var e = 0; e < Math.min(60, enCues.length); e++) {
+            var ecue = enCues[e];
+            for (var t = 0; t < bestTrCues.length; t++) {
+              var tcue = bestTrCues[t];
+              var d = tcue.start - ecue.start;
+              if (Math.abs(d) <= 3.8) {
+                diffs.push(d);
+                break;
+              }
+            }
+          }
+          if (diffs.length >= 5) {
+            diffs.sort(function(a, b){ return a - b; });
+            var median = diffs[Math.floor(diffs.length / 2)];
+            if (Math.abs(median) >= 0.25 && Math.abs(median) <= 4.0) {
+              for (var ci = 0; ci < bestTrCues.length; ci++) {
+                bestTrCues[ci].start -= median;
+                bestTrCues[ci].end -= median;
+              }
+            }
+          }
+        }
+
+        self.enCues = enCues;
+        self.trCues = bestTrCues;
 
         // Build combined alignment
         self.buildCombinedCues();
@@ -5548,9 +5640,9 @@ var TaurussLearning = {
         // Render dialogue lists
         self.renderDialogueTimeline();
 
-        var msg = "✅ Altyazılar Hazır: " +
-          (self.enCues.length ? "🇬🇧 ENG (" + self.enCues.length + ")" : "ENG (Çeviri)") + " · " +
-          (self.trCues.length ? "🇹🇷 TUR (" + self.trCues.length + ")" : "TUR (Çeviri)");
+        var msg = "✅ Altyazılar Senkronize: " +
+          (self.enCues.length ? "🇬🇧 ENG (" + self.enCues.length + ")" : "ENG (Yok)") + " · " +
+          (self.trCues.length ? "🇹🇷 TUR (" + self.trCues.length + ")" : "TUR (Yok)");
         self.setSubStatus(msg, "found");
         self.setStatus("Altyazılar senkronize · VidFast hazır");
       })
@@ -5573,7 +5665,7 @@ var TaurussLearning = {
         best = tc;
       } else if(maxOverlap <= 0){
         var diff = Math.abs(start - tc.start);
-        if(diff < 2.5 && diff < minDiff){
+        if(diff < 3.2 && diff < minDiff){
           minDiff = diff;
           best = tc;
         }
@@ -5885,7 +5977,6 @@ window.addEventListener("message", function(event){
 
   if(d.type === "READY"){
     TaurussLearning.setStatus("⚡ Eklenti bağlandı · VidFast oynatılıyor");
-    // Re-inject subtitles if available
     TaurussLearning.injectToPlayer();
     return;
   }
@@ -5896,9 +5987,6 @@ window.addEventListener("message", function(event){
   if(d.type === "CAPTION"){
     TaurussLearning.addLiveCaption(d);
     return;
-  }
-  if(d.type === "TRACK_CHANGED"){
-    if(d.activeLang) TaurussLearning.setSubtitleLang(d.activeLang);
   }
 });
 
