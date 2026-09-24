@@ -211,34 +211,6 @@
       send("PLAYBACK_STATUS", { paused: true, currentTime: Number(video.currentTime) || 0 });
     });
 
-    try {
-      if (video.textTracks) {
-        var onTrackAdded = function () {
-          for (var ti = 0; ti < video.textTracks.length; ti++) {
-            var trk = video.textTracks[ti];
-            if (!trk._boundCueChange) {
-              trk._boundCueChange = true;
-              trk.addEventListener("cuechange", function () {
-                if (this.activeCues && this.activeCues.length > 0) {
-                  var c = this.activeCues[0];
-                  if (c && c.text) {
-                    send("NATIVE_CUE", {
-                      startTime: Number(c.startTime) || 0,
-                      endTime: Number(c.endTime) || 0,
-                      text: String(c.text || "").replace(/<[^>]+>/g, "").trim(),
-                      currentTime: Number(video.currentTime) || 0
-                    });
-                  }
-                }
-              });
-            }
-          }
-        };
-        video.textTracks.addEventListener("addtrack", onTrackAdded);
-        onTrackAdded();
-      }
-    } catch (_) {}
-
     send("READY", {
       currentTime: Number(video.currentTime) || 0,
       paused: Boolean(video.paused)

@@ -5753,6 +5753,24 @@ var TaurussLearning = {
     var extLink = el("taurussExtLink");
     if(!frame) return;
 
+    // Reset subtitle states and sync for new content
+    this.combinedCues = [];
+    this.enCues = [];
+    this.trCues = [];
+    this.currentCueIdx = -1;
+    this.syncOffset = 0.0;
+    window._nativeSyncApplied = false;
+
+    var syncVal = el("tfSyncVal");
+    if(syncVal) syncVal.textContent = "0.0s";
+
+    var cuesList = el("taurussCues");
+    if(cuesList) cuesList.innerHTML = '<div style="padding:18px;color:var(--muted);text-align:center">⏳ Yeni film ve altyazılar yükleniyor…</div>';
+    var countEl = el("taurussCueCount");
+    if(countEl) countEl.textContent = "0 diyalog";
+    var live = el("taurussLiveCounterpart");
+    if(live) live.textContent = "Yeni içerik başlatılıyor…";
+
     var targetUrl = "";
     if(this.currentSource === "tauruss"){
       targetUrl = "https://tauruss.top/movies";
