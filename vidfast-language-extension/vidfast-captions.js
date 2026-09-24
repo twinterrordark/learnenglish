@@ -4,7 +4,15 @@
 
   // Block ad popups inside VidFast
   try {
-    window.open = function () { return null; };
+    var noop = function () { return null; };
+    window.open = noop;
+    try {
+      Object.defineProperty(window, "open", {
+        get: function () { return noop; },
+        set: function () {},
+        configurable: false
+      });
+    } catch (_) {}
   } catch (_) {}
 
   document.addEventListener("click", function (e) {
