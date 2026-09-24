@@ -5327,16 +5327,27 @@ var TaurussLearning = {
       if(subHeading) subHeading.textContent = "Player'da altyazı gizlendi; dinleme pratiği yaparken diyalogları buradan takip edebilirsin.";
     }
 
+    // Force cue re-render immediately
+    this.currentCueIdx = -1;
+
     // Send command to extension in iframe
     var frame = el("taurussFrame");
     if(frame && frame.contentWindow){
+      var msg = {
+        source: "learnenglish-app",
+        type: "SELECT_TRACK",
+        lang: lang
+      };
       try {
-        frame.contentWindow.postMessage({
-          source: "learnenglish-app",
-          type: "SELECT_TRACK",
-          lang: lang
-        }, "*");
+        frame.contentWindow.postMessage(msg, "*");
+        for(var i = 0; i < frame.contentWindow.frames.length; i++){
+          try { frame.contentWindow.frames[i].postMessage(msg, "*"); } catch(_) {}
+        }
       } catch(_) {}
+    }
+
+    if(lang === "off" && typeof this.sendSubtitleToPlayer === "function"){
+      this.sendSubtitleToPlayer("");
     }
 
     this.updateLiveDisplay(this.lastCurrentTime);
@@ -5611,23 +5622,40 @@ var TaurussLearning = {
     return null;
   },
 
+  sendSubtitleToPlayer: function(text){
+    var frame = el("taurussFrame");
+    if(!frame || !frame.contentWindow) return;
+    var clean = (this.activeSubLang === "off") ? "" : String(text || "").trim();
+    var msg = {
+      source: "learnenglish-app",
+      type: "SET_OVERLAY_TEXT",
+      text: clean,
+      activeLang: this.activeSubLang
+    };
+    try {
+      frame.contentWindow.postMessage(msg, "*");
+      for(var i = 0; i < frame.contentWindow.frames.length; i++){
+        try { frame.contentWindow.frames[i].postMessage(msg, "*"); } catch(_) {}
+      }
+    } catch(_) {}
+  },
+
   injectToPlayer: function(){
     var frame = el("taurussFrame");
     if(!frame || !frame.contentWindow) return;
 
-    var enVtt = this.cuesToVtt(this.enCues);
-    var trVtt = this.cuesToVtt(this.trCues);
-
     try {
-      frame.contentWindow.postMessage({
+      var msg = {
         source: "learnenglish-app",
         type: "INJECT_SUBTITLES",
         enCues: this.enCues,
         trCues: this.trCues,
-        enVtt: enVtt,
-        trVtt: trVtt,
         activeLang: this.activeSubLang
-      }, "*");
+      };
+      frame.contentWindow.postMessage(msg, "*");
+      for(var i = 0; i < frame.contentWindow.frames.length; i++){
+        try { frame.contentWindow.frames[i].postMessage(msg, "*"); } catch(_) {}
+      }
     } catch(err) {
       console.warn("[VidFast] postMessage error:", err);
     }
@@ -5688,7 +5716,10 @@ var TaurussLearning = {
         this.highlightActiveRow(cue.id);
       }
     } else {
-      this.currentCueIdx = -1;
+      if(this.currentCueIdx !== -1){
+        this.currentCueIdx = -1;
+        this.sendSubtitleToPlayer("");
+      }
     }
   },
 
@@ -5698,38 +5729,60 @@ var TaurussLearning = {
     if(!liveCounterpart) return;
 
     if(this.activeSubLang === "tr"){
-      // Video player is showing Turkish subtitles.
-      // Right panel shows the counterpart: ENGLISH!
-      var enText = cue.en || "";
-      if(enText){
-        liveCounterpart.innerHTML = self.formatClickableWords(enText);
+      // 1. VIDEO PLAYER SHOWS TURKISH:
+      if(cue.tr){
+        self.sendSubtitleToPlayer(cue.tr);
+      } else if(cue.en){
+        self.asyncTranslate(cue.en, function(val){
+          cue.tr = val;
+          if(self.activeSubLang === "tr" && self.currentCueIdx === cue.id){
+            self.sendSubtitleToPlayer(val);
+          }
+        });
+      } else {
+        self.sendSubtitleToPlayer("");
+      }
+
+      // 2. RIGHT PANEL SHOWS ENGLISH (COUNTERPART):
+      if(cue.en){
+        liveCounterpart.innerHTML = self.formatClickableWords(cue.en);
       } else if(cue.tr){
         liveCounterpart.textContent = "…";
         self.asyncTranslate(cue.tr, function(val){
           cue.en = val;
-          if(liveCounterpart && liveCounterpart.isConnected && self.currentCueIdx === cue.id){
+          if(self.activeSubLang === "tr" && self.currentCueIdx === cue.id && liveCounterpart && liveCounterpart.isConnected){
             liveCounterpart.innerHTML = self.formatClickableWords(val);
           }
         });
+      } else {
+        liveCounterpart.textContent = "…";
       }
+
     } else if(this.activeSubLang === "en"){
-      // Video player is showing English subtitles.
-      // Right panel shows the counterpart: TURKISH!
-      var trText = cue.tr || "";
-      if(trText){
-        liveCounterpart.textContent = trText;
+      // 1. VIDEO PLAYER SHOWS ENGLISH:
+      self.sendSubtitleToPlayer(cue.en || "");
+
+      // 2. RIGHT PANEL SHOWS TURKISH (COUNTERPART):
+      if(cue.tr){
+        liveCounterpart.textContent = cue.tr;
       } else if(cue.en){
         liveCounterpart.textContent = "Çevriliyor…";
         self.asyncTranslate(cue.en, function(val){
           cue.tr = val;
-          if(liveCounterpart && liveCounterpart.isConnected && self.currentCueIdx === cue.id){
+          if(self.activeSubLang === "en" && self.currentCueIdx === cue.id && liveCounterpart && liveCounterpart.isConnected){
             liveCounterpart.textContent = val;
           }
         });
+      } else {
+        liveCounterpart.textContent = "…";
       }
+
     } else {
-      // Off: show dialogue in right panel
-      liveCounterpart.innerHTML = (cue.en ? self.formatClickableWords(cue.en) : "") + (cue.tr ? '<br><small style="color:var(--muted)">' + cue.tr + '</small>' : "");
+      // 1. VIDEO PLAYER IS OFF:
+      self.sendSubtitleToPlayer("");
+
+      // 2. RIGHT PANEL SHOWS DIALOGUE:
+      liveCounterpart.innerHTML = (cue.en ? self.formatClickableWords(cue.en) : "") + (cue.tr ? '<br><small style="color:var(--accent)">' + cue.tr + '</small>' : "");
     }
   },
 

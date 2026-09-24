@@ -2,25 +2,18 @@
   "use strict";
   if (!/^(vidfast\.pro|vidfast\.vc)$/.test(location.hostname)) return;
 
-  var sent = new Set();
-  var attached = new WeakSet();
-  var lastReady = 0;
+  var attachedVideos = new WeakSet();
+  var readyVideos = new WeakSet();
   var lastTimeSent = 0;
   var activeLangState = "en"; // "en", "tr", "off"
-  var enTrack = null;
-  var trTrack = null;
+  var enCues = [];
+  var trCues = [];
+  var overlayEl = null;
 
   function send(type, data) {
     try {
       window.top.postMessage(Object.assign({ source: "learnenglish-vidfast-bridge", type: type }, data || {}), "*");
     } catch (_) {}
-  }
-
-  function getLang(track) {
-    var val = String((track && (track.language || track.label || track.id)) || "").toLowerCase();
-    if (/(^|[^a-z])(tr|tur|turkish|türkçe)([^a-z]|$)/.test(val)) return "tr";
-    if (/(^|[^a-z])(en|eng|english|ingilizce)([^a-z]|$)/.test(val)) return "en";
-    return val || "en";
   }
 
   function findVideo() {
@@ -43,136 +36,109 @@
     return null;
   }
 
-  function emit(video, track, cue) {
-    if (!cue) return;
-    var lang = getLang(track);
-    var text = String(cue.text || "").replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
-    if (!text) return;
-    var start = Number(cue.startTime);
-    if (!Number.isFinite(start)) start = Number(video.currentTime) || 0;
-    var key = lang + "|" + Math.floor(start * 4) + "|" + text;
-    if (sent.has(key)) return;
-    sent.add(key);
-    if (sent.size > 800) sent.clear();
-
-    send("CAPTION", {
-      text: text,
-      language: lang,
-      label: String(track.label || track.language || (lang === "tr" ? "Türkçe" : "English")),
-      start: start,
-      end: Number(cue.endTime) || start + 2,
-      currentTime: Number(video.currentTime) || start
-    });
-  }
-
-  function setTrackModes(video, desiredLang) {
-    activeLangState = desiredLang;
-    if (!video) video = findVideo();
+  function disableAllNativeTracks(video) {
     if (!video) return;
-
-    var tracks = video.textTracks;
-    if (tracks) {
-      for (var i = 0; i < tracks.length; i++) {
-        var t = tracks[i];
-        var tLang = getLang(t);
-        if (desiredLang === "off") {
-          t.mode = "disabled";
-        } else if (tLang === desiredLang) {
-          t.mode = "showing";
-        } else {
-          t.mode = "disabled";
+    try {
+      if (video.textTracks) {
+        for (var i = 0; i < video.textTracks.length; i++) {
+          video.textTracks[i].mode = "disabled";
         }
       }
-    }
-    send("TRACK_CHANGED", { activeLang: desiredLang });
+      var domTracks = video.querySelectorAll("track");
+      for (var j = 0; j < domTracks.length; j++) {
+        domTracks[j].remove();
+      }
+    } catch (_) {}
   }
 
-  function injectSubtitles(video, data) {
-    if (!video) video = findVideo();
-    if (!video || !data) return;
+  function getOrCreateOverlay(video) {
+    if (overlayEl && overlayEl.isConnected) return overlayEl;
+    overlayEl = document.getElementById("vidfast-learnenglish-subtitle-overlay");
+    if (overlayEl) return overlayEl;
 
-    // Remove old injected tracks
-    var existingDomTracks = video.querySelectorAll("track[data-injected='learnenglish']");
-    for (var d = 0; d < existingDomTracks.length; d++) {
-      existingDomTracks[d].remove();
-    }
+    overlayEl = document.createElement("div");
+    overlayEl.id = "vidfast-learnenglish-subtitle-overlay";
+    overlayEl.style.cssText = [
+      "position: absolute",
+      "bottom: 50px",
+      "left: 50%",
+      "transform: translateX(-50%)",
+      "z-index: 2147483647",
+      "max-width: 86%",
+      "text-align: center",
+      "pointer-events: none",
+      "user-select: none",
+      "font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+      "font-size: 22px",
+      "font-weight: 700",
+      "line-height: 1.35",
+      "color: #ffffff",
+      "text-shadow: 0 0 3px #000, 0 1px 2px #000, 0 2px 4px #000, 0 0 8px rgba(0,0,0,0.9)",
+      "background: rgba(0, 0, 0, 0.7)",
+      "padding: 5px 14px",
+      "border-radius: 6px",
+      "display: none",
+      "box-sizing: border-box"
+    ].join("; ");
 
-    var enCount = 0;
-    var trCount = 0;
+    var targetContainer = (video && video.parentElement) || document.body;
+    try {
+      var pos = window.getComputedStyle(targetContainer).position;
+      if (pos === "static") targetContainer.style.position = "relative";
+    } catch (_) {}
 
-    // Inject English
-    if (Array.isArray(data.enCues) && data.enCues.length > 0) {
-      try {
-        enTrack = video.addTextTrack("subtitles", "English (LearnEnglish)", "en");
-        for (var i = 0; i < data.enCues.length; i++) {
-          var c = data.enCues[i];
-          if (c.text && Number.isFinite(c.start) && Number.isFinite(c.end)) {
-            enTrack.addCue(new VTTCue(c.start, c.end, c.text));
-            enCount++;
-          }
-        }
-      } catch (err) {
-        console.warn("[VidFast Bridge] addTextTrack EN error:", err);
-      }
-
-      if (data.enVtt) {
-        try {
-          var blobEn = new Blob([data.enVtt], { type: "text/vtt" });
-          var trackElEn = document.createElement("track");
-          trackElEn.kind = "subtitles";
-          trackElEn.label = "English (LearnEnglish)";
-          trackElEn.srclang = "en";
-          trackElEn.src = URL.createObjectURL(blobEn);
-          trackElEn.setAttribute("data-injected", "learnenglish");
-          video.appendChild(trackElEn);
-        } catch (_) {}
-      }
-    }
-
-    // Inject Turkish
-    if (Array.isArray(data.trCues) && data.trCues.length > 0) {
-      try {
-        trTrack = video.addTextTrack("subtitles", "Türkçe (LearnEnglish)", "tr");
-        for (var j = 0; j < data.trCues.length; j++) {
-          var cTr = data.trCues[j];
-          if (cTr.text && Number.isFinite(cTr.start) && Number.isFinite(cTr.end)) {
-            trTrack.addCue(new VTTCue(cTr.start, cTr.end, cTr.text));
-            trCount++;
-          }
-        }
-      } catch (err) {
-        console.warn("[VidFast Bridge] addTextTrack TR error:", err);
-      }
-
-      if (data.trVtt) {
-        try {
-          var blobTr = new Blob([data.trVtt], { type: "text/vtt" });
-          var trackElTr = document.createElement("track");
-          trackElTr.kind = "subtitles";
-          trackElTr.label = "Türkçe (LearnEnglish)";
-          trackElTr.srclang = "tr";
-          trackElTr.src = URL.createObjectURL(blobTr);
-          trackElTr.setAttribute("data-injected", "learnenglish");
-          video.appendChild(trackElTr);
-        } catch (_) {}
-      }
-    }
-
-    setTrackModes(video, data.activeLang || "en");
-
-    send("INJECT_SUCCESS", {
-      enCount: enCount,
-      trCount: trCount,
-      activeLang: activeLangState
-    });
+    targetContainer.appendChild(overlayEl);
+    return overlayEl;
   }
 
-  // Handle messages from parent window
+  function hideOverlay() {
+    if (overlayEl) {
+      overlayEl.textContent = "";
+      overlayEl.style.display = "none";
+    }
+  }
+
+  function showOverlay(text, video) {
+    var clean = String(text || "").trim();
+    if (!clean || activeLangState === "off") {
+      hideOverlay();
+      return;
+    }
+    var ov = getOrCreateOverlay(video || findVideo());
+    if (ov) {
+      ov.textContent = clean;
+      ov.style.display = "block";
+    }
+  }
+
+  function findCueAtTime(cues, t) {
+    if (!cues || !cues.length) return null;
+    for (var i = 0; i < cues.length; i++) {
+      if (t >= cues[i].start && t <= cues[i].end) return cues[i];
+    }
+    return null;
+  }
+
+  function updateOverlayForTime(t, video) {
+    if (activeLangState === "off") {
+      hideOverlay();
+      return;
+    }
+    var activeCues = (activeLangState === "tr") ? trCues : enCues;
+    var cue = findCueAtTime(activeCues, t);
+    if (cue && cue.text) {
+      showOverlay(cue.text, video);
+    } else {
+      hideOverlay();
+    }
+  }
+
+  // Handle messages from parent application
   window.addEventListener("message", function (event) {
     var d = event.data;
     if (!d || d.source !== "learnenglish-app") return;
 
-    // Forward down to all nested child iframes
+    // Forward down to all child iframes
     for (var fi = 0; fi < window.frames.length; fi++) {
       try {
         window.frames[fi].postMessage(d, "*");
@@ -180,6 +146,47 @@
     }
 
     var video = findVideo();
+    disableAllNativeTracks(video);
+
+    if (d.type === "SELECT_TRACK") {
+      activeLangState = d.lang || "en";
+      if (activeLangState === "off") {
+        hideOverlay();
+      } else if (video) {
+        updateOverlayForTime(Number(video.currentTime) || 0, video);
+      }
+      send("TRACK_CHANGED", { activeLang: activeLangState });
+      return;
+    }
+
+    if (d.type === "SET_OVERLAY_TEXT") {
+      if (d.activeLang) activeLangState = d.activeLang;
+      if (activeLangState === "off") {
+        hideOverlay();
+      } else if (d.text) {
+        showOverlay(d.text, video);
+      } else {
+        hideOverlay();
+      }
+      return;
+    }
+
+    if (d.type === "INJECT_SUBTITLES") {
+      enCues = Array.isArray(d.enCues) ? d.enCues : [];
+      trCues = Array.isArray(d.trCues) ? d.trCues : [];
+      activeLangState = d.activeLang || "en";
+
+      if (video) {
+        updateOverlayForTime(Number(video.currentTime) || 0, video);
+      }
+
+      send("INJECT_SUCCESS", {
+        enCount: enCues.length,
+        trCount: trCues.length,
+        activeLang: activeLangState
+      });
+      return;
+    }
 
     if (d.type === "SEEK") {
       var targetTime = Number(d.time);
@@ -188,6 +195,7 @@
           video.currentTime = targetTime;
           try { video.dispatchEvent(new Event("seeked")); } catch (_) {}
           try { video.dispatchEvent(new Event("timeupdate")); } catch (_) {}
+          updateOverlayForTime(targetTime, video);
         }
         try {
           if (window.player && typeof window.player.seek === "function") window.player.seek(targetTime);
@@ -197,22 +205,23 @@
       }
       return;
     }
-
-    if (d.type === "INJECT_SUBTITLES") {
-      injectSubtitles(video, d);
-    } else if (d.type === "SELECT_TRACK") {
-      setTrackModes(video, d.lang || "en");
-    }
   });
 
   function attachVideo(video) {
-    if (attached.has(video)) return;
-    attached.add(video);
+    if (attachedVideos.has(video)) return;
+    attachedVideos.add(video);
+
+    disableAllNativeTracks(video);
+    getOrCreateOverlay(video);
 
     video.addEventListener("timeupdate", function () {
-      var now = Date.now();
       var t = Number(video.currentTime) || 0;
+      var now = Date.now();
 
+      // Update overlay dynamically on video time
+      updateOverlayForTime(t, video);
+
+      // Report time to parent
       if (now - lastTimeSent > 200) {
         lastTimeSent = now;
         send("TIME_UPDATE", {
@@ -237,39 +246,17 @@
     if (!video) return;
 
     attachVideo(video);
+    disableAllNativeTracks(video);
 
-    var now = Date.now();
-    if (now - lastReady > 3500) {
-      lastReady = now;
+    if (!readyVideos.has(video)) {
+      readyVideos.add(video);
       send("READY", {
         currentTime: Number(video.currentTime) || 0,
         paused: Boolean(video.paused)
       });
     }
-
-    var tracks = video.textTracks;
-    if (!tracks) return;
-
-    for (var i = 0; i < tracks.length; i++) {
-      var track = tracks[i];
-      if (!attached.has(track)) {
-        attached.add(track);
-        try {
-          track.addEventListener("cuechange", function (event) {
-            var cues = event.target && event.target.activeCues;
-            if (cues) {
-              for (var j = 0; j < cues.length; j++) emit(video, event.target, cues[j]);
-            }
-          });
-        } catch (_) {}
-      }
-      var active = track.activeCues;
-      if (active) {
-        for (var k = 0; k < active.length; k++) emit(video, track, active[k]);
-      }
-    }
   }
 
   inspect();
-  window.setInterval(inspect, 280);
+  window.setInterval(inspect, 350);
 })();
