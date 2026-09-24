@@ -61,10 +61,30 @@ function kodSor() {
   });
 }
 
+/* Portta asılı kalmış eski bir sunucu varsa temizle */
+function portuTemizle(port) {
+  if (process.platform === "win32") {
+    try {
+      const out = spawnSync("cmd.exe", ["/c", "netstat -ano | findstr :" + port], { encoding: "utf8" }).stdout || "";
+      const lines = out.split(/\r?\n/).filter(Boolean);
+      for (const line of lines) {
+        if (line.includes("LISTENING")) {
+          const parts = line.trim().split(/\s+/);
+          const pid = parts[parts.length - 1];
+          if (pid && pid !== "0" && pid !== String(process.pid)) {
+            try { spawnSync("taskkill", ["/F", "/PID", pid]); } catch (e) {}
+          }
+        }
+      }
+    } catch (e) {}
+  }
+}
+
 /* ---------- ana akış ---------- */
 (async function main() {
   console.log("\n  A2 İngilizce — yayına alınıyor\n");
   const code = await kodSor();
+  portuTemizle(PORT);
 
   const srv = spawn(process.execPath, ["server.js"], {
     cwd: ROOT,

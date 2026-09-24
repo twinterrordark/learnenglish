@@ -148,6 +148,7 @@ tr td:first-child{font-weight:600}
   font-weight:700;font-size:15px;transition:.15s;border:1px solid var(--line);background:var(--surface)}
 .btn:active{transform:scale(.97)}
 .btn.primary{background:var(--accent);color:#fff;border-color:transparent}
+.btn.danger{background:var(--err);color:#fff;border-color:transparent}
 .btn.full{width:100%}
 .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
 
@@ -284,6 +285,14 @@ html[data-theme="dark"] .vpos.pm{color:#67e8f9}
 .chtext{font-size:15px;line-height:1.5;word-wrap:break-word;overflow-wrap:anywhere;white-space:pre-wrap}
 .chtext a{color:var(--accent-2)}
 .chsys{text-align:center;font-size:12px;color:var(--muted);margin:10px 0;padding:0 8px}
+.chdel{flex:none;margin-left:6px;padding:3px 7px;border-radius:7px;font-size:13px;line-height:1;
+  color:var(--muted);opacity:.6;background:transparent;cursor:pointer;border:none}
+.chdel:hover,.chdel:active{opacity:1;color:var(--err);background:var(--surface2)}
+.chhead .chdel{margin-left:auto}
+.chline{position:relative}
+.chline .chdel{position:absolute;right:0;top:0}
+.chadmin{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--accent-2);
+  margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
 
 .chat-new{position:absolute;left:50%;transform:translateX(-50%);bottom:74px;z-index:3;
   background:var(--accent);color:#fff;border-radius:99px;padding:7px 15px;font-size:13px;font-weight:700;
@@ -632,17 +641,51 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
   box-shadow:0 8px 24px rgba(79,70,229,.4);display:none;align-items:center;gap:6px;font-size:14.5px;
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .fab:active{transform:scale(.95)}
-.ytstudy-hero{background:linear-gradient(125deg,#17192b,#26244a 55%,#173d3a);color:#fff;border-radius:20px;padding:24px;margin-bottom:16px}
-.ytstudy-hero h1{font-size:clamp(24px,5vw,34px);margin:0 0 8px}.ytstudy-hero p{color:#d5d8e6;margin:0 0 16px}
-.ytstudy-form{display:flex;gap:8px}.ytstudy-form input{flex:1;min-width:0;padding:12px;border-radius:10px;border:1px solid #ffffff35;background:#10121dcc;color:#fff}
-.ytstudy-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(240px,.8fr);gap:14px}
-.ytstudy-player-card,.ytstudy-sidecard{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.ytstudy-player{aspect-ratio:16/9;background:#08090d;position:relative;min-height:220px}.ytstudy-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.ytstudy-player-meta{padding:12px 14px;display:flex;justify-content:space-between;gap:12px}.ytstudy-sidecard{padding:16px}
-.ytstudy-lang-row{display:flex;gap:8px;margin:12px 0}.ytstudy-lang{flex:1;padding:9px;border:1px solid var(--line);background:var(--surface2);border-radius:9px;font-weight:700}
+.ytstudy-hero{background:linear-gradient(125deg,#17192b,#26244a 55%,#173d3a);color:#fff;border:1px solid #ffffff14;border-radius:20px;padding:26px;margin-bottom:18px;overflow:hidden;position:relative}
+.ytstudy-hero:after{content:"▶";position:absolute;right:35px;top:12px;font-size:105px;line-height:1;color:#ffffff09;pointer-events:none}
+.ytstudy-hero h1{font-size:clamp(25px,5vw,34px);line-height:1.2;letter-spacing:-.7px;margin:0 0 7px}
+.ytstudy-hero p{color:#d5d8e6;margin:0 0 18px;font-size:14px;max-width:60ch}
+.ytstudy-form{display:flex;gap:8px;position:relative;z-index:1;max-width:760px}
+.ytstudy-form input{flex:1;min-width:0;padding:13px 15px;border-radius:11px;border:1px solid #ffffff35;background:#10121dcc;color:#fff;font-size:14px;outline:none}
+.ytstudy-form input:focus{border-color:#a5b4fc;box-shadow:0 0 0 3px #a5b4fc24}
+.ytstudy-form input::placeholder{color:#a3a6b5}
+.ytstudy-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(240px,.8fr);gap:14px;align-items:start}
+.ytstudy-player-card,.ytstudy-sidecard{background:var(--surface);border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:var(--shadow)}
+.ytstudy-player{aspect-ratio:16/9;background:#08090d;position:relative;min-height:220px}
+.ytstudy-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ytstudy-placeholder{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:8px;color:#b5b8c6;padding:20px}
+.ytstudy-placeholder b{color:#f1f1f5;font-size:15px}.ytstudy-placeholder span{font-size:12px}
+.ytstudy-player-meta{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ytstudy-video-title{font-size:14px;font-weight:750;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ytstudy-external{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap;text-decoration:none}
+.ytstudy-sidecard{padding:17px}
+.ytstudy-sidecard h3{margin:0 0 5px;font-size:15px}
+.ytstudy-sidecard p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}
+.ytstudy-lang-row{display:flex;gap:8px;margin:14px 0 10px}
+.ytstudy-lang{flex:1;padding:10px 8px;border:1px solid var(--line);background:var(--surface2);border-radius:10px;font-size:12px;font-weight:750}
 .ytstudy-lang.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
-.ytstudy-note,.ytstudy-error{margin-top:10px;padding:10px;border-radius:9px;background:var(--surface2);font-size:12px;line-height:1.5;color:var(--muted)}.ytstudy-error{color:var(--err)}
-@media(max-width:800px){.ytstudy-grid{grid-template-columns:1fr}.ytstudy-form{flex-direction:column}}
+.ytstudy-note{margin-top:13px;padding:11px 12px;border-radius:10px;background:var(--surface2);font-size:11.5px;line-height:1.55;color:var(--muted)}
+.ytstudy-error{color:var(--err);font-size:12px;margin-top:8px}
+.tauruss-wrap{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.tauruss-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;border-bottom:1px solid var(--line)}
+.tauruss-toolbar strong{font-size:13px}
+.tauruss-toolbar span{font-size:11px;color:var(--muted)}
+.tauruss-frame{display:block;width:100%;height:calc(100vh - 220px);min-height:560px;border:0;background:#090a0d}
+.tauruss-learning-layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(280px,.82fr);gap:14px;align-items:stretch}
+.tauruss-learning-frame{display:block;width:100%;height:calc(100vh - 260px);min-height:540px;border:0;background:#090a0d}
+.tauruss-learning-panel{display:flex;flex-direction:column;min-height:540px;max-height:calc(100vh - 260px);background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tauruss-learning-head{padding:15px;border-bottom:1px solid var(--line)}
+.tauruss-learning-head strong{font-size:15px}.tauruss-learning-head p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+.tauruss-learning-state{padding:9px 12px;background:var(--surface2);color:var(--muted);font-size:11px;line-height:1.5}
+.tauruss-cues{overflow:auto;padding:10px;display:flex;flex-direction:column;gap:8px;flex:1}
+.tauruss-cue{padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface2)}
+.tauruss-cue-en{font-size:13px;line-height:1.45;font-weight:650}.tauruss-cue-tr{font-size:12px;line-height:1.45;color:var(--accent);margin-top:5px}
+.tauruss-cue-time{font-size:10px;color:var(--muted);margin-top:5px}
+.tauruss-learning-foot{padding:10px 12px;border-top:1px solid var(--line);font-size:10px;line-height:1.45;color:var(--muted)}
+@media(max-width:900px){.tauruss-learning-layout{grid-template-columns:1fr}.tauruss-learning-panel{min-height:350px;max-height:55vh}.tauruss-learning-frame{height:65vh;min-height:400px}}
+@media(max-width:800px){.ytstudy-grid{grid-template-columns:1fr}.ytstudy-hero{padding:21px 17px}.ytstudy-player-meta{padding:12px}}
+@media(max-width:520px){.ytstudy-form{flex-direction:column}.ytstudy-form .btn{width:100%}.ytstudy-player{min-height:200px}}
+@media(max-width:700px){.tauruss-frame{height:calc(100vh - 195px);min-height:480px}}
 </style>
 </head>
 <body>
@@ -675,6 +718,7 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
     <button class="nav-special" id="vocabBtn" style="background:linear-gradient(135deg,#0891b2,#0d9488)">📚 &nbsp;Kelime Hazinesi</button>
     <button class="nav-special" id="listenBtn" style="background:linear-gradient(135deg,#e11d48,#f97316)">🎧 &nbsp;Dinleme Pratiği</button>
     <button class="nav-special" id="ytStudyBtn" style="background:linear-gradient(135deg,#6366f1,#0d9488)">▶ &nbsp;YouTube ile İzle</button>
+    <button class="nav-special" id="taurussBtn" style="background:linear-gradient(135deg,#191919,#3a3a3a)">🎬 &nbsp;Film + Çift Altyazı</button>
     <button class="nav-special" id="chatBtn" style="background:linear-gradient(135deg,#475569,#1e293b)">💬 &nbsp;Sohbet</button>
     <div id="navList"></div>
   </nav>
@@ -3008,6 +3052,12 @@ function showHome(){
   h += '<button class="node-card" data-go="__listen" style="border-color:#f97316">'+
        '<span class="badge" style="background:rgba(249,115,22,.15);color:#ea580c">DİNLEME</span>'+
        '<h4>🎧 Dinleme Pratiği</h4><p>Her konu için YouTube video listesi — kendi videolarını da ekleyebilirsin</p></button>';
+  h += '<button class="node-card" data-go="__ytstudy" style="border-color:#6366f1">'+
+       '<span class="badge" style="background:rgba(99,102,241,.15);color:#6366f1">YOUTUBE</span>'+
+       '<h4>▶ YouTube ile İzle</h4><p>Bir YouTube bağlantısı ekle, İngilizce veya Türkçe altyazıyla izlemeye başla</p></button>';
+  h += '<button class="node-card" data-go="__tauruss" style="border-color:#555">'+
+       '<span class="badge" style="background:#7772;color:var(--text)">KATALOG</span>'+
+       '<h4>🎬 Film + Çift Altyazı</h4><p>Tauruss filmini aç; VidFast İngilizce altyazısını sağ panelde Türkçe takip et</p></button>';
   h += '</div>';
   h += '<h3 style="margin:26px 0 12px;font-size:18px;font-weight:800;">Tüm Konular</h3>';
   NODES.forEach(function(nd){
@@ -4873,6 +4923,204 @@ function examResult(){
 }
 
 /* ---------- Dinleme merkezi: bütün konuların video sayıları ---------- */
+function showTaurussCatalog(){
+  current = null; closeNav();
+  main.innerHTML = '<div class="crumb">FİLMLE İNGİLİZCE · TAURUSS</div>'+
+    '<h1 class="topic-title">Filmi izle, altyazıyı öğren</h1>'+
+    '<p class="topic-sub">Tauruss sayfasını solda aç. Filmi başlatıp VidFast player’da English subtitles’ı etkinleştir; altyazı ve Türkçe karşılığı sağ panelde görünür.</p>'+
+    '<div class="tauruss-learning-layout"><section class="tauruss-wrap"><div class="tauruss-toolbar"><div><strong>Tauruss · Film ve diziler</strong><br><span>Sayfa bağlantısı doğrudan yüklenir</span></div><a class="ytstudy-external" href="https://tauruss.top/movies" target="_blank" rel="noopener noreferrer">Yeni sekmede aç ↗</a></div>'+
+    '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://tauruss.top/movies" title="Tauruss filmler ve player" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe></section>'+
+    '<aside class="tauruss-learning-panel" aria-label="Çift altyazı paneli"><div class="tauruss-learning-head"><strong>🇬🇧 İngilizce · 🇹🇷 Türkçe</strong><p>VidFast altyazıları burada canlı görünür. Bir kelimeyi seçince yerel çevirisini görürsün.</p></div>'+
+    '<div class="tauruss-learning-state" id="taurussLearningState">Altyazı köprüsü bekleniyor…</div><div class="tauruss-cues" id="taurussCues" aria-live="polite"></div>'+
+    '<div class="tauruss-learning-foot" id="taurussLearningFoot">Chrome’da LearnEnglish eklentisini etkinleştir; Tauruss player’da VidFast’i seçip English subtitles’ı aç. İlk kullanımda yerel çeviri modeli indirilir; altyazı metni çeviri servisine gönderilmez.</div></aside></div>';
+  window.scrollTo(0,0); fab.style.display="none"; buildNav(el("search").value);
+  TaurussLearning.mount();
+}
+
+var TaurussLearning={
+  seen:Object.create(null),translator:null,loading:false,loadError:"",queue:[],busy:false,root:null,
+  mount:function(){this.root=main;this.seen=Object.create(null);this.queue=[];this.busy=false;},
+  setStatus:function(text){var n=el("taurussLearningState");if(n)n.textContent=text;},
+  asyncTranslate:function(text,done){
+    var self=this;
+    if(this.translator){this.translator(text).then(done).catch(function(){done("Çeviri üretilemedi.");});return;}
+    if(this.loadError){done(this.loadError);return;}
+    if(!this.loading){this.loading=true;this.setStatus("Yerel İngilizce–Türkçe model indiriliyor (ilk kullanımda)…");
+      import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1").then(function(mod){
+        return mod.pipeline("translation","Xenova/nllb-200-distilled-600M",{dtype:"q8"});
+        }).then(function(pipe){self.translator=function(s){return pipe(s,{src_lang:"eng_Latn",tgt_lang:"tur_Latn"}).then(function(out){return out[0].translation_text;});};self.loading=false;self.setStatus("Canlı İngilizce altyazı alınıyor · çeviri bu cihazda çalışır");self.runQueue();
+      }).catch(function(error){
+        self.loading=false;
+        self.loadError="Yerel çeviri modeli yüklenemedi"+(error&&error.message?": "+error.message:".");
+        self.setStatus(self.loadError+". Sayfayı yenileyip tekrar deneyebilirsin.");
+        self.queue.splice(0).forEach(function(item){item.done(self.loadError);});
+      });
+    }
+    this.queue.push({text:text,done:done});
+  },
+  runQueue:function(){if(this.busy||!this.translator||!this.queue.length)return;this.busy=true;var self=this,item=this.queue.shift();this.translator(item.text).then(item.done).catch(function(){item.done("Çeviri üretilemedi.");}).finally(function(){self.busy=false;self.runQueue();});},
+  addCue:function(data){
+    if(!this.root||!main.contains(el("taurussCues")))return;
+    var text=String(data.text||"").replace(/\s+/g," ").trim();if(!text)return;
+    var key=String(data.start||0)+"|"+text;if(this.seen[key])return;this.seen[key]=true;
+    var list=el("taurussCues"),row=document.createElement("article");row.className="tauruss-cue";
+    row.innerHTML='<div class="tauruss-cue-en"></div><div class="tauruss-cue-tr">Çeviri hazırlanıyor…</div><div class="tauruss-cue-time"></div>';
+    row.querySelector(".tauruss-cue-en").textContent=text;
+    row.querySelector(".tauruss-cue-time").textContent=this.formatTime(data.start)+" · Kelimeye çift tıkla";
+    row.onmouseup=function(){setTimeout(function(){TaurussLearning.lookupWord(text,row);},0);};
+    list.appendChild(row);while(list.children.length>36)list.firstElementChild.remove();list.scrollTop=list.scrollHeight;
+    var tr=row.querySelector(".tauruss-cue-tr");this.asyncTranslate(text,function(value){tr.textContent=value;});
+    this.setStatus("Altyazı bağlı · "+(data.language||"English"));
+  },
+  formatTime:function(value){var s=Math.max(0,Math.floor(Number(value)||0));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");},
+  lookupWord:function(text,row){
+    var selection=window.getSelection().toString().trim();var word=selection||text;
+    var note=el("taurussLearningState");if(!note)return;
+    if(!selection)return;
+    note.textContent="‘"+word+"’ için kelime çevirisi hazırlanıyor…";
+    this.asyncTranslate(word,function(value){if(note.isConnected)note.textContent="'"+word+"': "+value;});
+  }
+};
+window.addEventListener("message",function(event){
+  var d=event.data;if(!d||d.source!=="learnenglish-vidfast-bridge")return;
+  if(event.origin!=="https://vidfast.pro"&&event.origin!=="https://vidfast.vc")return;
+  if(d.type==="READY"){TaurussLearning.setStatus("Eklenti bağlı · VidFast altyazısı bekleniyor");return;}
+  if(d.type==="CAPTION")TaurussLearning.addCue(d);
+});
+
+var YTSTUDY = { player:null, videoId:"", language:"en", pending:null, apiLoading:false };
+function ytStudyParse(raw){
+  var value = String(raw || "").trim();
+  if(!value) return null;
+  if(/^[\w-]{11}$/.test(value)) return {id:value,start:0};
+  if(!/^[a-z][a-z0-9+.-]*:\/\//i.test(value)) value = "https://" + value;
+  try{
+    var u = new URL(value);
+    var host = u.hostname.toLowerCase().replace(/^www\./,"").replace(/^m\./,"");
+    if(host !== "youtube.com" && host !== "youtu.be" && host !== "youtube-nocookie.com") return null;
+    var id = host === "youtu.be" ? u.pathname.split("/").filter(Boolean)[0] : u.searchParams.get("v");
+    if(!id){
+      var parts = u.pathname.split("/").filter(Boolean);
+      if(parts.length > 1 && ["embed","shorts","live","v"].indexOf(parts[0]) >= 0) id = parts[1];
+    }
+    if(!id || !/^[\w-]{11}$/.test(id)) return null;
+    var rawStart = u.searchParams.get("start") || u.searchParams.get("t") || "";
+    var start = /^\d+$/.test(rawStart) ? Number(rawStart) : 0;
+    if(!start && rawStart){
+      var match, re = /(\d+)(h|m|s)/g;
+      while((match = re.exec(rawStart))) start += Number(match[1]) * (match[2] === "h" ? 3600 : match[2] === "m" ? 60 : 1);
+    }
+    return {id:id,start:start};
+  }catch(e){ return null; }
+}
+function ytStudyApi(ready){
+  if(window.YT && window.YT.Player){ ready(); return; }
+  YTSTUDY.pending = ready;
+  if(YTSTUDY.apiLoading) return;
+  YTSTUDY.apiLoading = true;
+  var previous = window.onYouTubeIframeAPIReady;
+  window.onYouTubeIframeAPIReady = function(){
+    YTSTUDY.apiLoading = false;
+    if(typeof previous === "function") try{ previous(); }catch(e){}
+    var run = YTSTUDY.pending; YTSTUDY.pending = null;
+    if(run) run();
+  };
+  var script = document.createElement("script");
+  script.src = "https://www.youtube.com/iframe_api";
+  script.onerror = function(){
+    YTSTUDY.apiLoading = false;
+    var help = el("ytStudyHelp");
+    if(help) help.textContent = "YouTube oynatıcı yüklenemedi. İnternet bağlantını kontrol edip tekrar dene.";
+  };
+  document.head.appendChild(script);
+}
+function ytStudyMount(id, language, startAt){
+  YTSTUDY.videoId = id;
+  YTSTUDY.language = language;
+  ytStudyApi(function(){
+    var target = el("ytStudyPlayer");
+    if(!target) return;
+    if(YTSTUDY.player && YTSTUDY.player.destroy) try{ YTSTUDY.player.destroy(); }catch(e){}
+    target.innerHTML = "";
+    var vars = {playsinline:1,cc_load_policy:1,cc_lang_pref:language,hl:"tr",rel:0,enablejsapi:1};
+    if(startAt > 0) vars.start = Math.floor(startAt);
+    if(location.origin && location.origin !== "null") vars.origin = location.origin;
+    YTSTUDY.player = new YT.Player(target, {
+      width:"100%", height:"100%", videoId:id, playerVars:vars,
+      events:{
+        onReady:function(){
+          var note = el("ytStudyHelp");
+          if(note) note.textContent = language === "tr"
+            ? "Türkçe altyazı varsa YouTube oynatıcıda gösterilir. Altyazılar ⚙ menüsünden de seçilebilir."
+            : "İngilizce altyazı varsa YouTube oynatıcıda gösterilir. Altyazılar CC menüsünden açılıp kapatılabilir.";
+        },
+        onError:function(event){
+          var note = el("ytStudyHelp");
+          if(note) note.textContent = (event.data === 101 || event.data === 150)
+            ? "Bu video gömülü oynatmaya kapalı. YouTube'da açıp izleyebilirsin."
+            : event.data === 153
+              ? "YouTube kimlik bilgisi alamadı. Uygulamayı node server.js ile açıp tekrar dene."
+              : "Video oynatılamadı. Bağlantıyı ve video kullanılabilirliğini kontrol et.";
+        }
+      }
+    });
+  });
+}
+function showYouTubeStudy(initialUrl){
+  current = null; closeNav();
+  var initial = esc(initialUrl || "").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  main.innerHTML =
+    '<section class="ytstudy-hero"><div class="crumb" style="color:#c7c9ff">YOUTUBE · İNGİLİZCE ÖĞRENME</div>'+
+    '<h1>Sevdiğin videolarla İngilizce öğren.</h1>'+
+    '<p>YouTube bağlantını yapıştır. Video burada açılır; altyazı dilini oynatıcıdan İngilizce veya Türkçe seçebilirsin.</p>'+
+    '<form class="ytstudy-form" id="ytStudyForm"><input id="ytStudyUrl" type="url" inputmode="url" placeholder="YouTube video bağlantısını yapıştır" value="'+initial+'" autocomplete="url" aria-label="YouTube video bağlantısı">'+
+    '<button class="btn primary" type="submit">▶ Videoyu aç</button></form><div class="ytstudy-error" id="ytStudyError" hidden></div></section>'+
+    '<div class="ytstudy-grid"><section class="ytstudy-player-card"><div class="ytstudy-player" id="ytStudyPlayer">'+
+    '<div class="ytstudy-placeholder"><b>YouTube bağlantını ekleyerek başla</b><span>Video aynı sayfada oynatılacak.</span></div></div>'+
+    '<div class="ytstudy-player-meta"><div class="ytstudy-video-title" id="ytStudyTitle">Henüz video seçilmedi</div>'+
+    '<a class="ytstudy-external" id="ytStudyExternal" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">YouTube ↗</a></div></section>'+
+    '<aside class="ytstudy-sidecard"><div class="crumb">ALTYAZI DİLİ</div><h3>İzlerken takip et</h3>'+
+    '<p>Altyazıyı oynatıcının CC düğmesinden aç. Aşağıdan tercih ettiğin dili seç.</p>'+
+    '<div class="ytstudy-lang-row"><button class="ytstudy-lang active" id="ytStudyEn">🇬🇧 English</button><button class="ytstudy-lang" id="ytStudyTr">🇹🇷 Türkçe</button></div>'+
+    '<div class="ytstudy-note" id="ytStudyHelp">YouTube altyazısı olan videolarda çalışır. Türkçe çeviri, video ve YouTube altyazı desteğine bağlıdır.</div>'+
+    '<div class="ytstudy-note">Dil değiştirince video aynı konumda yeniden açılır. Bazı videolarda altyazı bulunmayabilir veya gömülü oynatma kapalı olabilir.</div></aside></div>';
+  el("ytStudyForm").onsubmit = function(event){
+    event.preventDefault();
+    var result = ytStudyParse(el("ytStudyUrl").value);
+    var error = el("ytStudyError");
+    if(!result){
+      error.hidden = false;
+      error.textContent = "Geçerli bir YouTube video bağlantısı gir. Shorts ve youtu.be bağlantıları da desteklenir.";
+      return;
+    }
+    error.hidden = true;
+    YTSTUDY.videoId = result.id;
+    el("ytStudyTitle").textContent = "YouTube videosu";
+    el("ytStudyExternal").href = "https://www.youtube.com/watch?v=" + result.id;
+    ytStudyMount(result.id, YTSTUDY.language || "en", result.start);
+  };
+  el("ytStudyUrl").addEventListener("input", function(){ el("ytStudyError").hidden = true; });
+  el("ytStudyEn").onclick = function(){ ytStudyChooseLanguage("en"); };
+  el("ytStudyTr").onclick = function(){ ytStudyChooseLanguage("tr"); };
+  if(initial) el("ytStudyForm").requestSubmit();
+  window.scrollTo(0,0);
+  fab.style.display = "none";
+  buildNav(el("search").value);
+}
+function ytStudyChooseLanguage(language){
+  if(!YTSTUDY.videoId) {
+    YTSTUDY.language = language;
+    el("ytStudyEn").classList.toggle("active", language === "en");
+    el("ytStudyTr").classList.toggle("active", language === "tr");
+    return;
+  }
+  var start = 0;
+  if(YTSTUDY.player && YTSTUDY.player.getCurrentTime) try{ start = YTSTUDY.player.getCurrentTime() || 0; }catch(e){}
+  el("ytStudyEn").classList.toggle("active", language === "en");
+  el("ytStudyTr").classList.toggle("active", language === "tr");
+  ytStudyMount(YTSTUDY.videoId, language, start);
+}
+
 function showListenHub(){
   current = null; closeNav();
 var YTSTUDY={player:null,videoId:"",language:"en",pending:null,apiLoading:false};
@@ -5272,7 +5520,8 @@ function vocQuiz(reset){
 var CH = {
   id: null, me: null, ch: "genel", es: null, chans: [], users: [],
   msgs: [], maxLen: 500, state: "idle", unread: {}, needCode: false,
-  name: "", code: "", mode: "sse", seq: 0, pollTimer: null, sseWatch: null, pollFail: 0
+  name: "", code: "", mode: "sse", seq: 0, pollTimer: null, sseWatch: null, pollFail: 0,
+  admin: ""
 };
 var CHAT_API_BASE = "https://learnenglish-chat-twinterrordark.onrender.com";
 function chatUrl(path){ return CHAT_API_BASE + path; }
@@ -5298,9 +5547,51 @@ function showChat(){
   buildNav(el("search").value);
   chApi("/api/chat/info").then(function(info){
     CH.chans = info.channels; CH.maxLen = info.maxLen; CH.needCode = info.needCode;
-    if(CH.id && CH.state === "open") chatRoom(); else chatJoinForm(info);
+    if(CH.id && CH.state === "open"){ chatRoom(); return; }
+    /* İsmi bir kere sorulur; sonraki gelişlerde kendiliğinden bağlanır. */
+    CH.admin = chLoad("admin");
+    if(CH.admin){
+      chApi("/api/chat/admin/check", {key: CH.admin}).catch(function(){
+        CH.admin = ""; chSave("admin", "");
+        chatWho(false); chatPaint(false);
+      });
+    }
+    var isim = chLoad("name"), kod = chLoad("code");
+    if(isim.length >= 2 && (!info.needCode || kod)) chatAutoJoin(isim, kod, info);
+    else chatJoinForm(info);
   }).catch(function(){ chatOffline(); });
 }
+
+/* Kayıtlı isimle sessizce bağlan. Başarısız olursa normal giriş ekranına dön. */
+function chatAutoJoin(isim, kod, info){
+  main.innerHTML = '<div class="crumb">Topluluk</div><h1 class="topic-title">\ud83d\udcac Sohbet</h1>' +
+                   '<p class="topic-sub">' + esc(isim) + ' olarak bağlanılıyor\u2026</p>';
+  chApi("/api/chat/join", {name: isim, code: kod || ""}).then(function(r){
+    CH.id = r.id; CH.me = {name:r.name, color:r.color}; CH.maxLen = r.maxLen;
+    CH.name = isim; CH.code = kod || "";
+    chatRoom(); chatConnect();
+  }).catch(function(e){
+    chatJoinForm(info, e.message);
+  });
+}
+
+/* Sekme kapanırken sunucuya haber bırak: kişi listeden hemen düşsün.
+   sendBeacon sayfa kapanırken bile gönderilmesi garanti olan tek yoldur. */
+function chatBye(){
+  if(!CH.id) return;
+  var govde = JSON.stringify({id: CH.id});
+  /* İki yol birden denenir: uzak sunucuda sendBeacon her zaman yetişmiyor,
+     keepalive'li fetch sayfa kapandıktan sonra da gönderilmeye devam eder. */
+  try{
+    if(navigator.sendBeacon)
+      navigator.sendBeacon(chatUrl("/api/chat/leave"), new Blob([govde], {type: "application/json"}));
+  }catch(e){}
+  try{
+    fetch(chatUrl("/api/chat/leave"), {method:"POST", keepalive:true,
+          headers:{"Content-Type":"application/json"}, body:govde});
+  }catch(e){}
+}
+window.addEventListener("pagehide", chatBye);
 
 function chatOffline(){
   main.innerHTML = '<div class="crumb">Topluluk</div><h1 class="topic-title">💬 Sohbet</h1>' +
@@ -5321,7 +5612,7 @@ function chatOffline(){
   el("chRetry").onclick = showChat;
 }
 
-function chatJoinForm(info){
+function chatJoinForm(info, hata){
   var last = chLoad("name");
   main.innerHTML = '<div class="crumb">Topluluk</div><h1 class="topic-title">💬 Sohbet</h1>' +
     '<p class="topic-sub">Şu an ' + info.online + ' / ' + info.max + ' kişi bağlı</p>' +
@@ -5334,6 +5625,7 @@ function chatJoinForm(info){
     '<div class="btn-row" style="margin-top:12px"><button class="btn primary full" id="chGo">Katıl</button></div>' +
     '</div>';
   var nm = el("chName");
+  if(hata) chatErr(hata);
   nm.focus();
   function go(){
     var name = nm.value.trim();
@@ -5343,7 +5635,7 @@ function chatJoinForm(info){
     chApi("/api/chat/join", {name:name, code:code}).then(function(r){
       CH.id = r.id; CH.me = {name:r.name, color:r.color}; CH.maxLen = r.maxLen;
       CH.name = name; CH.code = code;   /* sunucu yeniden baslarsa gerekir */
-      chSave("name", name);
+      chSave("name", name); chSave("code", code);
       chatRoom(); chatConnect();
     }).catch(function(e){
       chatErr(e.message); el("chGo").disabled = false; el("chGo").textContent = "Katıl";
@@ -5451,12 +5743,22 @@ function chatScroll(force){
    içinde veri gelmezse sessizce yoklamaya geçiyoruz. Yoklama her yerden
    geçer, sadece mesajlar birkaç yüz milisaniye geç gelir. */
 function chatHello(d){
-  CH.msgs = d.history || []; CH.users = d.users || []; if(d.you) CH.me = d.you;
+  /* Eski kayıtlarda kalmış katıldı/ayrıldı satırları varsa gösterme. */
+  CH.msgs = (d.history || []).filter(function(m){ return m.kind !== "sys"; });
+  CH.users = d.users || []; if(d.you) CH.me = d.you;
   if(typeof d.seq === "number") CH.seq = d.seq;
   CH.state = "open"; chatDot(); chatPaint(true); chatWho(false);
 }
 function chatIncoming(m){
   if(typeof m.seq === "number"){ if(m.seq <= CH.seq) return; CH.seq = m.seq; }
+  if(m.kind === "sys") return;   /* kim bağlı bilgisi kişi listesinde duruyor */
+  if(m.kind === "del"){          /* yönetici bir mesajı sildi */
+    CH.msgs = CH.msgs.filter(function(x){ return x.id !== m.target; });
+    chatPaint(false); return;
+  }
+  if(m.kind === "clear"){        /* yönetici sohbeti temizledi */
+    CH.msgs = []; chatPaint(true); return;
+  }
   CH.msgs.push(m);
   if(m.ch !== CH.ch && m.ch !== "*" && m.kind === "msg"){
     CH.unread[m.ch] = (CH.unread[m.ch] || 0) + 1; chatBadges();
@@ -5477,17 +5779,21 @@ function chatConnect(){
   chatStop();
   CH.state = "connecting"; CH.seq = 0; chatDot();
 
+  /* Geçen sefer yoklamaya düşmüşse doğrudan oradan başla: uzaktan girenler
+     her açılışta boşuna 4 saniye SSE beklemesin. */
+  if(chLoad("mode") === "poll"){ CH.mode = "poll"; chatPollStart(); return; }
+
   var es = new EventSource(chatUrl("/api/chat/stream?id=" + encodeURIComponent(CH.id)));
   CH.es = es;
 
   /* SSE'den bu süre içinde tek olay bile gelmezse yoklamaya geç */
   CH.sseWatch = setTimeout(function(){
-    if(CH.es === es && CH.state !== "open"){ CH.mode = "poll"; chatPollStart(); }
+    if(CH.es === es && CH.state !== "open"){ CH.mode = "poll"; chSave("mode", "poll"); chatPollStart(); }
   }, 4000);
 
   es.addEventListener("hello", function(ev){
     if(CH.es !== es) return;
-    CH.mode = "sse";
+    CH.mode = "sse"; chSave("mode", "sse");
     clearTimeout(CH.sseWatch); CH.sseWatch = null;
     chatHello(JSON.parse(ev.data));
   });
@@ -5576,11 +5882,94 @@ function chatWho(open){
            esc(u.name.charAt(0).toUpperCase()) + '</span>' + esc(u.name) +
            (CH.me && u.name === CH.me.name ? ' <i>(sen)</i>' : '') + '</div>';
   }).join("") || '<div class="empty">Kimse yok</div>';
+  if(l) l.innerHTML += '<div class="btn-row" style="margin-top:12px">' +
+    '<button class="btn full" id="chRename">İsmi değiştir</button></div>' +
+    (CH.admin
+      ? '<div class="chadmin">\u2713 Yönetici</div>' +
+        '<div class="btn-row" style="margin-top:8px">' +
+        '<button class="btn danger full" id="chClear">Sohbeti temizle</button></div>' +
+        '<div class="btn-row" style="margin-top:6px">' +
+        '<button class="btn full" id="chLock">Yöneticiden çık</button></div>'
+      : '<div class="btn-row" style="margin-top:6px">' +
+        '<button class="btn full" id="chAdmin">Yönetici girişi</button></div>' +
+        '<div id="chAdminBox" hidden style="margin-top:10px">' +
+        '<label class="chat-lbl">Yönetici anahtarı (sunucu penceresinde yazıyor)</label>' +
+        '<input id="chKey" class="chat-inp" type="password" autocomplete="off" placeholder="ör. 8f3a91c20b4d">' +
+        '<div id="chKeyNot" class="note err" style="display:none;margin-top:8px"></div>' +
+        '<div class="btn-row" style="margin-top:8px">' +
+        '<button class="btn primary full" id="chKeyGo">Giriş</button></div></div>');
+  var au = el("chAdmin");
+  if(au) au.onclick = chatAdminUnlock;
+  var cl = el("chClear");
+  if(cl) cl.onclick = function(){ el("chSheet").hidden = true; chatClearAll(); };
+  var lk = el("chLock");
+  if(lk) lk.onclick = function(){ el("chSheet").hidden = true; chatAdminLock(); };
+  var rn = el("chRename");
+  if(rn) rn.onclick = function(){
+    el("chSheet").hidden = true;
+    chSave("name", ""); chSave("code", "");
+    chatBye();
+    chatStop();
+    CH.id = null; CH.name = ""; CH.state = "idle";
+    showChat();
+  };
   if(open) el("chSheet").hidden = false;
 }
 function chatSys(text){
   CH.msgs.push({id:"x" + Date.now(), kind:"sys", ch:"*", text:text, ts:Date.now()});
   chatPaint(true);
+}
+
+/* ---------- yönetici ----------
+   Yetki, sunucunun açılışta ekrana yazdığı anahtarla kanıtlanır. Anahtarı
+   yalnızca sunucuyu çalıştıran kişi görür; tarayıcıda saklanır ki her
+   seferinde yazılmasın. */
+function chatAdminApi(islem, ek){
+  var govde = {key: CH.admin};
+  for(var k in (ek || {})) govde[k] = ek[k];
+  return chApi("/api/chat/admin/" + islem, govde);
+}
+function chatAdminUnlock(){
+  var kutu = el("chAdminBox"); if(!kutu) return;
+  kutu.hidden = false;
+  var gir = el("chKey");
+  gir.focus();
+  function dene(){
+    var girilen = gir.value.trim();
+    if(!girilen) return;
+    var not = el("chKeyNot");
+    not.textContent = "Denetleniyor\u2026"; not.style.display = "block";
+    chApi("/api/chat/admin/check", {key: girilen}).then(function(){
+      CH.admin = girilen; chSave("admin", girilen);
+      chatWho(false); chatPaint(false);
+      chatSys("Yönetici yetkisi açıldı. Mesajların yanındaki \u2715 ile silebilirsin.");
+    }).catch(function(e){
+      not.textContent = e.message || "Anahtar hatalı";
+    });
+  }
+  el("chKeyGo").onclick = dene;
+  gir.onkeydown = function(e){ if(e.key === "Enter") dene(); };
+}
+function chatAdminLock(){
+  CH.admin = ""; chSave("admin", "");
+  chatWho(false); chatPaint(false);
+}
+function chatDeleteMsg(id){
+  chatAdminApi("delete", {msgId: id}).then(function(){
+    /* Silme olayı zaten yayınlanıyor; burada ayrıca bir şey yapmaya gerek yok. */
+  }).catch(function(e){
+    if(/anahtar/i.test(e.message)) chatAdminLock();
+    chatSys("Silinemedi: " + e.message);
+  });
+}
+function chatClearAll(){
+  if(!confirm("Sohbetteki TÜM mesajlar herkes için silinecek.\nEmin misin?")) return;
+  chatAdminApi("clear").then(function(r){
+    chatSys((r.silinen || 0) + " mesaj silindi.");
+  }).catch(function(e){
+    if(/anahtar/i.test(e.message)) chatAdminLock();
+    chatSys("Temizlenemedi: " + e.message);
+  });
 }
 
 /* ---------- çizim ---------- */
@@ -5593,18 +5982,22 @@ function chatPaint(stick){
       h += '<div class="chsys">' + esc(m.text) + '</div>'; prev = null; return;
     }
     var same = prev && prev.name === m.name && (m.ts - prev.ts) < 5 * 60000;
+    var sil = CH.admin ? '<button class="chdel" data-del="' + esc(m.id) + '" title="Mesajı sil">\u2715</button>' : '';
     if(same){
-      h += '<div class="chline"><span class="chtext">' + chatText(m.text) + '</span></div>';
+      h += '<div class="chline"><span class="chtext">' + chatText(m.text) + '</span>' + sil + '</div>';
     } else {
       h += '<div class="chmsg">' +
              '<span class="chav" style="background:' + esc(m.color) + '">' + esc(m.name.charAt(0).toUpperCase()) + '</span>' +
              '<div class="chbody"><div class="chhead"><b style="color:' + esc(m.color) + '">' + esc(m.name) + '</b>' +
-             '<span class="chts">' + chTime(m.ts) + '</span></div>' +
+             '<span class="chts">' + chTime(m.ts) + '</span>' + sil + '</div>' +
              '<div class="chline"><span class="chtext">' + chatText(m.text) + '</span></div></div></div>';
     }
     prev = m;
   });
   box.innerHTML = h || '<div class="empty">Henüz mesaj yok. İlk yazan sen ol.</div>';
+  if(CH.admin) box.querySelectorAll("[data-del]").forEach(function(b){
+    b.onclick = function(){ chatDeleteMsg(this.getAttribute("data-del")); };
+  });
   chatBadges();
   if(stick !== false) chatScroll();
 }
@@ -5622,6 +6015,8 @@ function go(id){
   else if(id === "__write") showWriting();
   else if(id === "__exam") showExam(true);
   else if(id === "__listen") showListenHub();
+  else if(id === "__ytstudy") showYouTubeStudy();
+  else if(id === "__tauruss") showTaurussCatalog();
   else if(id === "__chat") showChat();
   else if(id === "__ytstudy") showYouTubeStudy();
   else if(id === "__vocab") showVocab("list");
@@ -5641,13 +6036,14 @@ el("homeBtn").onclick = showHome;
 el("bigQuizBtn").onclick = showBigQuiz;
 el("examBtn").onclick = function(){ showExam(true); };
 el("listenBtn").onclick = showListenHub;
+el("ytStudyBtn").onclick = function(){ showYouTubeStudy(); };
+el("taurussBtn").onclick = function(){ showTaurussCatalog(); };
 el("chatBtn").onclick = showChat;
 el("vocabBtn").onclick = function(){ showVocab("list"); };
 el("writeBtn").onclick = function(){ showWriting(); };
 el("search").addEventListener("input", function(){ buildNav(this.value); });
 window.addEventListener("resize", function(){
   if(window.innerWidth > 900){
-el("ytStudyBtn").onclick = function(){ showYouTubeStudy(); };
     closeNav();
     if(fab) fab.style.display = "none";
   } else if(current && fab){
@@ -5657,7 +6053,10 @@ el("ytStudyBtn").onclick = function(){ showYouTubeStudy(); };
 
 /* ---------- Başlat ---------- */
 buildNav("");
-showHome();
+if(location.hash === "#tauruss" || location.search.indexOf("tauruss") !== -1) showTaurussCatalog();
+else if(location.hash === "#ytstudy" || location.search.indexOf("ytstudy") !== -1) showYouTubeStudy();
+else if(location.hash === "#chat" || location.search.indexOf("chat") !== -1) showChat();
+else showHome();
 </script>
 </body>
 </html>

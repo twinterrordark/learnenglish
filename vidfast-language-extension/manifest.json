@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "LearnEnglish — VidFast Altyazı Köprüsü",
+  "version": "1.0.0",
+  "description": "VidFast İngilizce altyazılarını yerel öğrenme paneline aktarır.",
+  "host_permissions": [
+    "https://vidfast.pro/*",
+    "https://vidfast.vc/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://vidfast.pro/*",
+        "https://vidfast.vc/*"
+      ],
+      "js": ["vidfast-captions.js"],
+      "all_frames": true,
+      "run_at": "document_idle"
+    }
+  ]
+}
