@@ -5166,9 +5166,10 @@ function showTaurussCatalog(){
           '<p id="taurussMediaDesc">Varsayılan VidFast geniş ekran oynatıcısı devrede. İngilizce ve Türkçe altyazılar otomatik aranır ve player\'a yüklenir.</p>' +
         '</div>' +
         '<div class="tauruss-btn-group">' +
-          '<button class="tauruss-pill-btn active" id="tfBtnVidfast" title="Doğrudan VidFast Player">⚡ VidFast Player</button>' +
-          '<button class="tauruss-pill-btn" id="tfBtnTauruss" title="Tauruss.top sayfasını aç">🌐 Tauruss Kataloğu</button>' +
-          '<button class="tauruss-pill-btn" id="tfBtnCinema" title="Geniş Sinema Modu">🎬 Sinema Modu</button>' +
+          '<button class="tauruss-pill-btn active" id="tfBtnVidfast" title="Doğrudan VidFast Player">⚡ VidFast</button>' +
+          '<button class="tauruss-pill-btn" id="tfBtnAdfree" title="Reklamsız Temiz Mobil Oynatıcı">🛡️ Reklamsız Player (Mobil)</button>' +
+          '<button class="tauruss-pill-btn" id="tfBtnTauruss" title="Tauruss.top sayfasını aç">🌐 Tauruss</button>' +
+          '<button class="tauruss-pill-btn" id="tfBtnCinema" title="Geniş Sinema Modu">🎬 Sinema</button>' +
           '<button class="tauruss-pill-btn" id="tfBtnSplit" title="Yan Yana Bölünmüş Mod">◫ Yan Yana</button>' +
           '<button class="tauruss-pill-btn" id="tfBtnFull" title="Tam Ekran">⛶ Tam Ekran</button>' +
           '<button class="tauruss-pill-btn tauruss-party-toggle-btn" id="tfBtnParty" title="Arkadaşlarınla beraber aynı anda izle">👥 Birlikte İzle <span class="tauruss-party-badge" id="tfPartyBadge" style="display:none">● 0</span></button>' +
@@ -5282,12 +5283,24 @@ var TaurussLearning = {
   currentCueIdx: -1,
   searchTimer: null,
   activeSuggestions: [],
-  selectedSuggestionIdx: -1,
+  currentSource: "vidfast",
 
   mount: function(){
     this.root = main;
+    var isMobile = (window.innerWidth <= 768) || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    if(isMobile){
+      this.currentSource = "adfree";
+    }
     this.bindEvents();
-    this.fetchSubtitles(this.currentId, this.season, this.episode);
+    if(isMobile){
+      var btnAdfree = el("tfBtnAdfree");
+      var btnVidfast = el("tfBtnVidfast");
+      if(btnAdfree) btnAdfree.classList.add("active");
+      if(btnVidfast) btnVidfast.classList.remove("active");
+      this.reloadPlayer();
+    } else {
+      this.fetchSubtitles(this.currentId, this.season, this.episode);
+    }
     if(window.WatchParty) window.WatchParty.init();
   },
 
@@ -5335,9 +5348,20 @@ var TaurussLearning = {
     var syncMinus = el("tfSyncMinus");
     var syncPlus = el("tfSyncPlus");
 
+    var btnAdfree = el("tfBtnAdfree");
+
+    if(btnAdfree) btnAdfree.onclick = function(){
+      self.currentSource = "adfree";
+      btnAdfree.classList.add("active");
+      if(btnVidfast) btnVidfast.classList.remove("active");
+      if(btnTauruss) btnTauruss.classList.remove("active");
+      self.reloadPlayer();
+    };
+
     if(btnVidfast) btnVidfast.onclick = function(){
       self.currentSource = "vidfast";
       btnVidfast.classList.add("active");
+      if(btnAdfree) btnAdfree.classList.remove("active");
       if(btnTauruss) btnTauruss.classList.remove("active");
       self.reloadPlayer();
     };
@@ -5346,6 +5370,7 @@ var TaurussLearning = {
       self.currentSource = "tauruss";
       btnTauruss.classList.add("active");
       if(btnVidfast) btnVidfast.classList.remove("active");
+      if(btnAdfree) btnAdfree.classList.remove("active");
       self.reloadPlayer();
     };
 
@@ -5960,7 +5985,21 @@ var TaurussLearning = {
       targetUrl = "https://tauruss.top/movies";
       if(titleEl) titleEl.textContent = "🌐 Tauruss.top Kataloğu";
       if(labelEl) labelEl.textContent = "🌐 Tauruss.top · Canlı Arama";
-      if(subEl) subEl.textContent = "Tauruss üzerinden filmini seç, VidFast oynatıcıda altyazı açıldığında otomatik çift altyazı çalışacaktır.";
+      if(subEl) subEl.textContent = "Tauruss üzerinden filmini seç, oynatıcıda altyazı açıldığında otomatik çift altyazı çalışacaktır.";
+      frame.removeAttribute("sandbox");
+    } else if(this.currentSource === "adfree"){
+      if(this.currentType === "tv"){
+        targetUrl = "https://autoembed.co/tv/imdb/" + this.currentId + "-" + this.season + "-" + this.episode;
+        if(titleEl) titleEl.textContent = "📺 " + this.currentTitle + " · S" + this.season + " B" + this.episode;
+        if(labelEl) labelEl.textContent = "🛡️ Reklamsız Dizi Player · S" + this.season + " E" + this.episode;
+        if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor · Reklamlar engellendi";
+      } else {
+        targetUrl = "https://autoembed.co/movie/imdb/" + this.currentId;
+        if(titleEl) titleEl.textContent = "🎬 " + this.currentTitle;
+        if(labelEl) labelEl.textContent = "🛡️ Reklamsız Sinema Player";
+        if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor · Reklamlar engellendi";
+      }
+      frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media");
     } else {
       if(this.currentType === "tv"){
         targetUrl = "https://vidfast.vc/tv/" + this.currentId + "/" + this.season + "/" + this.episode;
@@ -5973,6 +6012,7 @@ var TaurussLearning = {
         if(labelEl) labelEl.textContent = "⚡ VidFast Sinema Player";
         if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor";
       }
+      frame.removeAttribute("sandbox");
     }
 
     frame.src = targetUrl;
@@ -7343,6 +7383,16 @@ window.addEventListener("message", function(event){
   if(d.type === "NATIVE_CUE" && !window._nativeSyncApplied){
     TaurussLearning.handleNativeCue(d);
     return;
+  }
+});
+
+// Anti-Redirect Protection: Prevent any embedded player/ad script from hijacking or redirecting the parent window
+window.addEventListener("beforeunload", function (e) {
+  if (window._allowExternalNav) return;
+  if (document.getElementById("taurussFrame")) {
+    e.preventDefault();
+    e.returnValue = "Reklam yönlendirmesi engellendi.";
+    return "Reklam yönlendirmesi engellendi.";
   }
 });
 
