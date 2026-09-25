@@ -5306,11 +5306,18 @@ function showTaurussCatalog(){
     '<div class="tauruss-learning-layout cinema-mode" id="taurussLayout">' +
       '<section class="tauruss-wrap" id="taurussWrap">' +
         '<div class="tauruss-toolbar">' +
-          '<div><strong id="taurussPlayerLabel">🛡️ Reklamsız Player · Geniş Ekran</strong><br><span id="taurussPlayerSub">Interstellar (tt0816692) yüklendi · Sıfır reklam</span></div>' +
-          '<a class="ytstudy-external" id="taurussExtLink" href="https://vidsrc.me/embed/movie?imdb=tt0816692" target="_blank" rel="noopener noreferrer">Yeni sekmede aç ↗</a>' +
+          '<div><strong id="taurussPlayerLabel">🛡️ Reklamsız Player · VidLink</strong><br><span id="taurussPlayerSub">Interstellar (tt0816692) yüklendi · Reklamsız akış</span></div>' +
+          '<div style="display:flex;align-items:center;gap:8px">' +
+            '<select id="taurussServerSelect" title="Oynatıcı Kaynağı Seç" style="background:#1e293b;color:#38bdf8;border:1px solid #334155;border-radius:6px;padding:4px 8px;font-size:12px;font-weight:600;cursor:pointer">' +
+              '<option value="vidlink" selected>🛡️ Sunucu 1 (VidLink - Reklamsız & Oto-Senkron)</option>' +
+              '<option value="vidsrc">🎬 Sunucu 2 (VidSrc - Klasik)</option>' +
+              '<option value="videasy">⚡ Sunucu 3 (Videasy)</option>' +
+            '</select>' +
+            '<a class="ytstudy-external" id="taurussExtLink" href="https://vidlink.pro/movie/tt0816692?primaryColor=0284c7&secondaryColor=0f172a&icons=vid" target="_blank" rel="noopener noreferrer">Yeni sekmede aç ↗</a>' +
+          '</div>' +
         '</div>' +
         '<div class="tauruss-frame-container" style="position:relative">' +
-          '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidsrc.me/embed/movie?imdb=tt0816692" title="Reklamsız Film Player" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *" allowfullscreen loading="eager" referrerpolicy="origin"></iframe>' +
+          '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidlink.pro/movie/tt0816692?primaryColor=0284c7&secondaryColor=0f172a&icons=vid" title="Reklamsız Film Player" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *" allowfullscreen loading="eager" referrerpolicy="origin"></iframe>' +
           '<button type="button" class="tauruss-floating-fs-btn" id="tfFloatingFsBtn" title="Tam Ekran (Altyazılı)">⛶ Tam Ekran</button>' +
           '<div class="tauruss-party-countdown" id="tfPartyCountdown" style="display:none">' +
             '<div class="tauruss-countdown-num" id="tfCountdownNum">3</div>' +
@@ -5379,6 +5386,25 @@ var TaurussLearning = {
   currentCueIdx: -1,
   searchTimer: null,
   activeSuggestions: [],
+  currentServer: "vidlink",
+  hasRealTimeSync: false,
+  _realSyncReported: false,
+
+  onRealTimeUpdate: function(sec){
+    this.hasRealTimeSync = true;
+    if(this.isTimerRunning){
+      this.pauseMobileTimer();
+    }
+    this.lastCurrentTime = sec;
+    this.onTimeUpdate(sec);
+
+    var badge = el("tfSubStatus");
+    if(badge && !this._realSyncReported){
+      this._realSyncReported = true;
+      badge.textContent = "⚡ Otomatik Canlı Senkron";
+      badge.className = "tauruss-sub-badge found";
+    }
+  },
 
   mount: function(){
     this.root = main;
@@ -5428,11 +5454,31 @@ var TaurussLearning = {
     var subOff = el("tfSubOff");
     var subFetch = el("tfSubFetch");
 
+    var srvSelect = el("taurussServerSelect");
+    if(srvSelect){
+      srvSelect.value = self.currentServer || "vidlink";
+      srvSelect.onchange = function(){
+        self.currentServer = this.value;
+        self.reloadPlayer();
+      };
+    }
+
     if(!window._adblockOpenPatched){
       window._adblockOpenPatched = true;
       try {
         window.open = function(){ console.warn("[AdBlock] Blocked popup"); return null; };
       } catch(_) {}
+    }
+
+    if(!window._topRedirectBlocked){
+      window._topRedirectBlocked = true;
+      window.addEventListener("beforeunload", function(e){
+        if(window._allowPageUnload) return;
+        if(document.activeElement && document.activeElement.id === "taurussFrame"){
+          e.preventDefault();
+          return (e.returnValue = "Sayfadan ayrılmak istiyor musunuz?");
+        }
+      });
     }
 
     var mTabCues = el("tfMTabCues");
@@ -5595,7 +5641,7 @@ var TaurussLearning = {
       window.addEventListener("blur", function(){
         setTimeout(function(){
           if(document.activeElement && document.activeElement.id === "taurussFrame"){
-            if(!self.isTimerRunning) self.startMobileTimer();
+            if(!self.hasRealTimeSync && !self.isTimerRunning) self.startMobileTimer();
           }
         }, 350);
       });
@@ -6141,12 +6187,13 @@ var TaurussLearning = {
     var extLink = el("taurussExtLink");
     if(!frame) return;
 
-    // Reset subtitle states and sync for new content
     this.combinedCues = [];
     this.enCues = [];
     this.trCues = [];
     this.currentCueIdx = -1;
     this.syncOffset = 0.0;
+    this.hasRealTimeSync = false;
+    this._realSyncReported = false;
     window._nativeSyncApplied = false;
 
     var syncVal = el("tfSyncVal");
@@ -6159,16 +6206,33 @@ var TaurussLearning = {
     var live = el("taurussLiveCounterpart");
     if(live) live.textContent = "Yeni içerik başlatılıyor…";
 
+    var srv = this.currentServer || "vidlink";
+    var srvSelect = el("taurussServerSelect");
+    if(srvSelect) srvSelect.value = srv;
+
+    var srvName = (srv === "vidlink") ? "VidLink (Oto-Senkron)" : (srv === "videasy" ? "Videasy" : "VidSrc");
     var targetUrl = "";
     if(this.currentType === "tv"){
-      targetUrl = "https://vidsrc.me/embed/tv?imdb=" + this.currentId + "&season=" + this.season + "&episode=" + this.episode;
+      if(srv === "vidlink"){
+        targetUrl = "https://vidlink.pro/tv/" + this.currentId + "/" + this.season + "/" + this.episode + "?primaryColor=0284c7&secondaryColor=0f172a&icons=vid";
+      } else if(srv === "videasy"){
+        targetUrl = "https://player.videasy.net/tv/" + this.currentId + "/" + this.season + "/" + this.episode;
+      } else {
+        targetUrl = "https://vidsrc.me/embed/tv?imdb=" + this.currentId + "&season=" + this.season + "&episode=" + this.episode;
+      }
       if(titleEl) titleEl.textContent = "📺 " + this.currentTitle + " · S" + this.season + " B" + this.episode;
-      if(labelEl) labelEl.textContent = "🛡️ Reklamsız Dizi Player · S" + this.season + " E" + this.episode;
+      if(labelEl) labelEl.textContent = "🛡️ Reklamsız Dizi Player · " + srvName + " · S" + this.season + " E" + this.episode;
       if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor · Reklamsız akış";
     } else {
-      targetUrl = "https://vidsrc.me/embed/movie?imdb=" + this.currentId;
+      if(srv === "vidlink"){
+        targetUrl = "https://vidlink.pro/movie/" + this.currentId + "?primaryColor=0284c7&secondaryColor=0f172a&icons=vid";
+      } else if(srv === "videasy"){
+        targetUrl = "https://player.videasy.net/movie/" + this.currentId;
+      } else {
+        targetUrl = "https://vidsrc.me/embed/movie?imdb=" + this.currentId;
+      }
       if(titleEl) titleEl.textContent = "🎬 " + this.currentTitle;
-      if(labelEl) labelEl.textContent = "🛡️ Reklamsız Sinema Player";
+      if(labelEl) labelEl.textContent = "🛡️ Reklamsız Sinema Player · " + srvName;
       if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor · Reklamsız akış";
     }
     frame.removeAttribute("sandbox");
@@ -6374,7 +6438,8 @@ var TaurussLearning = {
         if(firstCue){
           self.displayCuePair(firstCue);
         }
-        self.startMobileTimer();
+        self.lastCurrentTime = 0;
+        self.onTimeUpdate(0);
 
         // Automatically batch-translate any remaining lines in background
         self.batchTranslateCues();
@@ -7545,32 +7610,79 @@ var WatchParty = {
 
 window.addEventListener("message", function(event){
   var d = event.data;
-  if(!d || d.source !== "learnenglish-vidfast-bridge") return;
-  if(event.origin && event.origin !== "null" && !/vidfast\.(pro|vc)/.test(event.origin)) return;
+  if(!d) return;
+  if(typeof d === "string"){
+    try { d = JSON.parse(d); } catch(_) {}
+  }
+  if(!d || typeof d !== "object") return;
 
-  if(d.type === "READY"){
-    TaurussLearning.setStatus("⚡ Eklenti bağlandı · VidFast oynatılıyor");
-    TaurussLearning.injectToPlayer();
-    return;
-  }
-  if(d.type === "TIME_UPDATE"){
-    TaurussLearning.onTimeUpdate(d.currentTime || 0);
-    return;
-  }
-  if(d.type === "PLAYBACK_STATUS"){
-    TaurussLearning.isPaused = Boolean(d.paused);
-    if(window.WatchParty && window.WatchParty.active){
-      window.WatchParty.onLocalPlaybackStatus(d);
+  // 1. VidLink MEDIA_DATA progress updates
+  if(d.type === "MEDIA_DATA"){
+    var cur = null;
+    if(d.data && typeof d.data.currentTime === "number") cur = d.data.currentTime;
+    else if(d.data && typeof d.data.watched_seconds === "number") cur = d.data.watched_seconds;
+    else if(typeof d.currentTime === "number") cur = d.currentTime;
+    else if(typeof d.watched_seconds === "number") cur = d.watched_seconds;
+
+    if(cur !== null && !isNaN(cur) && cur >= 0){
+      TaurussLearning.onRealTimeUpdate(cur);
     }
     return;
   }
-  if(d.type === "CAPTION"){
-    TaurussLearning.addLiveCaption(d);
+
+  // 2. Standard timeupdate / PlayerJS / HTML5 embed messages
+  if(d.event === "timeupdate" || d.type === "timeupdate" || d.event === "time" || d.type === "TIME_UPDATE"){
+    var cur = null;
+    if(typeof d.currentTime === "number") cur = d.currentTime;
+    else if(typeof d.time === "number") cur = d.time;
+    else if(typeof d.data === "number") cur = d.data;
+    else if(d.data && typeof d.data.currentTime === "number") cur = d.data.currentTime;
+    else if(d.data && typeof d.data.time === "number") cur = d.data.time;
+
+    if(cur !== null && !isNaN(cur) && cur >= 0){
+      TaurussLearning.onRealTimeUpdate(cur);
+    }
     return;
   }
-  if(d.type === "NATIVE_CUE" && !window._nativeSyncApplied){
-    TaurussLearning.handleNativeCue(d);
+
+  // 3. Play / Pause events
+  if(d.event === "play" || d.type === "play" || (d.data && d.data.paused === false)){
+    TaurussLearning.isPaused = false;
+    if(window.WatchParty && window.WatchParty.active){
+      window.WatchParty.onLocalPlaybackStatus({ paused: false });
+    }
     return;
+  }
+  if(d.event === "pause" || d.type === "pause" || (d.data && d.data.paused === true)){
+    TaurussLearning.isPaused = true;
+    if(window.WatchParty && window.WatchParty.active){
+      window.WatchParty.onLocalPlaybackStatus({ paused: true });
+    }
+    return;
+  }
+
+  // 4. VidFast bridge messages
+  if(d.source === "learnenglish-vidfast-bridge"){
+    if(d.type === "READY"){
+      TaurussLearning.setStatus("⚡ Eklenti bağlandı · Oynatıcı hazır");
+      TaurussLearning.injectToPlayer();
+      return;
+    }
+    if(d.type === "PLAYBACK_STATUS"){
+      TaurussLearning.isPaused = Boolean(d.paused);
+      if(window.WatchParty && window.WatchParty.active){
+        window.WatchParty.onLocalPlaybackStatus(d);
+      }
+      return;
+    }
+    if(d.type === "CAPTION"){
+      TaurussLearning.addLiveCaption(d);
+      return;
+    }
+    if(d.type === "NATIVE_CUE" && !window._nativeSyncApplied){
+      TaurussLearning.handleNativeCue(d);
+      return;
+    }
   }
 });
 
