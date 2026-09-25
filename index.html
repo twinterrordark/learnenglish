@@ -728,27 +728,31 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
 .tauruss-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line)}
 .tauruss-toolbar strong{font-size:13px;display:flex;align-items:center;gap:6px}
 .tauruss-toolbar span{font-size:11.5px;color:var(--muted)}
-.tauruss-learning-layout{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(310px,.95fr);gap:14px;align-items:stretch}
-.tauruss-learning-frame{display:block;width:100%;height:calc(100vh - 240px);min-height:540px;border:0;background:#05070a}
+.tauruss-learning-layout{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px;align-items:stretch}
+.tauruss-learning-frame{display:block;width:100%;height:calc(100vh - 220px);min-height:500px;border:0;background:#05070a}
 
 /* PANEL & DIALOGUE LIST */
-.tauruss-learning-panel{display:flex;flex-direction:column;min-height:540px;max-height:calc(100vh - 240px);background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.tauruss-learning-head{padding:12px 14px;border-bottom:1px solid var(--line)}
-.tauruss-learning-head strong{font-size:14px}.tauruss-learning-head p{margin:3px 0 0;color:var(--muted);font-size:11.5px;line-height:1.4}
-.tauruss-live-box{padding:12px 14px;background:var(--surface2);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:5px}
-.tauruss-live-label{font-size:11px;font-weight:800;letter-spacing:.5px;color:var(--accent);text-transform:uppercase}
-.tauruss-live-text{font-size:14.5px;line-height:1.45;font-weight:700;color:var(--text);user-select:text}
-.sub-word{cursor:pointer;border-radius:4px;padding:1px 3px;margin:0 1px;transition:.12s;display:inline-block}
-.sub-word:hover{background:var(--accent-soft);color:var(--accent);text-decoration:underline}
-.tauruss-word-card{margin-top:4px;padding:6px 10px;border-radius:8px;background:var(--surface);border:1px solid var(--accent);font-size:12px;display:flex;align-items:center;justify-content:space-between}
-.tauruss-learning-state{padding:8px 12px;background:var(--surface2);color:var(--muted);font-size:11px;line-height:1.4;display:flex;align-items:center;justify-content:space-between}
-.tauruss-cues{overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px;flex:1}
-.tauruss-cue{padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--surface2);transition:.15s;cursor:pointer}
-.tauruss-cue:hover{border-color:var(--accent)}
-.tauruss-cue.active-second{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 2px rgba(79,70,229,.3);transform:scale(1.01)}
-.tauruss-cue-en{font-size:13px;line-height:1.45;font-weight:700}.tauruss-cue-tr{font-size:12px;line-height:1.45;color:var(--accent);margin-top:3px;font-weight:600}
-.tauruss-cue-time{font-size:10px;color:var(--muted);margin-top:3px;display:flex;align-items:center;justify-content:space-between}
-.tauruss-learning-foot{padding:8px 12px;border-top:1px solid var(--line);font-size:10.5px;line-height:1.4;color:var(--muted)}
+.tauruss-learning-panel{display:flex;flex-direction:column;min-height:500px;max-height:calc(100vh - 220px);background:#070a12;border:1px solid #1e293b;border-radius:14px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+.tauruss-learning-head{padding:10px 14px;background:#0d1424;border-bottom:1px solid #1e293b}
+.tauruss-learning-head strong{font-size:13px;color:#f8fafc;display:flex;align-items:center;gap:6px}
+.tauruss-learning-head p{margin:2px 0 0;color:#94a3b8;font-size:11px;line-height:1.35}
+.tauruss-live-box{padding:12px 14px;background:#0b1329;border-bottom:1px solid #1e3a5f;display:flex;flex-direction:column;gap:5px}
+.tauruss-live-label{font-size:10.5px;font-weight:800;letter-spacing:.6px;color:#38bdf8;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
+.tauruss-live-text{font-size:15px;line-height:1.45;color:#ffffff;user-select:text}
+.sub-word{cursor:pointer;border-radius:4px;padding:1px 3px;margin:0 1px;transition:.12s;display:inline-block;color:#ffffff;font-weight:700}
+.sub-word:hover{background:#38bdf8;color:#000000;text-decoration:none}
+.tauruss-word-card{margin-top:6px;padding:8px 12px;border-radius:8px;background:#0f172a;border:1px solid #38bdf8;font-size:12.5px;display:flex;align-items:center;justify-content:space-between;color:#ffffff}
+.tauruss-learning-state{padding:6px 12px;background:#090d18;color:#94a3b8;font-size:11px;line-height:1.4;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1e293b}
+.tauruss-cues{overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:7px;flex:1;background:#070a12}
+.tauruss-cue{padding:9px 12px;border:1px solid #1e293b;border-radius:10px;background:#0b1120;transition:.15s;cursor:pointer}
+.tauruss-cue:hover{border-color:#38bdf8;background:#0f172a}
+.tauruss-cue.active-second{border-color:#38bdf8!important;background:#172554!important;box-shadow:0 0 14px rgba(56,189,248,.4)!important}
+.tauruss-cue-en{font-size:13.5px;line-height:1.45;font-weight:700;color:#ffffff}
+.tauruss-cue-tr{font-size:13px;line-height:1.4;color:#facc15;margin-top:4px;font-weight:700}
+.tauruss-cue-time{font-size:10.5px;color:#94a3b8;margin-top:3px;display:flex;align-items:center;justify-content:space-between}
+.tauruss-cue-sync-btn{background:#1e293b;border:1px solid #334155;color:#38bdf8;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;cursor:pointer}
+.tauruss-cue-sync-btn:hover{background:#38bdf8;color:#000}
+.tauruss-learning-foot{padding:8px 12px;border-top:1px solid #1e293b;font-size:10.5px;line-height:1.4;color:#94a3b8;background:#090d18}
 
 @media(max-width:960px){
   .tauruss-learning-layout{grid-template-columns:1fr;gap:12px}
@@ -5336,19 +5340,43 @@ function showTaurussCatalog(){
         '</div>' +
       '</section>' +
 
-      '<aside class="tauruss-learning-panel" aria-label="Çift altyazı paneli">' +
+      '<aside class="tauruss-learning-panel" aria-label="Language Reactor paneli">' +
         '<div class="tauruss-learning-head">' +
-          '<strong id="taurussPanelHeading">⚡ Language Reactor · 🇬🇧 Video ➔ 🇹🇷 Türkçe Karşılığı</strong>' +
-          '<p id="taurussPanelSub">Player\'da İngilizce izlerken, sağ panelde anında Türkçe karşılığı ve kelime anlamları akar.</p>' +
+          '<div style="display:flex;align-items:center;justify-content:space-between">' +
+            '<strong id="taurussPanelHeading" style="font-size:13px;color:#f8fafc">⚡ Language Reactor</strong>' +
+            '<span id="tfLiveTimeBadge" style="background:#0284c7;color:#fff;padding:2px 7px;border-radius:5px;font-family:monospace;font-size:12px;font-weight:800">00:00</span>' +
+          '</div>' +
+          '<p id="taurussPanelSub" style="margin:2px 0 0;color:#94a3b8;font-size:11px">Player kaçıncı saniyedeyse sağ panel tam orayı gösterir.</p>' +
         '</div>' +
+
         '<div class="tauruss-live-box" id="taurussLiveBox">' +
-          '<div class="tauruss-live-label" id="taurussLiveLabel">💬 Canlı Karşılık Akışı (Language Reactor):</div>' +
+          '<div class="tauruss-live-label" id="taurussLiveLabel">' +
+            '<span>💬 Canlı Diyalog:</span>' +
+            '<span style="font-size:10px;opacity:.7">Tıkla & Dinle</span>' +
+          '</div>' +
           '<div class="tauruss-live-text" id="taurussLiveCounterpart">Videoyu başlatınca bu saniyenin diyalogu ve karşılık çevirisi burada gösterilir.</div>' +
           '<div class="tauruss-word-card" id="taurussWordCard" style="display:none"></div>' +
         '</div>' +
-        '<div class="tauruss-learning-state" id="taurussLearningState"><span>Altyazı köprüsü devrede</span><span id="taurussCueCount">0 diyalog</span></div>' +
+
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:4px;padding:6px 10px;background:#0d1424;border-bottom:1px solid #1e293b">' +
+          '<button type="button" id="tfPanelPlayPause" style="background:#0284c7;color:#fff;border:none;border-radius:6px;padding:5px 9px;font-size:11px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px">▶ Akışı Başlat</button>' +
+          '<div style="display:flex;gap:3px">' +
+            '<button type="button" id="tfPanelMinus2" style="background:#1e293b;color:#cbd5e1;border:1px solid #334155;border-radius:6px;padding:4px 6px;font-size:11px;font-weight:700;cursor:pointer" title="2 saniye geri">-2s</button>' +
+            '<button type="button" id="tfPanelPlus2" style="background:#1e293b;color:#cbd5e1;border:1px solid #334155;border-radius:6px;padding:4px 6px;font-size:11px;font-weight:700;cursor:pointer" title="2 saniye ileri">+2s</button>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:3px">' +
+            '<input type="text" id="tfJumpInput" placeholder="01:25" style="width:48px;background:#0b1120;color:#facc15;border:1px solid #334155;border-radius:6px;padding:4px 3px;font-size:11px;font-family:monospace;text-align:center" title="Saniyeye gitmek için örn: 02:40">' +
+            '<button type="button" id="tfJumpBtn" style="background:#1e293b;color:#38bdf8;border:1px solid #334155;border-radius:6px;padding:4px 7px;font-size:11px;font-weight:800;cursor:pointer">Git</button>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="tauruss-learning-state" id="taurussLearningState">' +
+          '<input type="text" id="tfCueFilter" placeholder="🔍 Diyaloglarda kelime ara..." style="flex:1;margin-right:8px;background:#0b1120;color:#f8fafc;border:1px solid #1e293b;border-radius:5px;padding:3px 6px;font-size:11px">' +
+          '<span id="taurussCueCount" style="color:#facc15;font-weight:800;white-space:nowrap">0 diyalog</span>' +
+        '</div>' +
+
         '<div class="tauruss-cues" id="taurussCues" aria-live="polite"></div>' +
-        '<div class="tauruss-learning-foot">💡 <strong>Otomatik Senkron:</strong> Konuşulan sesi duyduğunuz an <strong>"🎯 Sesi Duyunca Bas"</strong> butonuna (veya klavyeden <strong>S</strong> tuşuna) basın; ya da sağdaki konuşulan satırdan <strong>"🎯 Sese Eşitle"</strong>ye tıklayın. Sistem tüm filmi tek tıkla sese eşitler. İnce ayar için <strong>[</strong> ve <strong>]</strong> tuşlarını kullanabilirsiniz.</div>' +
+        '<div class="tauruss-learning-foot">💡 Listedeki <strong>herhangi bir repliğe dokunarak</strong> anında o saniyeye gidebilirsin.</div>' +
       '</aside>' +
     '</div>' +
 
@@ -5658,14 +5686,66 @@ var TaurussLearning = {
     if(subOverlayToggle) subOverlayToggle.onclick = function(){ self.toggleOverlayOnVideo(); };
     if(subFetch) subFetch.onclick = function(){ self.fetchSubtitles(self.currentId, self.season, self.episode, true); };
 
+    var panelPlayPause = el("tfPanelPlayPause");
+    var panelMinus2 = el("tfPanelMinus2");
+    var panelPlus2 = el("tfPanelPlus2");
+    var jumpInput = el("tfJumpInput");
+    var jumpBtn = el("tfJumpBtn");
+    var cueFilter = el("tfCueFilter");
+
+    if(panelPlayPause) panelPlayPause.onclick = function(){
+      self.toggleMobileTimer();
+    };
+    if(panelMinus2) panelMinus2.onclick = function(){
+      self.lastCurrentTime = Math.max(0, (self.lastCurrentTime || 0) - 2.0);
+      self.onTimeUpdate(self.lastCurrentTime);
+    };
+    if(panelPlus2) panelPlus2.onclick = function(){
+      self.lastCurrentTime = (self.lastCurrentTime || 0) + 2.0;
+      self.onTimeUpdate(self.lastCurrentTime);
+    };
+
+    var doJump = function(){
+      if(!jumpInput) return;
+      var raw = jumpInput.value.trim();
+      if(!raw) return;
+      var sec = 0;
+      if(raw.indexOf(":") !== -1){
+        var parts = raw.split(":");
+        if(parts.length === 2){
+          sec = (parseInt(parts[0], 10) || 0) * 60 + (parseFloat(parts[1]) || 0);
+        } else if(parts.length === 3){
+          sec = (parseInt(parts[0], 10) || 0) * 3600 + (parseInt(parts[1], 10) || 0) * 60 + (parseFloat(parts[2]) || 0);
+        }
+      } else {
+        sec = parseFloat(raw) || 0;
+      }
+      self.jumpToTime(sec);
+    };
+    if(jumpBtn) jumpBtn.onclick = doJump;
+    if(jumpInput) jumpInput.onkeydown = function(e){ if(e.key === "Enter") doJump(); };
+
+    if(cueFilter){
+      cueFilter.oninput = function(){
+        var q = this.value.toLowerCase().trim();
+        var allCues = document.querySelectorAll(".tauruss-cue");
+        allCues.forEach(function(el){
+          if(!q){
+            el.style.display = "block";
+          } else {
+            var txt = el.textContent.toLowerCase();
+            el.style.display = txt.indexOf(q) !== -1 ? "block" : "none";
+          }
+        });
+      };
+    }
+
     if(!window._taurussBlurBound){
       window._taurussBlurBound = true;
       window.addEventListener("blur", function(){
         setTimeout(function(){
-          if(document.activeElement && document.activeElement.id === "taurussFrame"){
-            if(!self.hasRealTimeSync && !self.isTimerRunning) self.startMobileTimer();
-          }
-        }, 350);
+          if(!self.isTimerRunning) self.startMobileTimer();
+        }, 250);
       });
     }
 
@@ -5792,10 +5872,10 @@ var TaurussLearning = {
   },
 
   updateTimerUI: function(){
-    var btn = el("tfSubPlayPause");
+    var btn = el("tfPanelPlayPause");
     if(btn){
-      btn.textContent = this.isTimerRunning ? "⏸️ Altyazıyı Duraklat" : "▶ Altyazıyı Başlat";
-      btn.classList.toggle("running", this.isTimerRunning);
+      btn.textContent = this.isTimerRunning ? "⏸️ Duraklat" : "▶ Akışı Başlat";
+      btn.style.background = this.isTimerRunning ? "#dc2626" : "#0284c7";
     }
   },
 
@@ -6687,6 +6767,9 @@ var TaurussLearning = {
   onTimeUpdate: function(currentTime){
     this.lastCurrentTime = currentTime;
     var t = currentTime - this.syncOffset;
+
+    var timeBadge = el("tfLiveTimeBadge");
+    if(timeBadge) timeBadge.textContent = this.formatTime(currentTime);
 
     // Find cue at this time
     var activeIdx = -1;
@@ -7672,32 +7755,28 @@ window.addEventListener("message", function(event){
   }
   if(!d || typeof d !== "object") return;
 
-  // 1. VidLink MEDIA_DATA progress updates
-  if(d.type === "MEDIA_DATA"){
-    var cur = null;
-    if(d.data && typeof d.data.currentTime === "number") cur = d.data.currentTime;
-    else if(d.data && typeof d.data.watched_seconds === "number") cur = d.data.watched_seconds;
-    else if(typeof d.currentTime === "number") cur = d.currentTime;
-    else if(typeof d.watched_seconds === "number") cur = d.watched_seconds;
-
-    if(cur !== null && !isNaN(cur) && cur >= 0){
-      TaurussLearning.onRealTimeUpdate(cur);
+  function extractTime(obj){
+    if(obj === null || obj === undefined) return null;
+    if(typeof obj === "number" && !isNaN(obj) && obj >= 0) return obj;
+    if(typeof obj !== "object") return null;
+    if(typeof obj.currentTime === "number" && !isNaN(obj.currentTime) && obj.currentTime >= 0) return obj.currentTime;
+    if(typeof obj.time === "number" && !isNaN(obj.time) && obj.time >= 0) return obj.time;
+    if(typeof obj.watched_seconds === "number" && !isNaN(obj.watched_seconds) && obj.watched_seconds >= 0) return obj.watched_seconds;
+    if(typeof obj.seconds === "number" && !isNaN(obj.seconds) && obj.seconds >= 0) return obj.seconds;
+    if(obj.data) {
+      var t = extractTime(obj.data);
+      if(t !== null) return t;
     }
-    return;
+    if(obj.payload) {
+      var t2 = extractTime(obj.payload);
+      if(t2 !== null) return t2;
+    }
+    return null;
   }
 
-  // 2. Standard timeupdate / PlayerJS / HTML5 embed messages
-  if(d.event === "timeupdate" || d.type === "timeupdate" || d.event === "time" || d.type === "TIME_UPDATE"){
-    var cur = null;
-    if(typeof d.currentTime === "number") cur = d.currentTime;
-    else if(typeof d.time === "number") cur = d.time;
-    else if(typeof d.data === "number") cur = d.data;
-    else if(d.data && typeof d.data.currentTime === "number") cur = d.data.currentTime;
-    else if(d.data && typeof d.data.time === "number") cur = d.data.time;
-
-    if(cur !== null && !isNaN(cur) && cur >= 0){
-      TaurussLearning.onRealTimeUpdate(cur);
-    }
+  var extractedTime = extractTime(d);
+  if(extractedTime !== null){
+    TaurussLearning.onRealTimeUpdate(extractedTime);
     return;
   }
 
