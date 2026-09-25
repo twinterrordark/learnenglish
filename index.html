@@ -5310,7 +5310,7 @@ function showTaurussCatalog(){
           '<a class="ytstudy-external" id="taurussExtLink" href="https://vidsrc.me/embed/movie?imdb=tt0816692" target="_blank" rel="noopener noreferrer">Yeni sekmede aç ↗</a>' +
         '</div>' +
         '<div class="tauruss-frame-container" style="position:relative">' +
-          '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidsrc.me/embed/movie?imdb=tt0816692" title="Reklamsız Film Player" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *" allowfullscreen loading="eager" referrerpolicy="origin"></iframe>' +
+          '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidsrc.me/embed/movie?imdb=tt0816692" title="Reklamsız Film Player" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *" allowfullscreen loading="eager" referrerpolicy="origin"></iframe>' +
           '<button type="button" class="tauruss-floating-fs-btn" id="tfFloatingFsBtn" title="Tam Ekran (Altyazılı)">⛶ Tam Ekran</button>' +
           '<div class="tauruss-party-countdown" id="tfPartyCountdown" style="display:none">' +
             '<div class="tauruss-countdown-num" id="tfCountdownNum">3</div>' +
@@ -5319,36 +5319,6 @@ function showTaurussCatalog(){
           '<div class="tauruss-reactions-layer" id="tfReactionsLayer"></div>' +
           '<div class="tauruss-onvideo-subtitle" id="taurussVideoOverlay">' +
             '<div class="tauruss-overlay-text" id="taurussOverlayText">Altyazılar taranıyor…</div>' +
-          '</div>' +
-        '</div>' +
-
-        '<div class="tauruss-player-sub-bar" id="taurussSubBar">' +
-          '<div class="tauruss-sub-bar-top">' +
-            '<div class="tauruss-sub-bar-badges">' +
-              '<span class="tauruss-sub-lang-indicator" id="tfSubLangIndicator">🇹🇷+🇬🇧 Çift Altyazı</span>' +
-              '<span class="tauruss-sub-time-indicator" id="tfSubTimeIndicator">00:00</span>' +
-            '</div>' +
-            '<div class="tauruss-sub-bar-actions">' +
-              '<button type="button" class="tauruss-sub-mini-btn active" id="tfMiniSubBoth" title="Türkçe ve İngilizce ikisi bir arada">🇹🇷+🇬🇧 İkisi</button>' +
-              '<button type="button" class="tauruss-sub-mini-btn" id="tfMiniSubTr" title="Sadece Türkçe">🇹🇷 TR</button>' +
-              '<button type="button" class="tauruss-sub-mini-btn" id="tfMiniSubEn" title="Sadece İngilizce">🇬🇧 ENG</button>' +
-              '<button type="button" class="tauruss-sub-mini-btn" id="tfMiniSubOff" title="Altyazıyı kapat">🚫</button>' +
-            '</div>' +
-          '</div>' +
-          '<div class="tauruss-sub-bar-content" id="taurussSubBarContent">' +
-            '<div class="tauruss-sub-primary" id="taurussSubPrimary">Altyazılar aranıyor ve yükleniyor…</div>' +
-            '<div class="tauruss-sub-secondary" id="taurussSubSecondary">Diyaloglara tıklayarak istediğiniz sahneye anında gidebilirsiniz.</div>' +
-          '</div>' +
-          '<div class="tauruss-sub-bar-bottom">' +
-            '<div class="tauruss-sub-sync-ctrls">' +
-              '<button type="button" class="tauruss-sync-pill" id="tfSubMinus5" title="5 saniye geri">⏪ -5s</button>' +
-              '<button type="button" class="tauruss-sync-pill" id="tfSubMinus2" title="2 saniye geri">-2s</button>' +
-              '<button type="button" class="tauruss-sync-pill tauruss-timer-toggle-btn" id="tfSubPlayPause" title="Altyazı akışını başlat/durdur">▶ Altyazıyı Başlat</button>' +
-              '<button type="button" class="tauruss-sync-pill" id="tfSubPlus2" title="2 saniye ileri">+2s</button>' +
-              '<button type="button" class="tauruss-sync-pill" id="tfSubPlus5" title="5 saniye ileri">+5s ⏩</button>' +
-              '<button type="button" class="tauruss-sync-pill tauruss-sync-action-btn" id="tfSubSyncNow" title="Şu anki sesi altyazıyla eşitle">🎯 Sese Eşitle</button>' +
-            '</div>' +
-            '<div class="tauruss-sub-hint">💡 Ses ile yazı uyuşmazsa <strong>"🎯 Sese Eşitle"</strong> veya <strong>-2s / +2s</strong> tuşlarını kullanın.</div>' +
           '</div>' +
         '</div>' +
 
@@ -5458,17 +5428,12 @@ var TaurussLearning = {
     var subOff = el("tfSubOff");
     var subFetch = el("tfSubFetch");
 
-    var miniBoth = el("tfMiniSubBoth");
-    var miniTr = el("tfMiniSubTr");
-    var miniEn = el("tfMiniSubEn");
-    var miniOff = el("tfMiniSubOff");
-
-    var subMinus5 = el("tfSubMinus5");
-    var subMinus2 = el("tfSubMinus2");
-    var subPlus2 = el("tfSubPlus2");
-    var subPlus5 = el("tfSubPlus5");
-    var subPlayPause = el("tfSubPlayPause");
-    var subSyncNow = el("tfSubSyncNow");
+    if(!window._adblockOpenPatched){
+      window._adblockOpenPatched = true;
+      try {
+        window.open = function(){ console.warn("[AdBlock] Blocked popup"); return null; };
+      } catch(_) {}
+    }
 
     var mTabCues = el("tfMTabCues");
     var mTabSearch = el("tfMTabSearch");
@@ -5625,34 +5590,6 @@ var TaurussLearning = {
     if(subOff) subOff.onclick = function(){ self.setSubtitleLang("off"); };
     if(subFetch) subFetch.onclick = function(){ self.fetchSubtitles(self.currentId, self.season, self.episode, true); };
 
-    if(miniBoth) miniBoth.onclick = function(){ self.setSubtitleLang("both"); };
-    if(miniTr) miniTr.onclick = function(){ self.setSubtitleLang("tr"); };
-    if(miniEn) miniEn.onclick = function(){ self.setSubtitleLang("en"); };
-    if(miniOff) miniOff.onclick = function(){ self.setSubtitleLang("off"); };
-
-    if(subMinus5) subMinus5.onclick = function(){
-      self.lastCurrentTime = Math.max(0, (self.lastCurrentTime || 0) - 5.0);
-      self.onTimeUpdate(self.lastCurrentTime);
-    };
-    if(subMinus2) subMinus2.onclick = function(){
-      self.lastCurrentTime = Math.max(0, (self.lastCurrentTime || 0) - 2.0);
-      self.onTimeUpdate(self.lastCurrentTime);
-    };
-    if(subPlus2) subPlus2.onclick = function(){
-      self.lastCurrentTime = (self.lastCurrentTime || 0) + 2.0;
-      self.onTimeUpdate(self.lastCurrentTime);
-    };
-    if(subPlus5) subPlus5.onclick = function(){
-      self.lastCurrentTime = (self.lastCurrentTime || 0) + 5.0;
-      self.onTimeUpdate(self.lastCurrentTime);
-    };
-    if(subPlayPause) subPlayPause.onclick = function(){
-      self.toggleMobileTimer();
-    };
-    if(subSyncNow) subSyncNow.onclick = function(){
-      self.autoSyncCurrent();
-    };
-
     if(!window._taurussBlurBound){
       window._taurussBlurBound = true;
       window.addEventListener("blur", function(){
@@ -5801,28 +5738,10 @@ var TaurussLearning = {
     var subBoth = el("tfSubBoth");
     var subOff = el("tfSubOff");
 
-    var mEn = el("tfMiniSubEn");
-    var mTr = el("tfMiniSubTr");
-    var mBoth = el("tfMiniSubBoth");
-    var mOff = el("tfMiniSubOff");
-
     if(subEn) subEn.classList.toggle("active", lang === "en");
     if(subTr) subTr.classList.toggle("active", lang === "tr");
     if(subBoth) subBoth.classList.toggle("active", lang === "both");
     if(subOff) subOff.classList.toggle("active", lang === "off");
-
-    if(mEn) mEn.classList.toggle("active", lang === "en");
-    if(mTr) mTr.classList.toggle("active", lang === "tr");
-    if(mBoth) mBoth.classList.toggle("active", lang === "both");
-    if(mOff) mOff.classList.toggle("active", lang === "off");
-
-    var indicator = el("tfSubLangIndicator");
-    if(indicator){
-      if(lang === "tr") indicator.textContent = "🇹🇷 Sadece Türkçe";
-      else if(lang === "en") indicator.textContent = "🇬🇧 Sadece İngilizce";
-      else if(lang === "both") indicator.textContent = "🇹🇷+🇬🇧 Çift Altyazı (İkisi)";
-      else indicator.textContent = "🚫 Altyazı Kapalı";
-    }
 
     var layout = el("taurussLayout");
     if(layout) layout.setAttribute("data-sub-lang", lang);
@@ -6252,7 +6171,7 @@ var TaurussLearning = {
       if(labelEl) labelEl.textContent = "🛡️ Reklamsız Sinema Player";
       if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor · Reklamsız akış";
     }
-    frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation");
+    frame.removeAttribute("sandbox");
 
     frame.src = targetUrl;
     if(extLink) extLink.href = targetUrl;
