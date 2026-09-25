@@ -5324,8 +5324,8 @@ function showTaurussCatalog(){
             '<div class="tauruss-countdown-sub" id="tfCountdownSub">Eşzamanlı başlatılıyor...</div>' +
           '</div>' +
           '<div class="tauruss-reactions-layer" id="tfReactionsLayer"></div>' +
-          '<div class="tauruss-onvideo-subtitle" id="taurussVideoOverlay">' +
-            '<div class="tauruss-overlay-text" id="taurussOverlayText">Altyazılar taranıyor…</div>' +
+          '<div class="tauruss-onvideo-subtitle" id="taurussVideoOverlay" style="display:none">' +
+            '<div class="tauruss-overlay-text" id="taurussOverlayText"></div>' +
           '</div>' +
         '</div>' +
 
@@ -5792,9 +5792,10 @@ var TaurussLearning = {
     var layout = el("taurussLayout");
     if(layout) layout.setAttribute("data-sub-lang", lang);
 
-    var onVideoOverlay = el("taurussVideoOverlay");
-    if(onVideoOverlay){
-      onVideoOverlay.style.display = (lang === "off") ? "none" : "flex";
+    if(lang === "off"){
+      this.hideCuePair();
+    } else {
+      this.updateLiveDisplay();
     }
 
     var heading = el("taurussPanelHeading");
@@ -6434,11 +6435,8 @@ var TaurussLearning = {
         var mCount = el("tfCueCountMobile");
         if(mCount) mCount.textContent = self.combinedCues.length;
 
-        var firstCue = self.combinedCues[0] || null;
-        if(firstCue){
-          self.displayCuePair(firstCue);
-        }
         self.lastCurrentTime = 0;
+        self.currentCueIdx = -1;
         self.onTimeUpdate(0);
 
         // Automatically batch-translate any remaining lines in background
@@ -6688,7 +6686,24 @@ var TaurussLearning = {
       if(this.currentCueIdx !== -1){
         this.currentCueIdx = -1;
       }
+      this.hideCuePair();
     }
+  },
+
+  hideCuePair: function(){
+    var onVideoOverlay = el("taurussVideoOverlay");
+    var onVideoText = el("taurussOverlayText");
+    if(onVideoOverlay) onVideoOverlay.style.display = "none";
+    if(onVideoText) onVideoText.innerHTML = "";
+    this.clearHighlight();
+    this.sendSubtitleToPlayer("");
+  },
+
+  clearHighlight: function(){
+    var list = el("taurussCues");
+    if(!list) return;
+    var prev = list.querySelector(".active-second");
+    if(prev) prev.classList.remove("active-second");
   },
 
   displayCuePair: function(cue){
