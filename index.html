@@ -5287,20 +5287,8 @@ var TaurussLearning = {
 
   mount: function(){
     this.root = main;
-    var isMobile = (window.innerWidth <= 768) || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-    if(isMobile){
-      this.currentSource = "adfree";
-    }
     this.bindEvents();
-    if(isMobile){
-      var btnAdfree = el("tfBtnAdfree");
-      var btnVidfast = el("tfBtnVidfast");
-      if(btnAdfree) btnAdfree.classList.add("active");
-      if(btnVidfast) btnVidfast.classList.remove("active");
-      this.reloadPlayer();
-    } else {
-      this.fetchSubtitles(this.currentId, this.season, this.episode);
-    }
+    this.fetchSubtitles(this.currentId, this.season, this.episode);
     if(window.WatchParty) window.WatchParty.init();
   },
 
@@ -5982,24 +5970,26 @@ var TaurussLearning = {
 
     var targetUrl = "";
     if(this.currentSource === "tauruss"){
-      targetUrl = "https://tauruss.top/movies";
-      if(titleEl) titleEl.textContent = "🌐 Tauruss.top Kataloğu";
-      if(labelEl) labelEl.textContent = "🌐 Tauruss.top · Canlı Arama";
-      if(subEl) subEl.textContent = "Tauruss üzerinden filmini seç, oynatıcıda altyazı açıldığında otomatik çift altyazı çalışacaktır.";
+      targetUrl = this.currentType === "tv"
+        ? "https://tauruss.top/tv/" + this.currentId
+        : "https://tauruss.top/movies/" + this.currentId;
+      if(titleEl) titleEl.textContent = (this.currentType === "tv" ? "📺 " : "🎬 ") + this.currentTitle;
+      if(labelEl) labelEl.textContent = "🌐 Tauruss.top · Canlı Oynatıcı";
+      if(subEl) subEl.textContent = "Tauruss üzerinden " + this.currentTitle + " oynatılıyor.";
       frame.removeAttribute("sandbox");
     } else if(this.currentSource === "adfree"){
       if(this.currentType === "tv"){
-        targetUrl = "https://autoembed.co/tv/imdb/" + this.currentId + "-" + this.season + "-" + this.episode;
+        targetUrl = "https://vidsrc.me/embed/tv?imdb=" + this.currentId + "&season=" + this.season + "&episode=" + this.episode;
         if(titleEl) titleEl.textContent = "📺 " + this.currentTitle + " · S" + this.season + " B" + this.episode;
         if(labelEl) labelEl.textContent = "🛡️ Reklamsız Dizi Player · S" + this.season + " E" + this.episode;
-        if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor · Reklamlar engellendi";
+        if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor · Reklamsız mobil akış";
       } else {
-        targetUrl = "https://autoembed.co/movie/imdb/" + this.currentId;
+        targetUrl = "https://vidsrc.me/embed/movie?imdb=" + this.currentId;
         if(titleEl) titleEl.textContent = "🎬 " + this.currentTitle;
         if(labelEl) labelEl.textContent = "🛡️ Reklamsız Sinema Player";
-        if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor · Reklamlar engellendi";
+        if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor · Reklamsız mobil akış";
       }
-      frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media");
+      frame.removeAttribute("sandbox");
     } else {
       if(this.currentType === "tv"){
         targetUrl = "https://vidfast.vc/tv/" + this.currentId + "/" + this.season + "/" + this.episode;
@@ -7004,34 +6994,21 @@ var WatchParty = {
         numEl.textContent = "🍿";
         if(subEl){
           subEl.innerHTML = '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px">İyi Seyirler!</div>' +
-            '<button class="tauruss-party-start-now-btn" id="tfStartNowBtn">▶ OYNATMAYI BAŞLAT</button>' +
-            '<div style="font-size:11.5px;color:#94a3b8;margin-top:8px">Otomatik başlamadıysa butona tıklayın</div>';
-        }
-
-        var startBtn = el("tfStartNowBtn");
-        if(startBtn){
-          startBtn.onclick = function(e){
-            e.stopPropagation();
-            TaurussLearning.playVideo();
-            if(typeof targetTime === "number") TaurussLearning.jumpToTime(targetTime);
-            cdEl.style.display = "none";
-          };
+            '<div style="font-size:12.5px;color:#93c5fd;margin-top:4px">🍿 Herkesle aynı anda başlatıldı!</div>';
         }
 
         if(typeof targetTime === "number") TaurussLearning.jumpToTime(targetTime);
         TaurussLearning.playVideo();
-        setTimeout(function(){ TaurussLearning.playVideo(); }, 250);
-        setTimeout(function(){ TaurussLearning.playVideo(); }, 600);
-        setTimeout(function(){ TaurussLearning.playVideo(); }, 1200);
+        setTimeout(function(){ TaurussLearning.playVideo(); }, 200);
+        setTimeout(function(){ TaurussLearning.playVideo(); }, 500);
 
         setTimeout(function(){
-          if(cdEl && cdEl.style.display !== "none"){
-            cdEl.style.display = "none";
-          }
-        }, 1800);
+          if(cdEl) cdEl.style.display = "none";
+          TaurussLearning.setStatus("🍿 Herkes için başlatıldı! Mobilde player başlamadıysa ortadaki play ikonuna dokunun.");
+        }, 400);
       } else if(count <= -1){
         clearInterval(self.countdownTimer);
-        cdEl.style.display = "none";
+        if(cdEl) cdEl.style.display = "none";
       }
     }, 1000);
   },
@@ -7386,15 +7363,6 @@ window.addEventListener("message", function(event){
   }
 });
 
-// Anti-Redirect Protection: Prevent any embedded player/ad script from hijacking or redirecting the parent window
-window.addEventListener("beforeunload", function (e) {
-  if (window._allowExternalNav) return;
-  if (document.getElementById("taurussFrame")) {
-    e.preventDefault();
-    e.returnValue = "Reklam yönlendirmesi engellendi.";
-    return "Reklam yönlendirmesi engellendi.";
-  }
-});
 
 var YTSTUDY = { player:null, videoId:"", language:"en", pending:null, apiLoading:false };
 function ytStudyParse(raw){

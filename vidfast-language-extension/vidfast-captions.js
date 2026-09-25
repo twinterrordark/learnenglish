@@ -15,6 +15,15 @@
     } catch (_) {}
   } catch (_) {}
 
+  // Neutralize VidFast internal ad timer (shown_at) so VidFast never executes A(t)
+  try {
+    localStorage.setItem("shown_at", Date.now().toString());
+    localStorage.setItem("unloaded_at", Date.now().toString());
+    setInterval(function () {
+      try { localStorage.setItem("shown_at", Date.now().toString()); } catch (_) {}
+    }, 10000);
+  } catch (_) {}
+
   document.addEventListener("click", function (e) {
     var a = e.target && e.target.closest("a");
     if (a && a.target === "_blank") {
