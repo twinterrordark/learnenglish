@@ -781,10 +781,35 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
 
 /* On-Screen Video Subtitle Overlay (Cinema Style) */
 .tauruss-onvideo-subtitle{position:absolute;left:0;right:0;bottom:50px;pointer-events:none;display:flex;justify-content:center;align-items:center;z-index:25;padding:0 24px;text-align:center}
-.tauruss-overlay-text{background:rgba(0,0,0,.84);color:#ffffff;padding:8px 20px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:22px;line-height:1.4;font-weight:800;text-shadow:0 2px 5px rgba(0,0,0,.95);max-width:88%;box-shadow:0 6px 24px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:all .15s ease}
+.tauruss-overlay-text{background:rgba(0,0,0,.86);color:#ffffff;padding:8px 20px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:22px;line-height:1.4;font-weight:800;text-shadow:0 2px 5px rgba(0,0,0,.95);max-width:88%;box-shadow:0 6px 24px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:all .15s ease}
+.tauruss-floating-fs-btn{position:absolute;top:12px;right:12px;z-index:30;background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:12px;font-weight:800;padding:6px 12px;border-radius:8px;cursor:pointer;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:all .15s ease}
+.tauruss-floating-fs-btn:hover{background:var(--accent);border-color:transparent;box-shadow:0 2px 8px rgba(79,70,229,.4)}
+
+/* Fullscreen Mode: Keep Video & Subtitles perfectly scaled */
+#taurussWrap:fullscreen,
+#taurussWrap:-webkit-full-screen{width:100vw!important;height:100vh!important;background:#000!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;padding:0!important;margin:0!important}
+#taurussWrap:fullscreen .tauruss-toolbar,
+#taurussWrap:-webkit-full-screen .tauruss-toolbar,
+#taurussWrap:fullscreen .tauruss-mobile-nav-tabs,
+#taurussWrap:-webkit-full-screen .tauruss-mobile-nav-tabs,
+#taurussWrap:fullscreen .tauruss-player-sub-bar,
+#taurussWrap:-webkit-full-screen .tauruss-player-sub-bar{display:none!important}
+#taurussWrap:fullscreen .tauruss-frame-container,
+#taurussWrap:-webkit-full-screen .tauruss-frame-container{width:100vw!important;height:100vh!important;max-height:100vh!important;display:flex!important;align-items:center!important;justify-content:center!important}
+#taurussWrap:fullscreen .tauruss-learning-frame,
+#taurussWrap:-webkit-full-screen .tauruss-learning-frame{width:100vw!important;height:100vh!important;min-height:100vh!important;max-height:100vh!important;aspect-ratio:auto!important}
+#taurussWrap:fullscreen .tauruss-onvideo-subtitle,
+#taurussWrap:-webkit-full-screen .tauruss-onvideo-subtitle{bottom:70px!important;z-index:999999!important}
+#taurussWrap:fullscreen .tauruss-overlay-text,
+#taurussWrap:-webkit-full-screen .tauruss-overlay-text{font-size:26px!important;padding:10px 24px!important;max-width:85%!important}
+
 @media(max-width:768px){
   .tauruss-onvideo-subtitle{bottom:35px;padding:0 12px}
   .tauruss-overlay-text{font-size:16px;padding:5px 12px;border-radius:7px;line-height:1.35;max-width:94%}
+  #taurussWrap:fullscreen .tauruss-onvideo-subtitle,
+  #taurussWrap:-webkit-full-screen .tauruss-onvideo-subtitle{bottom:40px!important}
+  #taurussWrap:fullscreen .tauruss-overlay-text,
+  #taurussWrap:-webkit-full-screen .tauruss-overlay-text{font-size:18px!important;padding:6px 14px!important}
 }
 
 /* In-Player Subtitle Bar below Video */
@@ -5285,7 +5310,8 @@ function showTaurussCatalog(){
           '<a class="ytstudy-external" id="taurussExtLink" href="https://vidsrc.me/embed/movie?imdb=tt0816692" target="_blank" rel="noopener noreferrer">Yeni sekmede aç ↗</a>' +
         '</div>' +
         '<div class="tauruss-frame-container" style="position:relative">' +
-          '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidsrc.me/embed/movie?imdb=tt0816692&sub=tr" title="Reklamsız Film Player" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *" allowfullscreen loading="eager" referrerpolicy="origin"></iframe>' +
+          '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidsrc.me/embed/movie?imdb=tt0816692" title="Reklamsız Film Player" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *" allowfullscreen loading="eager" referrerpolicy="origin"></iframe>' +
+          '<button type="button" class="tauruss-floating-fs-btn" id="tfFloatingFsBtn" title="Tam Ekran (Altyazılı)">⛶ Tam Ekran</button>' +
           '<div class="tauruss-party-countdown" id="tfPartyCountdown" style="display:none">' +
             '<div class="tauruss-countdown-num" id="tfCountdownNum">3</div>' +
             '<div class="tauruss-countdown-sub" id="tfCountdownSub">Eşzamanlı başlatılıyor...</div>' +
@@ -5462,16 +5488,40 @@ var TaurussLearning = {
     if(btnCinema) btnCinema.onclick = function(){ self.setLayout("cinema"); };
     if(btnSplit) btnSplit.onclick = function(){ self.setLayout("split"); };
 
-    if(btnFull) btnFull.onclick = function(){
+    var toggleFullscreen = function(){
       var wrap = el("taurussWrap");
       if(!wrap) return;
-      if(document.fullscreenElement) {
-        document.exitFullscreen();
+      if(document.fullscreenElement || document.webkitFullscreenElement) {
+        if(document.exitFullscreen) document.exitFullscreen();
+        else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
       } else {
         if(wrap.requestFullscreen) wrap.requestFullscreen();
         else if(wrap.webkitRequestFullscreen) wrap.webkitRequestFullscreen();
       }
     };
+
+    if(btnFull) btnFull.onclick = toggleFullscreen;
+    var floatingFs = el("tfFloatingFsBtn");
+    if(floatingFs) floatingFs.onclick = toggleFullscreen;
+
+    if(!window._taurussFsListenerBound){
+      window._taurussFsListenerBound = true;
+      var onFs = function(){
+        var wrap = el("taurussWrap");
+        var frame = el("taurussFrame");
+        var currentFs = document.fullscreenElement || document.webkitFullscreenElement;
+        if(currentFs === frame && wrap){
+          if(document.exitFullscreen){
+            document.exitFullscreen().then(function(){
+              if(wrap.requestFullscreen) wrap.requestFullscreen();
+              else if(wrap.webkitRequestFullscreen) wrap.webkitRequestFullscreen();
+            }).catch(function(){});
+          }
+        }
+      };
+      document.addEventListener("fullscreenchange", onFs);
+      document.addEventListener("webkitfullscreenchange", onFs);
+    }
 
     if(typeMovie) typeMovie.onclick = function(){
       self.currentType = "movie";
@@ -6190,20 +6240,19 @@ var TaurussLearning = {
     var live = el("taurussLiveCounterpart");
     if(live) live.textContent = "Yeni içerik başlatılıyor…";
 
-    var subParam = (this.activeSubLang === "tr" || this.activeSubLang === "both") ? "&sub=tr" : (this.activeSubLang === "en" ? "&sub=en" : "");
     var targetUrl = "";
     if(this.currentType === "tv"){
-      targetUrl = "https://vidsrc.me/embed/tv?imdb=" + this.currentId + "&season=" + this.season + "&episode=" + this.episode + subParam;
+      targetUrl = "https://vidsrc.me/embed/tv?imdb=" + this.currentId + "&season=" + this.season + "&episode=" + this.episode;
       if(titleEl) titleEl.textContent = "📺 " + this.currentTitle + " · S" + this.season + " B" + this.episode;
       if(labelEl) labelEl.textContent = "🛡️ Reklamsız Dizi Player · S" + this.season + " E" + this.episode;
       if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor · Reklamsız akış";
     } else {
-      targetUrl = "https://vidsrc.me/embed/movie?imdb=" + this.currentId + subParam;
+      targetUrl = "https://vidsrc.me/embed/movie?imdb=" + this.currentId;
       if(titleEl) titleEl.textContent = "🎬 " + this.currentTitle;
       if(labelEl) labelEl.textContent = "🛡️ Reklamsız Sinema Player";
       if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor · Reklamsız akış";
     }
-    frame.removeAttribute("sandbox");
+    frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation");
 
     frame.src = targetUrl;
     if(extLink) extLink.href = targetUrl;
