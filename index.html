@@ -952,6 +952,111 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
 .tauruss-party-chat-bar{display:flex;gap:6px}
 .tauruss-party-chat-input{flex:1;padding:6px 9px;border-radius:7px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-size:12px;outline:none}
 .tauruss-party-chat-send{padding:6px 11px;border-radius:7px;background:var(--accent);color:#fff;border:none;font-weight:700;font-size:12px;cursor:pointer}
+
+/* =====================================================================
+   TRANCY BILINGUAL BOOK READER STYLES
+   ===================================================================== */
+.trancy-wrap{max-width:1120px;margin:0 auto;padding:12px 14px 110px;display:flex;flex-direction:column;gap:18px}
+.trancy-header{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px 24px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:16px}
+.trancy-top-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.trancy-book-info{display:flex;flex-direction:column;gap:4px}
+.trancy-book-title{margin:0;font-size:23px;font-weight:800;letter-spacing:-.4px;display:flex;align-items:center;gap:10px}
+.trancy-badge-level{font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(16,185,129,.14);color:#10b981;border:1px solid rgba(16,185,129,.25)}
+.trancy-book-author{margin:0;font-size:13px;color:var(--muted);font-weight:500}
+.trancy-action-btns{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.trancy-btn{padding:7px 14px;border-radius:9px;font-size:12.5px;font-weight:700;border:1px solid var(--line);background:var(--surface2);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s ease}
+.trancy-btn:hover{border-color:var(--accent);background:var(--surface)}
+.trancy-btn.primary{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border-color:transparent;box-shadow:0 2px 10px rgba(16,185,129,.3)}
+.trancy-btn.primary:hover{opacity:.93}
+
+.trancy-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid var(--line);padding-top:14px}
+.trancy-tool-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.trancy-tool-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-right:2px}
+.trancy-chip{padding:5px 11px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--surface2);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s}
+.trancy-chip:hover{border-color:var(--accent)}
+.trancy-chip.active{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(16,185,129,.28)}
+.trancy-select{padding:5px 10px;border-radius:7px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:12px;font-weight:600;outline:none;cursor:pointer}
+
+/* Reading Arena */
+.trancy-arena{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow);min-height:500px;transition:all .2s;position:relative}
+.trancy-arena[data-theme="sepia"]{background:#fdf6e2!important;color:#2b2214!important;border-color:#edd8aa!important}
+.trancy-arena[data-theme="sepia"] .trancy-card{background:#f5ebcf!important;border-color:#e4cc9b!important}
+.trancy-arena[data-theme="sepia"] .trancy-en{color:#1e1a12!important}
+.trancy-arena[data-theme="sepia"] .trancy-tr{color:#0284c7!important}
+.trancy-arena[data-theme="dark"]{background:#11141b!important;color:#e2e8f0!important;border-color:#222838!important}
+.trancy-arena[data-theme="dark"] .trancy-card{background:#171c26!important;border-color:#262d3e!important}
+.trancy-arena[data-theme="dark"] .trancy-en{color:#f8fafc!important}
+.trancy-arena[data-theme="dark"] .trancy-tr{color:#38bdf8!important}
+
+.trancy-font-serif{font-family:"Merriweather",Georgia,serif}
+.trancy-font-sans{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+
+/* Card Mode */
+.trancy-cards-container{display:flex;flex-direction:column;gap:12px}
+.trancy-card{background:var(--surface2);border:1.5px solid transparent;border-radius:14px;padding:15px 18px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:all .2s ease;position:relative}
+.trancy-card:hover{border-color:rgba(16,185,129,.4);transform:translateY(-1px)}
+.trancy-card.active-reading{border-color:#10b981!important;background:rgba(16,185,129,.07)!important;box-shadow:0 0 0 3px rgba(16,185,129,.2),0 4px 20px rgba(0,0,0,.07)}
+.trancy-card-meta{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.4px}
+.trancy-num-pill{background:rgba(0,0,0,.06);padding:2px 8px;border-radius:6px}
+html[data-theme="dark"] .trancy-num-pill{background:rgba(255,255,255,.08)}
+.trancy-card-actions{display:flex;align-items:center;gap:6px}
+.trancy-card-btn{background:none;border:none;cursor:pointer;padding:3px 7px;border-radius:5px;font-size:12px;opacity:.65;transition:opacity .15s}
+.trancy-card-btn:hover{opacity:1;background:rgba(0,0,0,.05)}
+
+.trancy-en{font-size:var(--trancy-fs,19px);line-height:1.7;font-weight:500;color:var(--text);letter-spacing:-.1px}
+.trancy-tr{font-size:calc(var(--trancy-fs,19px)*0.88);line-height:1.55;font-weight:500;color:#0284c7;transition:filter .2s,opacity .2s}
+html[data-theme="dark"] .trancy-tr{color:#38bdf8}
+
+/* Spoiler / Blur translation until hover or click */
+.trancy-spoiler-mode .trancy-tr{filter:blur(5px);opacity:.4;user-select:none;transition:filter .25s,opacity .25s}
+.trancy-spoiler-mode .trancy-card:hover .trancy-tr,
+.trancy-spoiler-mode .trancy-card.revealed .trancy-tr,
+.trancy-spoiler-mode .trancy-card.active-reading .trancy-tr{filter:blur(0);opacity:1;user-select:text}
+
+/* Book Flow Mode */
+.trancy-flow-container{display:block;line-height:1.9}
+.trancy-flow-sent{display:inline;padding:2px 4px;margin:0 2px;border-radius:6px;cursor:pointer;transition:background .15s}
+.trancy-flow-sent:hover{background:rgba(16,185,129,.14)}
+.trancy-flow-sent.active-reading{background:rgba(16,185,129,.22);box-shadow:0 0 0 2px #10b981}
+.trancy-flow-tr-line{display:block;font-size:.85em;color:#0284c7;font-style:italic;margin:3px 0 10px;padding-left:6px;border-left:2px solid #10b981}
+html[data-theme="dark"] .trancy-flow-tr-line{color:#38bdf8}
+
+/* Interactive Words */
+.tr-word{display:inline;padding:0 1px;border-radius:3px;cursor:pointer;transition:all .12s}
+.tr-word:hover{background:rgba(16,185,129,.24);color:#10b981;text-decoration:underline;text-underline-offset:3px}
+
+/* Word Popover */
+.trancy-word-pop{position:fixed;z-index:99999;background:var(--surface);border:1px solid var(--line);box-shadow:0 12px 35px rgba(0,0,0,.35);border-radius:14px;padding:14px 16px;width:310px;display:flex;flex-direction:column;gap:9px;animation:trancyPopIn .14s ease-out}
+@keyframes trancyPopIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.trancy-pop-top{display:flex;align-items:center;justify-content:space-between}
+.trancy-pop-title{font-size:18px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:6px}
+.trancy-pop-meaning{font-size:15px;font-weight:700;color:#059669;padding:6px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);line-height:1.4}
+html[data-theme="dark"] .trancy-pop-meaning{color:#34d399}
+.trancy-pop-bottom{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:2px}
+
+/* Sticky Bottom Player Bar */
+.trancy-audio-bar{position:fixed;bottom:0;left:0;right:0;z-index:1000;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -6px 24px rgba(0,0,0,.15);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.trancy-ab-info{display:flex;flex-direction:column;min-width:130px}
+.trancy-ab-title{font-size:12.5px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+.trancy-ab-prog{font-size:11px;color:var(--muted);font-weight:600}
+.trancy-ab-ctrls{display:flex;align-items:center;gap:9px}
+.trancy-ab-btn{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--line);color:var(--text);cursor:pointer;font-size:14px;transition:all .12s}
+.trancy-ab-btn:hover{transform:scale(1.08);border-color:var(--accent)}
+.trancy-ab-btn.play{width:44px;height:44px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;font-size:17px;box-shadow:0 3px 12px rgba(16,185,129,.4)}
+.trancy-ab-btn.play:hover{transform:scale(1.1)}
+.trancy-ab-btn.active{background:var(--accent);color:#fff;border-color:transparent}
+.trancy-ab-side{display:flex;align-items:center;gap:10px}
+.trancy-ab-speed{font-size:12px;font-weight:700;padding:4px 9px;border-radius:7px;background:var(--surface2);border:1px solid var(--line);color:var(--text);cursor:pointer}
+
+/* Modal Dialog */
+.trancy-modal-mask{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.trancy-modal-dialog{background:var(--surface);border:1px solid var(--line);border-radius:20px;width:100%;max-width:660px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 50px rgba(0,0,0,.4)}
+.trancy-modal-head{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.trancy-modal-head h3{margin:0;font-size:18px;font-weight:800}
+.trancy-modal-content{padding:20px 24px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+.trancy-book-card-item{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:all .15s}
+.trancy-book-card-item:hover{border-color:#10b981;transform:translateY(-1px);background:var(--surface)}
+.trancy-saved-item{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
 </style>
 </head>
 <body>
@@ -985,6 +1090,7 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
     <button class="nav-special" id="listenBtn" style="background:linear-gradient(135deg,#e11d48,#f97316)">🎧 &nbsp;Dinleme Pratiği</button>
     <button class="nav-special" id="ytStudyBtn" style="background:linear-gradient(135deg,#6366f1,#0d9488)">▶ &nbsp;YouTube ile İzle</button>
     <button class="nav-special" id="taurussBtn" style="background:linear-gradient(135deg,#0284c7,#2563eb)">🎬 &nbsp;Film & Dizi İzle (Reklamsız)</button>
+    <button class="nav-special" id="readerBtn" style="background:linear-gradient(135deg,#059669,#10b981)">📖 &nbsp;Trancy Kitap Oku (Çift Dil)</button>
     <button class="nav-special" id="chatBtn" style="background:linear-gradient(135deg,#475569,#1e293b)">💬 &nbsp;Sohbet</button>
     <div id="navList"></div>
   </nav>
@@ -3320,7 +3426,7 @@ function showHome(){
        '<h4>🎧 Dinleme Pratiği</h4><p>Her konu için YouTube video listesi — kendi videolarını da ekleyebilirsin</p></button>';
   h += '<button class="node-card" data-go="__ytstudy" style="border-color:#6366f1">'+
        '<span class="badge" style="background:rgba(99,102,241,.15);color:#6366f1">YOUTUBE</span>'+
-       '<h4>▶ YouTube ile İzle</h4><p>Bir YouTube bağlantısı ekle, İngilizce veya Türkçe altyazıyla izlemeye başla</p></button>';
+       '<h4>📖 Çift Dil Kitap Oku</h4><p>Leo Tolstoy (A Confession), Sherlock Holmes ve klasikleri çift dil, sesli okuma ve sözlükle oku</p></button>';
   h += '<button class="node-card" data-go="__tauruss" style="border-color:#555">'+
        '<span class="badge" style="background:#7772;color:var(--text)">KATALOG</span>'+
        '<h4>🎬 Film + Çift Altyazı</h4><p>Reklamsız film ve dizi izle; İngilizce ve Türkçe altyazıları saniye saniye takip et</p></button>';
@@ -7955,41 +8061,1030 @@ function ytStudyChooseLanguage(language){
   ytStudyMount(YTSTUDY.videoId, language, start);
 }
 
+/* =====================================================================
+   TRANCY BILINGUAL BOOK READER MODULE
+   ===================================================================== */
+
+var TRANCY_LIBRARY = [
+  {
+    id: "tolstoy-confession",
+    title: "A Confession (Bir İtiraf)",
+    author: "Leo Tolstoy (Çeviri: Aylmer Maude)",
+    level: "B1-B2 · Klasik & Felsefe",
+    icon: "📖",
+    desc: "Tolstoy'un inanç, anlam ve hayatın amacını sorguladığı dünyaca ünlü otobiyografik başyapıtı. Aylmer Maude'un klasik İngilizce çevirisiyle.",
+    chapters: [
+      {
+        title: "Bölüm 1: Çocukluk ve Gençlik İnancı",
+        sentences: [
+          { en: "I was baptized and brought up in the Orthodox Christian faith.", tr: "Ortodoks Hristiyan inancına göre vaftiz edildim ve bu inançla büyütüldüm." },
+          { en: "I was taught it in childhood and throughout my boyhood and youth.", tr: "Bu inanç bana çocukluğumda ve tüm gençlik yıllarım boyunca öğretildi." },
+          { en: "But when I abandoned the second course with the university at the age of eighteen, I no longer believed any of the things I had been taught.", tr: "Ancak on sekiz yaşımda üniversitenin ikinci sınıfını bıraktığımda, bana öğretilen şeylerin hiçbirine artık inanmıyordum." },
+          { en: "Judging by certain recollections, I had never seriously believed, but had merely had a certain trust in that which was taught to me and was professed by the grown-up people around me; and that trust was very unstable.", tr: "Bazı anılarıma bakılırsa, hiçbir zaman gerçekten ciddi bir şekilde inanmamıştım; yalnızca bana öğretilenlere ve çevremdeki yetişkinlerin ikrar ettiklerine güvenmiştim ve bu güven oldukça sarsaktı." },
+          { en: "I remember that when I was eleven years old, a boy, now long since dead, a gymnasist named Volodenka M., came to see us one Sunday, and told us the latest news from school.", tr: "Hatırlıyorum, on bir yaşımdayken, çoktan ölmüş olan Volodenka M. adlı bir lise öğrencisi bir pazar günü bizi ziyarete gelmiş ve okuldan en son haberi getirmişti." },
+          { en: "The latest discovery that was being talked about at school was that there is no God, and that all that was being taught us was a mere invention.", tr: "Okulda konuşulan en son keşif, Tanrı'nın olmadığı ve bize öğretilen her şeyin yalnızca bir uydurmadan ibaret olduğuydu." },
+          { en: "I remember how interested my elder brothers were in this information.", tr: "Ağabeylerimin bu bilgiye nasıl büyük bir ilgi duyduklarını dün gibi hatırlıyorum." },
+          { en: "They called me to their council and we all, I remember, became very animated, and accepted the information as something very interesting and quite possible.", tr: "Beni de yanlarına çağırdılar ve hepimizin çok heyecanlandığını, bu haberi son derece ilginç ve pekala mümkün bir şey olarak kabul ettiğimizi hatırlıyorum." },
+          { en: "I remember also that when my elder brother, Dmitri, who was then at the university, suddenly, in the passionate way natural to him, devoted himself to religion and began to attend all the Church services, to fast and to lead a pure and moral life, we all — even our elders — unceasingly held him up to ridicule and for some unknown reason called him 'Noah'.", tr: "Ayrıca o sırada üniversitede olan ağabeyim Dmitri'nin, yaradılışına uygun o tutkulu haliyle aniden dine yönelip kilisedeki tüm ayinlere katılmaya, oruç tutmaya, tertemiz ve ahlaklı bir hayat sürmeye başladığında; hepimizin —hatta büyüklerimizin bile— onunla durmaksızın alay ettiğini ve bilinmeyen bir sebeple ona 'Nuh' dediğimizi hatırlıyorum." },
+          { en: "I remember that Musin-Pushkin, the then Curator of Kazan University, when inviting us to a dance, jokingly persuaded my brother to decline the invitation by using the words of David, saying that he must dance before the Ark.", tr: "Kazan Üniversitesi'nin o zamanki rektörü Musin-Puşkin'in bizi bir dansa davet ederken, Davut'un sözlerini kullanarak ağabeyime Ahit Sandığı'nın önünde dans etmesi gerektiğini söyleyip şakayla daveti reddetmeye ikna ettiğini hatırlıyorum." },
+          { en: "I sympathized with these jokes of my elders, the conclusion drawn from them was that it was necessary to learn the catechism and go to church, but that it was not necessary to take the matter too seriously.", tr: "Büyüklerimin bu esprilerine katılıyordum; bundan çıkarılan sonuç, dini bilgileri öğrenmenin ve kiliseye gitmenin zorunlu olduğu, ancak konuyu fazla ciddiye almanın gerekmediğiydi." },
+          { en: "I also remember that I read Voltaire when I was very young, and that his ridiculed sarcasms not only did not upset me, but amused me very much.", tr: "Ayrıca çok gençken Voltaire okuduğumu ve onun alaycı hicivlerinin beni hiç rahatsız etmediğini, aksine çok eğlendirdiğini hatırlıyorum." },
+          { en: "The religious faith imparted to me in childhood disappeared within me just as it had disappeared in other people, with this difference only, that as I had begun to read and think earlier, my rejection of belief became conscious earlier.", tr: "Çocukluğumda bana aşılanan dini inanç, diğer insanlarda olduğu gibi bende de yavaş yavaş kayboldu; tek fark, okumaya ve düşünmeye daha erken başladığım için, inancı reddedişim daha erken yaşta ve bilinçli oldu." },
+          { en: "From the age of sixteen I ceased to pray and ceased to go to church or to fast, on my own initiative.", tr: "On altı yaşımdan itibaren kendi kararımla dua etmeyi bıraktım, kiliseye gitmekten ve oruç tutmaktan vazgeçtim." },
+          { en: "I did not believe what had been taught me, but yet I did not hold any other beliefs.", tr: "Bana öğretilen şeylere artık inanmıyordum, fakat yine de başka hiçbir inanca da sahip değildim." },
+          { en: "I had a belief in something, though I could not say what.", tr: "Bir şeylere inancım vardı ama bunun ne olduğunu tarif edemiyordum." },
+          { en: "I did not deny God, but what kind of God I could not say; neither did I deny Christ and his teaching, though what that teaching was I could not have told.", tr: "Tanrı'yı inkar etmiyordum fakat nasıl bir Tanrı olduğunu söyleyemezdim; İsa'yı ve onun öğretisini de inkar etmiyordum, fakat bu öğretinin tam olarak ne olduğunu da açıklayamazdım." },
+          { en: "Looking back on that time, I now see clearly that my belief — that which other than pure animal instincts stimulated my life — was a belief in perfection.", tr: "O günlere dönüp baktığımda, inancımın —saf hayvani dürtülerimin ötesinde hayatıma yön veren şeyin— mükemmelleşmeye olan inanç olduğunu artık açıkça görüyorum." },
+          { en: "At first it was of course moral perfection, but this soon changed into a desire to be stronger than other people, to be more famous, more important, and richer.", tr: "Başlangıçta bu elbette ahlaki bir mükemmelleşmeydi, fakat çok geçmeden diğer insanlardan daha güçlü, daha ünlü, daha önemli ve daha zengin olma arzusuna dönüştü." }
+        ]
+      },
+      {
+        title: "Bölüm 2: On Yıllık Gençlik ve Anlam Arayışı",
+        sentences: [
+          { en: "Some day I will tell the life story of those ten years of my youth, both touching and instructive.", tr: "Bir gün gençliğimin o on yılının hem dokunaklı hem de ibret verici hayat hikayesini anlatacağım." },
+          { en: "I think that very many had the same experience.", tr: "Sanırım pek çok insan benzer bir deneyimden geçmiştir." },
+          { en: "With all my soul I wished to be good; but I was young, passionate, and alone, completely alone when I sought what was good.", tr: "Bütün ruhumla iyi bir insan olmayı istiyordum; fakat gençtim, ihtiraslıydım ve yapayalnızdım, iyiliği ararken tamamen yalnızdım." },
+          { en: "Every time I tried to express my most heartfelt desire to be morally good, I met with contempt and sneers, but as soon as I yielded to base passions I was praised and encouraged.", tr: "Ahlaken iyi biri olma yönündeki en içten arzumu her dile getirmeye çalıştığımda küçümseme ve alayla karşılaştım; ancak ne zaman adi tutkulara boyun eğsem övgü ve cesaret gördüm." },
+          { en: "Ambition, love of power, covetousness, lasciviousness, pride, anger, and revenge were all respected.", tr: "Hırs, güç sevdası, açgözlülük, şehvet, kibir, öfke ve intikam... Bütün bunlara toplumda saygı duyuluyordu." },
+          { en: "In giving way to these passions I became like my elders, and I felt that they were satisfied with me.", tr: "Bu tutkulara teslim olarak büyüklerime benzedim ve onların benden hoşnut olduklarını hissettim." },
+          { en: "A good aunt of mine, a very pure soul, who always told me that she wished nothing so much for me as that I should have an affair with a married woman, said: 'Rien ne forme un jeune homme comme une liaison avec une femme comme il faut.'", tr: "Son derece temiz kalpli iyi bir teyzem, benim için evli bir kadınla ilişki yaşamam kadar hiçbir şey istemediğini söyler ve hep şöyle derdi: 'Hiçbir şey bir genci kibar bir hanımla olan ilişki kadar olgunlaştıramaz.'" },
+          { en: "I cannot think of those years without horror, loathing, and heartache.", tr: "O yılları dehşet, nefret ve yürek sızısı duymadan hatırlayamıyorum." },
+          { en: "I put men to death in war, I summoned them to duels to kill them; I lost money at cards, lived on the sweat of peasants and punished them, and deceived people.", tr: "Savaşta insanları öldürdüm, düellolarda onları vurmak için meydana çağırdım; kumarda paralar kaybettim, köylülerin alın teriyle geçinip onları cezalandırdım ve insanları aldattım." },
+          { en: "Lying, robbery, adultery of all kinds, drunkenness, violence, murder... There was no crime at all that I did not commit.", tr: "Yalan, hırsızlık, her türlü zina, ayyaşlık, şiddet, cinayet... İşlemediğim hiçbir suç kalmamıştı." },
+          { en: "And yet my contemporaries praised me and considered me a comparatively moral man.", tr: "Ve yine de çağdaşlarım beni övüyor, görece ahlaklı bir adam olarak kabul ediyordu." },
+          { en: "So I lived for ten years.", tr: "Böylece on yıl boyunca yaşadım." }
+        ]
+      }
+    ]
+  },
+  {
+    id: "sherlock-bohemia",
+    title: "A Scandal in Bohemia (Bohemya'da Skandal)",
+    author: "Arthur Conan Doyle",
+    level: "B1-B2 · Gizem & Polisiye",
+    icon: "🔍",
+    desc: "Sherlock Holmes'un akıl oyunları ve Irene Adler ile unutulmaz karşılaşması. Baker Sokağı'nın eşsiz atmosferi.",
+    chapters: [
+      {
+        title: "Bölüm 1: O Kadın ve Baker Sokağı",
+        sentences: [
+          { en: "To Sherlock Holmes she is always THE woman.", tr: "Sherlock Holmes için o kadın, daima 'O Kadın'dır." },
+          { en: "I have seldom heard him mention her under any other name.", tr: "Holmes'un ondan başka bir isimle bahsettiğini nadiren duymuşumdur." },
+          { en: "In his eyes she eclipses and predominates the whole of her sex.", tr: "Onun gözünde Irene Adler, kendi cinsinin tamamını gölgede bırakır ve üstün gelir." },
+          { en: "It was not that he felt any emotion akin to love for Irene Adler.", tr: "Holmes'un Irene Adler'a karşı aşka benzer bir duygu beslediğinden değildi bu." },
+          { en: "All emotions, and that one particularly, were abhorrent to his cold, precise but admirably balanced mind.", tr: "Bütün duygular ve özellikle de aşk, onun soğuk, dakik ama hayranlık uyandıracak kadar dengeli zihnine tamamen yabancı ve aykırıydı." },
+          { en: "He was, I take it, the most perfect reasoning and observing machine that the world has seen.", tr: "Bana göre o, dünyanın görüp görebileceği en kusursuz akıl yürütme ve gözlem makinesiydi." },
+          { en: "One night—it was on the twentieth of March, 1888—I was returning from a journey to a patient, for I had now returned to civil practice.", tr: "Bir gece—1888 yılının yirminci Mart günüydü—bir hastanın ziyaretinden dönüyordum, zira artık sivil hekimliğime geri dönmüştüm." },
+          { en: "My way led me through Baker Street.", tr: "Yolum beni Baker Sokağı'ndan geçirdi." },
+          { en: "As I passed the well-remembered door, I was seized with a keen desire to see Holmes again, and to know how he was employing his extraordinary powers.", tr: "O çok iyi hatırladığım kapının önünden geçerken, Holmes'u yeniden görme ve o olağanüstü yeteneklerini ne şekilde kullandığını öğrenme arzusu beni sardı." },
+          { en: "His rooms were brilliantly lit, and, even as I looked up, I saw his tall, spare figure pass twice in a dark silhouette against the blind.", tr: "Odaları pırıl pırıl aydınlatılmıştı ve yukarı baktığımda, pencere perdesinde uzun boylu, zayıf siluetinin iki kez karanlık bir gölge olarak geçtiğini gördüm." }
+        ]
+      }
+    ]
+  },
+  {
+    id: "jack-london-wild",
+    title: "The Call of the Wild (Vahşetin Çağrısı)",
+    author: "Jack London",
+    level: "B1 · Macera & Doğa",
+    icon: "🐺",
+    desc: "Evcil bir köpek olan Buck'ın vahşi doğanın çağrısına kapılarak bir kızak köpeğine ve ardından bir lidere dönüşme serüveni.",
+    chapters: [
+      {
+        title: "Bölüm 1: İlkel Çağrıya Doğru",
+        sentences: [
+          { en: "Buck did not read the newspapers, or he would have known that trouble was brewing, not alone for himself, but for every tide-water dog, strong of muscle and with warm, long hair, from Puget Sound to San Diego.", tr: "Buck gazeteleri okumuyordu; okusaydı yalnızca kendisi için değil, Puget Sound'dan San Diego'ya kadar kasları güçlü, kürkü sıcak ve uzun tüylü her sahil köpeği için bir belanın yaklaşmakta olduğunu bilirdi." },
+          { en: "Because men, groping in the Arctic darkness, had found a yellow metal, and because steamship and transportation companies were booming the find, thousands of men were rushing into the Northland.", tr: "Çünkü Kuzey Kutbu'nun karanlığında el yordamıyla arama yapan insanlar sarı bir maden bulmuşlardı ve buharlı gemi ve nakliyat şirketleri bu keşfi göklere çıkardığı için, binlerce insan Kuzey Topraklarına akın ediyordu." },
+          { en: "These men wanted dogs, and the dogs they wanted were heavy dogs, with strong muscles by which to toil, and furry coats to protect them from the frost.", tr: "Bu adamlar köpek istiyordu; istedikleri köpekler ise çetin işlerde çalışacak güçlü kaslara ve dondurucu ayazdan koruyacak kalın kürke sahip ağır köpeklerdi." },
+          { en: "Buck lived at a big house in the sun-kissed Santa Clara Valley.", tr: "Buck, güneşin öptüğü Santa Clara Vadisi'ndeki büyük bir malikanede yaşıyordu." },
+          { en: "Judge Miller's place, it was called.", tr: "Burası Yargıç Miller'ın mülkü olarak bilinirdi." },
+          { en: "It stood back from the road, half hidden among the trees, through which glimpses could be caught of the wide cool veranda that ran around its four sides.", tr: "Yoldan biraz geride duran ve ağaçların arasına yarı yarıya gizlenmiş bu evin dört bir yanını saran geniş, serin verandası ağaçlar arasından seçilebiliyordu." },
+          { en: "And over this great demesne Buck ruled.", tr: "Ve Buck bu koca mülkün tartışmasız hükümdarıydı." },
+          { en: "Here he was born, and here he had lived the four years of his life.", tr: "Burada doğmuş ve hayatının dört yılını burada geçirmişti." }
+        ]
+      }
+    ]
+  },
+  {
+    id: "dorian-gray",
+    title: "The Picture of Dorian Gray (Dorian Gray'in Portresi)",
+    author: "Oscar Wilde",
+    level: "B2 · Klasik & Estetik",
+    icon: "🎨",
+    desc: "Gençlik ve sonsuz güzelliğin bedeli; ressam Basil Hallward ve Lord Henry'nin estetik sohbeti.",
+    chapters: [
+      {
+        title: "Bölüm 1: Ressamın Atölyesi",
+        sentences: [
+          { en: "The studio was filled with the rich odour of roses, and when the light summer wind stirred amidst the trees of the garden, there came through the open door the heavy scent of the lilac.", tr: "Atölye zengin bir gül kokusuyla doluydu ve hafif yaz rüzgarı bahçedeki ağaçların arasında esince, açık kapıdan leylakların o yoğun kokusu içeri süzülüyordu." },
+          { en: "In the centre of the room, clamped to an upright easel, stood the full-length portrait of a young man of extraordinary personal beauty.", tr: "Odanın tam ortasında, dik bir şövaleye tutturulmuş, olağanüstü güzellikte bir gencin boydan boya yapılmış portresi duruyordu." },
+          { en: "In front of it, some little distance away, was sitting the artist himself, Basil Hallward.", tr: "Portrenin biraz ilerisinde, ressamın kendisi Basil Hallward oturuyordu." },
+          { en: "As the painter looked at the gracious and comely form he had so skilfully mirrored in his art, a smile of pleasure passed across his face.", tr: "Ressam, sanatında böylesine ustalıkla yansıttığı o zarif ve çekici surete bakarken, yüzünden hoşnut bir tebessüm geçti." },
+          { en: "Lord Henry Wotton, who was lying back on the divan of Persian saddle-bags, looked at him.", tr: "İran eyeri işlemeli mindere uzanmış olan Lord Henry Wotton ona doğru baktı." },
+          { en: "'It is your best work, Basil, the best thing you have ever done,' said Lord Henry languidly.", tr: "Lord Henry baygın bir sesle, 'Bu senin en iyi eserin Basil, şimdiye dek yaptığın en harika şey,' dedi." },
+          { en: "'You must certainly send it next year to the Grosvenor.'", tr: "'Gelecek yıl bunu mutlaka Grosvenor Galerisi'ne göndermelisin.'" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "gift-magi",
+    title: "The Gift of the Magi (Noel Hediyesi)",
+    author: "O. Henry",
+    level: "A2-B1 · Kısa Hikaye",
+    icon: "🎁",
+    desc: "Birbirlerine hediye alabilmek için en sevdikleri varlıklarından vazgeçen genç bir çiftin dokunaklı aşk öyküsü.",
+    chapters: [
+      {
+        title: "Bölüm 1: Bir Dolar Seksen Yedi Sent",
+        sentences: [
+          { en: "One dollar and eighty-seven cents. That was all.", tr: "Bir dolar seksen yedi sent. Hepsi bu kadardı." },
+          { en: "And sixty cents of it was in pennies.", tr: "Ve bunun altmış senti birer sentlik bozukluklardan oluşuyordu." },
+          { en: "Pennies saved one and two at a time by bulldozing the grocer and the vegetable man and the butcher until one's cheeks burned with the silent imputation of parsimony.", tr: "Bakkala, manava ve kasaba pazarlık yapıp dil dökerek, sessizce ima edilen cimrilik suçlamasıyla yanakları kızarana dek birer ikişer kuruş biriktirilen sentler..." },
+          { en: "Three times Della counted it. One dollar and eighty-seven cents.", tr: "Della parayı üç kez saydı. Bir dolar seksen yedi sent." },
+          { en: "And the next day would be Christmas.", tr: "Ve ertesi gün Noel'di." },
+          { en: "There was clearly nothing to do but flop down on the shabby little couch and howl.", tr: "Eski püskü küçük kanepeye yığılıp hıçkıra hıçkıra ağlamaktan başka yapacak hiçbir şey yoktu." },
+          { en: "So Della did it.", tr: "Della da öyle yaptı." }
+        ]
+      }
+    ]
+  },
+  {
+    id: "aesop-fables",
+    title: "Aesop's Fables (Ezop Masalları)",
+    author: "Ezop (A2 Kolay Seviye)",
+    level: "A2 · Başlangıç & Kolay Masallar",
+    icon: "🦊",
+    desc: "Yalancı Çoban, Kaplumbağa ile Tavşan. İngilizce okumaya yeni başlayanlar için basit, eğlenceli ve öğretici hikayeler.",
+    chapters: [
+      {
+        title: "Masal 1: Yalancı Çoban (The Boy Who Cried Wolf)",
+        sentences: [
+          { en: "Once upon a time, a shepherd boy watched over his sheep on a hillside near the village.", tr: "Bir zamanlar, bir çoban çocuk köyün yakınındaki tepede koyunlarını otlatıyordu." },
+          { en: "To pass the time and entertain himself, he shouted loudly: 'Wolf! Wolf! A wolf is chasing the sheep!'", tr: "Vakit geçirmek ve eğlenmek için avazı çıktığı kadar bağırdı: 'Kurt! Kurt! Koyunları kurt kovalıyor!'" },
+          { en: "The villagers came running up the hill to help the boy and save the flock.", tr: "Köylüler çocuğa yardım etmek ve sürüyü kurtarmak için tepeye doğru koştular." },
+          { en: "When they arrived at the top, they found no wolf, only the boy laughing at them.", tr: "Tepeye vardıklarında hiçbir kurt bulamadılar, sadece kendilerine gülen çocuğu gördüler." },
+          { en: "A few days later, a real wolf emerged from the forest and attacked the flock.", tr: "Birkaç gün sonra ormandan gerçek bir kurt çıktı ve sürüye saldırdı." },
+          { en: "The terrified boy cried out with all his might: 'Wolf! Wolf! Please help me!'", tr: "Dehşete düşen çocuk var gücüyle haykırdı: 'Kurt! Kurt! Lütfen yardım edin!'" },
+          { en: "The villagers thought he was tricking them again, so nobody went to help.", tr: "Köylüler onun yine kendilerini kandırdığını düşündüler ve bu yüzden kimse yardıma gitmedi." },
+          { en: "No one believes a liar, even when they tell the truth.", tr: "Yalancı birine doğruyu söylese bile kimse inanmaz." }
+        ]
+      },
+      {
+        title: "Masal 2: Kaplumbağa ile Tavşan (The Tortoise and the Hare)",
+        sentences: [
+          { en: "A Hare was once ridiculing the slow pace of a Tortoise.", tr: "Bir Tavşan, bir gün bir Kaplumbağanın yavaş adımlarıyla alay ediyordu." },
+          { en: "'Let us have a race,' said the Tortoise with a quiet smile.", tr: "Kaplumbağa sakin bir gülümsemeyle, 'Gel yarışalım,' dedi." },
+          { en: "The Hare thought the idea was absurd, but agreed readily for the sake of the joke.", tr: "Tavşan bu fikrin saçma olduğunu düşündü ama sırf eğlence olsun diye hemen kabul etti." },
+          { en: "The race began, and the Hare darted ahead almost out of sight instantly.", tr: "Yarış başladı ve Tavşan neredeyse anında gözden kaybolacak kadar hızlıca fırladı." },
+          { en: "Confident of victory, the Hare stopped along the way to take a short nap.", tr: "Kazanacağından emin olan Tavşan, yol üzerinde kısa bir şekerleme yapmak için durdu." },
+          { en: "Meanwhile, the Tortoise kept plodding on steadily step by step without stopping.", tr: "Bu sırada Kaplumbağa hiç durmadan adım adım ve kararlılıkla ilerlemeyi sürdürdü." },
+          { en: "When the Hare woke up, the Tortoise was already across the finish line: slow and steady wins the race.", tr: "Tavşan uyandığında, Kaplumbağa bitiş çizgisini çoktan geçmişti: Ağır ve kararlı adımlar daima yarışı kazanır." }
+        ]
+      }
+    ]
+  }
+];
+
+var TrancyReader = {
+  state: {
+    bookId: "tolstoy-confession",
+    chapIdx: 0,
+    sentIdx: 0,
+    displayMode: "both",  // both, en, tr, spoiler
+    layoutMode: "cards",  // cards, flow
+    fontSize: 19,
+    fontFamily: "serif",  // serif, sans
+    theme: "dark",        // dark, sepia, light
+    speed: 1.0,
+    isPlaying: false,
+    loopSentence: false,
+    autoScroll: true
+  },
+  wordCache: {},
+  activeUtterance: null,
+
+  init: function(bookId, chapIdx) {
+    var self = this;
+    if (typeof bookId === "string" && bookId) self.state.bookId = bookId;
+    if (typeof chapIdx === "number") self.state.chapIdx = chapIdx;
+
+    try {
+      var savedPrefs = JSON.parse(localStorage.getItem("trancy_reader_prefs") || "{}");
+      if (savedPrefs.fontSize) self.state.fontSize = savedPrefs.fontSize;
+      if (savedPrefs.fontFamily) self.state.fontFamily = savedPrefs.fontFamily;
+      if (savedPrefs.theme) self.state.theme = savedPrefs.theme;
+      if (savedPrefs.displayMode) self.state.displayMode = savedPrefs.displayMode;
+      if (savedPrefs.layoutMode) self.state.layoutMode = savedPrefs.layoutMode;
+      if (savedPrefs.speed) self.state.speed = savedPrefs.speed;
+      if (typeof savedPrefs.autoScroll === "boolean") self.state.autoScroll = savedPrefs.autoScroll;
+      if (typeof savedPrefs.loopSentence === "boolean") self.state.loopSentence = savedPrefs.loopSentence;
+    } catch (_) {}
+
+    self.state.isPlaying = false;
+    self.state.sentIdx = 0;
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    self.render();
+    self.bindGlobalKeys();
+  },
+
+  savePrefs: function() {
+    try {
+      localStorage.setItem("trancy_reader_prefs", JSON.stringify({
+        fontSize: this.state.fontSize,
+        fontFamily: this.state.fontFamily,
+        theme: this.state.theme,
+        displayMode: this.state.displayMode,
+        layoutMode: this.state.layoutMode,
+        speed: this.state.speed,
+        autoScroll: this.state.autoScroll,
+        loopSentence: this.state.loopSentence
+      }));
+    } catch (_) {}
+  },
+
+  getAllBooks: function() {
+    var custom = [];
+    try {
+      custom = JSON.parse(localStorage.getItem("trancy_custom_library") || "[]");
+    } catch (_) {}
+    return TRANCY_LIBRARY.concat(custom);
+  },
+
+  getCurrentBook: function() {
+    var books = this.getAllBooks();
+    var id = this.state.bookId;
+    var found = books.find(function(b) { return b.id === id; });
+    return found || books[0];
+  },
+
+  getCurrentChapter: function() {
+    var book = this.getCurrentBook();
+    var idx = this.state.chapIdx;
+    if (!book.chapters || !book.chapters.length) {
+      return { title: "Bölüm", sentences: [] };
+    }
+    return book.chapters[idx] || book.chapters[0];
+  },
+
+  render: function() {
+    var self = this;
+    var book = self.getCurrentBook();
+    var chap = self.getCurrentChapter();
+    var books = self.getAllBooks();
+
+    var chapOptionsHtml = (book.chapters || []).map(function(c, i) {
+      return '<option value="' + i + '"' + (i === self.state.chapIdx ? ' selected' : '') + '>' + esc(c.title) + '</option>';
+    }).join("");
+
+    var html = '<div class="trancy-wrap">' +
+      '<div class="trancy-header">' +
+        '<div class="trancy-top-bar">' +
+          '<div class="trancy-book-info">' +
+            '<div class="trancy-book-title">' +
+              '<span>' + (book.icon || '📖') + '</span> ' +
+              '<span>' + esc(book.title) + '</span>' +
+              '<span class="trancy-badge-level">' + esc(book.level || 'B1') + '</span>' +
+            '</div>' +
+            '<p class="trancy-book-author">' + esc(book.author) + ' &bull; ' + (book.chapters ? book.chapters.length : 1) + ' Bölüm &bull; ' + (chap.sentences ? chap.sentences.length : 0) + ' Cümle</p>' +
+          '</div>' +
+          '<div class="trancy-action-btns">' +
+            '<button class="trancy-btn" onclick="TrancyReader.openLibraryModal()">📚 Kitaplık (' + books.length + ')</button>' +
+            '<button class="trancy-btn" onclick="TrancyReader.openCustomTextModal()">➕ Metin Ekle</button>' +
+            '<button class="trancy-btn primary" onclick="TrancyReader.openSavedWordsModal()">⭐ Kaydedilen Kelimeler</button>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="trancy-toolbar">' +
+          '<div class="trancy-tool-group">' +
+            '<span class="trancy-tool-label">Bölüm:</span>' +
+            '<select class="trancy-select" id="trancyChapSelect" onchange="TrancyReader.switchChapter(parseInt(this.value))">' +
+              chapOptionsHtml +
+            '</select>' +
+          '</div>' +
+
+          '<div class="trancy-tool-group">' +
+            '<span class="trancy-tool-label">Görünüm:</span>' +
+            '<button class="trancy-chip' + (self.state.displayMode === 'both' ? ' active' : '') + '" onclick="TrancyReader.setDisplayMode(\'both\')">🔀 Çift Dil</button>' +
+            '<button class="trancy-chip' + (self.state.displayMode === 'en' ? ' active' : '') + '" onclick="TrancyReader.setDisplayMode(\'en\')">🇬🇧 İngilizce</button>' +
+            '<button class="trancy-chip' + (self.state.displayMode === 'tr' ? ' active' : '') + '" onclick="TrancyReader.setDisplayMode(\'tr\')">🇹🇷 Türkçe</button>' +
+            '<button class="trancy-chip' + (self.state.displayMode === 'spoiler' ? ' active' : '') + '" onclick="TrancyReader.setDisplayMode(\'spoiler\')" title="Türkçe çeviriyi gizler, fareyle üzerine gelince gösterir">👁️ Gizle / Göster</button>' +
+          '</div>' +
+
+          '<div class="trancy-tool-group">' +
+            '<span class="trancy-tool-label">Biçim:</span>' +
+            '<button class="trancy-chip' + (self.state.layoutMode === 'cards' ? ' active' : '') + '" onclick="TrancyReader.setLayoutMode(\'cards\')">📑 Kartlar</button>' +
+            '<button class="trancy-chip' + (self.state.layoutMode === 'flow' ? ' active' : '') + '" onclick="TrancyReader.setLayoutMode(\'flow\')">📖 Paragraf</button>' +
+          '</div>' +
+
+          '<div class="trancy-tool-group">' +
+            '<span class="trancy-tool-label">Tipografi:</span>' +
+            '<button class="trancy-chip" onclick="TrancyReader.changeFontSize(-2)">A-</button>' +
+            '<button class="trancy-chip" onclick="TrancyReader.changeFontSize(2)">A+</button>' +
+            '<button class="trancy-chip" onclick="TrancyReader.toggleFontFamily()">' + (self.state.fontFamily === 'serif' ? 'Serif' : 'Sans') + '</button>' +
+            '<button class="trancy-chip" onclick="TrancyReader.toggleTheme()">' + (self.state.theme === 'sepia' ? '📜 Sepya' : self.state.theme === 'dark' ? '🌙 Koyu' : '☀️ Açık') + '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="trancy-arena ' + (self.state.fontFamily === 'serif' ? 'trancy-font-serif' : 'trancy-font-sans') + (self.state.displayMode === 'spoiler' ? ' trancy-spoiler-mode' : '') + '" id="trancyArena" data-theme="' + self.state.theme + '" style="--trancy-fs:' + self.state.fontSize + 'px">' +
+        self.renderSentencesMarkup() +
+      '</div>' +
+    '</div>' +
+
+    '<div class="trancy-audio-bar" id="trancyAudioBar">' +
+      '<div class="trancy-ab-info">' +
+        '<div class="trancy-ab-title" id="trancyAbTitle">' + esc(book.title) + '</div>' +
+        '<div class="trancy-ab-prog" id="trancyAbProg">Cümle 1 / ' + chap.sentences.length + '</div>' +
+      '</div>' +
+      '<div class="trancy-ab-ctrls">' +
+        '<button class="trancy-ab-btn" title="Önceki Cümle (Sol Ok)" onclick="TrancyReader.prevSentence()">⏮</button>' +
+        '<button class="trancy-ab-btn play" id="trancyPlayBtn" title="Oynat / Duraklat (Boşluk)" onclick="TrancyReader.togglePlay()">▶</button>' +
+        '<button class="trancy-ab-btn" title="Sonraki Cümle (Sağ Ok)" onclick="TrancyReader.nextSentence()">⏭</button>' +
+        '<button class="trancy-ab-btn' + (self.state.loopSentence ? ' active' : '') + '" id="trancyLoopBtn" title="Cümleyi Tekrarla (Gölgeleme / Shadowing)" onclick="TrancyReader.toggleLoop()">🔁</button>' +
+      '</div>' +
+      '<div class="trancy-ab-side">' +
+        '<button class="trancy-ab-speed" id="trancySpeedBtn" onclick="TrancyReader.cycleSpeed()">' + self.state.speed.toFixed(2) + 'x</button>' +
+        '<label style="font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:4px;cursor:pointer">' +
+          '<input type="checkbox" id="trancyAutoScroll" ' + (self.state.autoScroll ? 'checked' : '') + ' onchange="TrancyReader.state.autoScroll=this.checked;TrancyReader.savePrefs()"> Otomatik Kaydır' +
+        '</label>' +
+      '</div>' +
+    '</div>';
+
+    var main = document.getElementById("main");
+    if (main) {
+      main.innerHTML = html;
+      window.scrollTo(0, 0);
+      self.highlightSentence(self.state.sentIdx);
+      self.updatePlayerBar();
+    }
+  },
+
+  renderSentencesMarkup: function() {
+    var self = this;
+    var chap = self.getCurrentChapter();
+    var sentences = chap.sentences || [];
+
+    if (!sentences.length) {
+      return '<div style="text-align:center;padding:40px;color:var(--muted)">Bu bölümde henüz cümle bulunmuyor.</div>';
+    }
+
+    if (self.state.layoutMode === "flow") {
+      var flowHtml = '<div class="trancy-flow-container">';
+      sentences.forEach(function(s, idx) {
+        flowHtml += '<span class="trancy-flow-sent" data-idx="' + idx + '" onclick="TrancyReader.onSentenceClick(' + idx + ')">';
+        if (self.state.displayMode !== "tr") {
+          flowHtml += self.formatWords(s.en);
+        }
+        if (self.state.displayMode === "both" || self.state.displayMode === "spoiler") {
+          flowHtml += '<span class="trancy-flow-tr-line">' + esc(s.tr) + '</span>';
+        } else if (self.state.displayMode === "tr") {
+          flowHtml += '<span class="trancy-flow-tr-line" style="display:inline">' + esc(s.tr) + ' </span>';
+        }
+        flowHtml += ' </span>';
+      });
+      flowHtml += '</div>';
+      return flowHtml;
+    }
+
+    // Default: Card View
+    var cardsHtml = '<div class="trancy-cards-container">';
+    sentences.forEach(function(s, idx) {
+      cardsHtml += '<div class="trancy-card" data-idx="' + idx + '" onclick="TrancyReader.onSentenceClick(' + idx + ')">' +
+        '<div class="trancy-card-meta">' +
+          '<span class="trancy-num-pill">#' + (idx + 1) + '</span>' +
+          '<div class="trancy-card-actions">' +
+            '<button class="trancy-card-btn" title="Bu cümleyi dinle" onclick="event.stopPropagation();TrancyReader.playSingleSentence(' + idx + ')">🔊</button>' +
+            '<button class="trancy-card-btn" title="Cümleyi kopyala" onclick="event.stopPropagation();TrancyReader.copySentence(' + idx + ')">📋</button>' +
+          '</div>' +
+        '</div>';
+
+      if (self.state.displayMode !== "tr") {
+        cardsHtml += '<div class="trancy-en">' + self.formatWords(s.en) + '</div>';
+      }
+      if (self.state.displayMode !== "en") {
+        cardsHtml += '<div class="trancy-tr">' + esc(s.tr) + '</div>';
+      }
+
+      cardsHtml += '</div>';
+    });
+    cardsHtml += '</div>';
+    return cardsHtml;
+  },
+
+  formatWords: function(text) {
+    var tokens = String(text || "").split(/([A-Za-z0-9'-]+)/);
+    return tokens.map(function(tok) {
+      if (/[A-Za-z0-9]/.test(tok)) {
+        var clean = tok.replace(/[^A-Za-z0-9]/g, "");
+        if (clean) {
+          return '<span class="tr-word" onclick="TrancyReader.onWordClick(this, event, \'' + clean.replace(/'/g, "\\'") + '\')">' + tok + '</span>';
+        }
+      }
+      return esc(tok);
+    }).join("");
+  },
+
+  onSentenceClick: function(idx) {
+    this.state.sentIdx = idx;
+    this.highlightSentence(idx);
+    this.updatePlayerBar();
+    if (this.state.isPlaying) {
+      this.speakSentence(idx);
+    }
+  },
+
+  playSingleSentence: function(idx) {
+    this.state.sentIdx = idx;
+    this.state.isPlaying = true;
+    this.speakSentence(idx);
+    this.updatePlayerBar();
+  },
+
+  copySentence: function(idx) {
+    var chap = this.getCurrentChapter();
+    var s = chap.sentences[idx];
+    if (s && navigator.clipboard) {
+      navigator.clipboard.writeText(s.en + "\n" + s.tr).then(function() {
+        alert("Cümle kopyalandı:\n" + s.en);
+      });
+    }
+  },
+
+  highlightSentence: function(idx) {
+    var arena = document.getElementById("trancyArena");
+    if (!arena) return;
+
+    var prevActive = arena.querySelectorAll(".active-reading");
+    prevActive.forEach(function(el) { el.classList.remove("active-reading"); });
+
+    var target = arena.querySelector('[data-idx="' + idx + '"]');
+    if (target) {
+      target.classList.add("active-reading");
+      if (this.state.autoScroll) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  },
+
+  speakWord: function(word) {
+    try {
+      if ("speechSynthesis" in window && word) {
+        window.speechSynthesis.cancel();
+        var ut = new SpeechSynthesisUtterance(word);
+        ut.lang = "en-US";
+        ut.rate = 0.9;
+        window.speechSynthesis.speak(ut);
+      }
+    } catch (_) {}
+  },
+
+  onWordClick: function(domEl, event, wordClean) {
+    if (event && event.stopPropagation) event.stopPropagation();
+    var self = this;
+    self.speakWord(wordClean);
+
+    // Remove existing popover if any
+    var existing = document.getElementById("trancyWordPop");
+    if (existing) existing.remove();
+
+    var rect = domEl.getBoundingClientRect();
+    var pop = document.createElement("div");
+    pop.id = "trancyWordPop";
+    pop.className = "trancy-word-pop";
+
+    var top = rect.bottom + 8;
+    var left = rect.left;
+    if (left + 310 > window.innerWidth) {
+      left = window.innerWidth - 325;
+    }
+    if (left < 10) left = 10;
+    if (top + 160 > window.innerHeight) {
+      top = rect.top - 150;
+    }
+
+    pop.style.top = Math.max(10, top) + "px";
+    pop.style.left = Math.max(10, left) + "px";
+
+    pop.innerHTML = '<div class="trancy-pop-top">' +
+      '<div class="trancy-pop-title"><span>🔊</span> <strong>' + esc(wordClean) + '</strong></div>' +
+      '<button style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--muted)" onclick="document.getElementById(\'trancyWordPop\').remove()">✕</button>' +
+    '</div>' +
+    '<div class="trancy-pop-meaning" id="trancyPopMeaning">Çevriliyor...</div>' +
+    '<div class="trancy-pop-bottom">' +
+      '<button class="trancy-btn primary" id="trancySaveWordBtn" style="font-size:11.5px;padding:4px 9px">⭐ Kelimelerime Ekle</button>' +
+      '<button class="trancy-btn" style="font-size:11.5px;padding:4px 8px" onclick="TrancyReader.speakWord(\'' + wordClean.replace(/'/g, "\\'") + '\')">Dinle</button>' +
+      '<a href="https://dictionary.cambridge.org/dictionary/english/' + encodeURIComponent(wordClean) + '" target="_blank" rel="noopener noreferrer" class="trancy-btn" style="font-size:11.5px;padding:4px 8px">Cambridge ↗</a>' +
+    '</div>';
+
+    document.body.appendChild(pop);
+
+    var closeOnOutside = function(e) {
+      if (!pop.contains(e.target) && e.target !== domEl) {
+        pop.remove();
+        document.removeEventListener("click", closeOnOutside);
+      }
+    };
+    setTimeout(function() { document.addEventListener("click", closeOnOutside); }, 80);
+
+    // Fetch Turkish translation
+    self.lookupTranslation(wordClean, function(trMeaning) {
+      var meanEl = document.getElementById("trancyPopMeaning");
+      if (meanEl) {
+        meanEl.textContent = trMeaning || "Tanım bulunamadı.";
+      }
+      var saveBtn = document.getElementById("trancySaveWordBtn");
+      if (saveBtn) {
+        saveBtn.onclick = function() {
+          self.saveWord(wordClean, trMeaning);
+          saveBtn.textContent = "✓ Eklendi!";
+          saveBtn.style.background = "#10b981";
+        };
+      }
+    });
+  },
+
+  lookupTranslation: function(word, done) {
+    var self = this;
+    if (self.wordCache[word.toLowerCase()]) {
+      done(self.wordCache[word.toLowerCase()]);
+      return;
+    }
+    var url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=tr&dt=t&q=" + encodeURIComponent(word);
+    fetch(url)
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        var translated = "";
+        if (Array.isArray(data) && Array.isArray(data[0])) {
+          translated = data[0].map(function(item) { return item[0]; }).join("").trim();
+        }
+        if (translated) {
+          self.wordCache[word.toLowerCase()] = translated;
+          done(translated);
+        } else {
+          done(word);
+        }
+      })
+      .catch(function() {
+        done("Çeviri alınamadı.");
+      });
+  },
+
+  saveWord: function(word, trMeaning) {
+    var saved = [];
+    try {
+      saved = JSON.parse(localStorage.getItem("trancy_saved_words") || "[]");
+    } catch (_) {}
+
+    var cleanW = word.trim().toLowerCase();
+    var exists = saved.some(function(item) { return item.word.toLowerCase() === cleanW; });
+    if (!exists) {
+      saved.unshift({
+        word: word,
+        tr: trMeaning,
+        date: new Date().toLocaleDateString("tr-TR")
+      });
+      try {
+        localStorage.setItem("trancy_saved_words", JSON.stringify(saved));
+      } catch (_) {}
+    }
+
+    if (typeof VL !== "undefined") {
+      VL[cleanW] = true;
+      if (typeof vlSave === "function") vlSave();
+    }
+  },
+
+  speakSentence: function(index) {
+    var self = this;
+    var chap = self.getCurrentChapter();
+    var sentences = chap.sentences || [];
+
+    if (index < 0 || index >= sentences.length) {
+      self.state.isPlaying = false;
+      self.updatePlayerBar();
+      return;
+    }
+
+    self.state.sentIdx = index;
+    self.highlightSentence(index);
+    self.updatePlayerBar();
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+      var s = sentences[index];
+      var ut = new SpeechSynthesisUtterance(s.en);
+      ut.lang = "en-US";
+      ut.rate = self.state.speed || 1.0;
+
+      var voices = window.speechSynthesis.getVoices();
+      if (voices && voices.length) {
+        var bestVoice = voices.find(function(v) {
+          return v.lang.indexOf("en") === 0 && (v.name.indexOf("Google") !== -1 || v.name.indexOf("Natural") !== -1 || v.name.indexOf("Samantha") !== -1);
+        }) || voices.find(function(v) { return v.lang.indexOf("en") === 0; });
+        if (bestVoice) ut.voice = bestVoice;
+      }
+
+      self.activeUtterance = ut;
+      ut.onend = function() {
+        if (!self.state.isPlaying) return;
+        if (self.state.loopSentence) {
+          setTimeout(function() {
+            if (self.state.isPlaying) self.speakSentence(self.state.sentIdx);
+          }, 350);
+        } else {
+          setTimeout(function() {
+            if (self.state.isPlaying) {
+              if (self.state.sentIdx + 1 < sentences.length) {
+                self.speakSentence(self.state.sentIdx + 1);
+              } else {
+                self.state.isPlaying = false;
+                self.updatePlayerBar();
+              }
+            }
+          }, 300);
+        }
+      };
+
+      ut.onerror = function() {
+        self.state.isPlaying = false;
+        self.updatePlayerBar();
+      };
+
+      window.speechSynthesis.speak(ut);
+    }
+  },
+
+  togglePlay: function() {
+    var self = this;
+    if (self.state.isPlaying) {
+      self.state.isPlaying = false;
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      self.updatePlayerBar();
+    } else {
+      self.state.isPlaying = true;
+      self.speakSentence(self.state.sentIdx);
+      self.updatePlayerBar();
+    }
+  },
+
+  prevSentence: function() {
+    if (this.state.sentIdx > 0) {
+      this.state.sentIdx--;
+      this.highlightSentence(this.state.sentIdx);
+      this.updatePlayerBar();
+      if (this.state.isPlaying) this.speakSentence(this.state.sentIdx);
+    }
+  },
+
+  nextSentence: function() {
+    var chap = this.getCurrentChapter();
+    if (this.state.sentIdx + 1 < (chap.sentences ? chap.sentences.length : 0)) {
+      this.state.sentIdx++;
+      this.highlightSentence(this.state.sentIdx);
+      this.updatePlayerBar();
+      if (this.state.isPlaying) this.speakSentence(this.state.sentIdx);
+    }
+  },
+
+  toggleLoop: function() {
+    this.state.loopSentence = !this.state.loopSentence;
+    var btn = document.getElementById("trancyLoopBtn");
+    if (btn) btn.classList.toggle("active", this.state.loopSentence);
+    this.savePrefs();
+  },
+
+  cycleSpeed: function() {
+    var speeds = [0.75, 0.9, 1.0, 1.25, 1.5];
+    var current = this.state.speed;
+    var idx = speeds.indexOf(current);
+    var next = (idx === -1 || idx === speeds.length - 1) ? speeds[0] : speeds[idx + 1];
+    this.state.speed = next;
+    var btn = document.getElementById("trancySpeedBtn");
+    if (btn) btn.textContent = next.toFixed(2) + "x";
+    this.savePrefs();
+    if (this.state.isPlaying) {
+      this.speakSentence(this.state.sentIdx);
+    }
+  },
+
+  updatePlayerBar: function() {
+    var playBtn = document.getElementById("trancyPlayBtn");
+    if (playBtn) {
+      playBtn.textContent = this.state.isPlaying ? "⏸" : "▶";
+      playBtn.title = this.state.isPlaying ? "Duraklat (Boşluk)" : "Oynat (Boşluk)";
+    }
+    var prog = document.getElementById("trancyAbProg");
+    var chap = this.getCurrentChapter();
+    var total = chap.sentences ? chap.sentences.length : 0;
+    if (prog) {
+      prog.textContent = "Cümle " + (this.state.sentIdx + 1) + " / " + total;
+    }
+  },
+
+  switchChapter: function(chapIdx) {
+    this.state.chapIdx = chapIdx;
+    this.state.sentIdx = 0;
+    this.state.isPlaying = false;
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    this.render();
+  },
+
+  setDisplayMode: function(mode) {
+    this.state.displayMode = mode;
+    this.savePrefs();
+    this.render();
+  },
+
+  setLayoutMode: function(mode) {
+    this.state.layoutMode = mode;
+    this.savePrefs();
+    this.render();
+  },
+
+  changeFontSize: function(delta) {
+    var next = Math.max(14, Math.min(30, this.state.fontSize + delta));
+    this.state.fontSize = next;
+    var arena = document.getElementById("trancyArena");
+    if (arena) arena.style.setProperty("--trancy-fs", next + "px");
+    this.savePrefs();
+  },
+
+  toggleFontFamily: function() {
+    this.state.fontFamily = this.state.fontFamily === "serif" ? "sans" : "serif";
+    this.savePrefs();
+    this.render();
+  },
+
+  toggleTheme: function() {
+    var themes = ["dark", "sepia", "light"];
+    var idx = themes.indexOf(this.state.theme);
+    var next = themes[(idx + 1) % themes.length];
+    this.state.theme = next;
+    var arena = document.getElementById("trancyArena");
+    if (arena) arena.setAttribute("data-theme", next);
+    this.savePrefs();
+    this.render();
+  },
+
+  openLibraryModal: function() {
+    var self = this;
+    var books = self.getAllBooks();
+    var modal = document.createElement("div");
+    modal.className = "trancy-modal-mask";
+    modal.id = "trancyLibraryModal";
+
+    var listHtml = books.map(function(b) {
+      return '<div class="trancy-book-card-item" onclick="TrancyReader.loadBook(\'' + b.id + '\')">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between">' +
+          '<div style="font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px">' +
+            '<span>' + (b.icon || '📖') + '</span> <span>' + esc(b.title) + '</span>' +
+          '</div>' +
+          '<span class="trancy-badge-level">' + esc(b.level || 'B1') + '</span>' +
+        '</div>' +
+        '<div style="font-size:12px;color:var(--muted);font-weight:600">' + esc(b.author) + ' &bull; ' + (b.chapters ? b.chapters.length : 1) + ' Bölüm</div>' +
+        '<div style="font-size:12.5px;color:var(--text);line-height:1.4">' + esc(b.desc || '') + '</div>' +
+      '</div>';
+    }).join("");
+
+    modal.innerHTML = '<div class="trancy-modal-dialog">' +
+      '<div class="trancy-modal-head">' +
+        '<h3>📚 Trancy Kitaplık & Klasikler</h3>' +
+        '<button class="trancy-btn" onclick="document.getElementById(\'trancyLibraryModal\').remove()">✕ Kapat</button>' +
+      '</div>' +
+      '<div class="trancy-modal-content">' +
+        listHtml +
+      '</div>' +
+    '</div>';
+
+    document.body.appendChild(modal);
+  },
+
+  loadBook: function(bookId) {
+    var modal = document.getElementById("trancyLibraryModal");
+    if (modal) modal.remove();
+    this.state.bookId = bookId;
+    this.state.chapIdx = 0;
+    this.state.sentIdx = 0;
+    this.state.isPlaying = false;
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    this.render();
+  },
+
+  openCustomTextModal: function() {
+    var self = this;
+    var modal = document.createElement("div");
+    modal.className = "trancy-modal-mask";
+    modal.id = "trancyCustomModal";
+
+    modal.innerHTML = '<div class="trancy-modal-dialog">' +
+      '<div class="trancy-modal-head">' +
+        '<h3>➕ Kendi Metnini Ekle (Akıllı Çift Dil Reader)</h3>' +
+        '<button class="trancy-btn" onclick="document.getElementById(\'trancyCustomModal\').remove()">✕</button>' +
+      '</div>' +
+      '<div class="trancy-modal-content">' +
+        '<p style="font-size:13px;color:var(--muted);margin:0">İstediğin herhangi bir İngilizce makaleyi, kitap bölümünü veya haber metnini buraya yapıştır. Sistem otomatik olarak cümlelere bölecek ve Türkçe karşılıklarını çevirip Trancy Reader\'a ekleyecektir.</p>' +
+        '<div>' +
+          '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Metin / Kitap Başlığı:</label>' +
+          '<input type="text" id="trancyCustomTitle" placeholder="Örn: The Philosophy of Life" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none">' +
+        '</div>' +
+        '<div>' +
+          '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">İngilizce Metin:</label>' +
+          '<textarea id="trancyCustomText" rows="9" placeholder="İngilizce metni buraya yapıştırın..." style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none;resize:vertical;font-family:inherit"></textarea>' +
+        '</div>' +
+        '<div id="trancyImportStatus" style="font-size:12.5px;color:#10b981;font-weight:700" hidden></div>' +
+        '<button class="trancy-btn primary" id="trancyProcessBtn" onclick="TrancyReader.processCustomText()" style="padding:10px 16px;font-size:13.5px;justify-content:center">✨ Cümle Cümle Böl ve Çevir (Kitaba Dönüştür)</button>' +
+      '</div>' +
+    '</div>';
+
+    document.body.appendChild(modal);
+  },
+
+  processCustomText: function() {
+    var self = this;
+    var titleInput = document.getElementById("trancyCustomTitle");
+    var textInput = document.getElementById("trancyCustomText");
+    var status = document.getElementById("trancyImportStatus");
+    var btn = document.getElementById("trancyProcessBtn");
+
+    var rawText = (textInput ? textInput.value : "").trim();
+    var title = (titleInput && titleInput.value ? titleInput.value : "").trim() || "Özel Metin #" + Math.floor(Math.random() * 1000);
+
+    if (!rawText) {
+      alert("Lütfen bir İngilizce metin girin.");
+      return;
+    }
+
+    var cleanSentences = rawText
+      .replace(/\r\n/g, "\n")
+      .split(/(?<=[.?!])\s+/)
+      .map(function(s) { return s.trim(); })
+      .filter(function(s) { return s.length > 2; });
+
+    if (!cleanSentences.length) {
+      alert("Geçerli cümle bulunamadı.");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.style.opacity = "0.6";
+    status.hidden = false;
+    status.textContent = "Cümleler çevriliyor: 0 / " + cleanSentences.length + "...";
+
+    var results = [];
+    var currentIdx = 0;
+
+    function translateNext() {
+      if (currentIdx >= cleanSentences.length) {
+        // Finished
+        var customBooks = [];
+        try {
+          customBooks = JSON.parse(localStorage.getItem("trancy_custom_library") || "[]");
+        } catch (_) {}
+
+        var newBook = {
+          id: "custom_" + Date.now(),
+          title: title,
+          author: "Kullanıcı Metni",
+          level: "Özel",
+          icon: "📝",
+          desc: "Kullanıcı tarafından eklenen özel İngilizce çalışma metni.",
+          chapters: [
+            {
+              title: "Bölüm 1",
+              sentences: results
+            }
+          ]
+        };
+
+        customBooks.unshift(newBook);
+        try {
+          localStorage.setItem("trancy_custom_library", JSON.stringify(customBooks));
+        } catch (_) {}
+
+        var modal = document.getElementById("trancyCustomModal");
+        if (modal) modal.remove();
+
+        self.loadBook(newBook.id);
+        return;
+      }
+
+      var textToTrans = cleanSentences[currentIdx];
+      status.textContent = "Cümleler çevriliyor: " + (currentIdx + 1) + " / " + cleanSentences.length + "...";
+
+      self.lookupTranslation(textToTrans, function(trVal) {
+        results.push({
+          en: textToTrans,
+          tr: trVal || textToTrans
+        });
+        currentIdx++;
+        setTimeout(translateNext, 120);
+      });
+    }
+
+    translateNext();
+  },
+
+  openSavedWordsModal: function() {
+    var self = this;
+    var saved = [];
+    try {
+      saved = JSON.parse(localStorage.getItem("trancy_saved_words") || "[]");
+    } catch (_) {}
+
+    var modal = document.createElement("div");
+    modal.className = "trancy-modal-mask";
+    modal.id = "trancySavedModal";
+
+    var listHtml = "";
+    if (!saved.length) {
+      listHtml = '<div style="text-align:center;padding:30px;color:var(--muted)">Henüz kaydedilmiş kelime yok. Okuma yaparken kelimelerin üzerine tıklayıp "⭐ Kelimelerime Ekle" butonuna basarak kelime listenizi oluşturabilirsiniz.</div>';
+    } else {
+      listHtml = saved.map(function(item, idx) {
+        return '<div class="trancy-saved-item">' +
+          '<div>' +
+            '<div style="font-size:15px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:6px">' +
+              '<button class="trancy-btn" style="padding:2px 6px;border-radius:50%" onclick="TrancyReader.speakWord(\'' + item.word.replace(/'/g, "\\'") + '\')">🔊</button>' +
+              '<span>' + esc(item.word) + '</span>' +
+            '</div>' +
+            '<div style="font-size:13px;color:#10b981;font-weight:600;margin-top:2px">' + esc(item.tr) + '</div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px">' +
+            '<span style="font-size:11px;color:var(--muted)">' + esc(item.date || '') + '</span>' +
+            '<button class="trancy-btn" style="color:var(--err)" onclick="TrancyReader.deleteSavedWord(' + idx + ')">🗑️</button>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+    }
+
+    modal.innerHTML = '<div class="trancy-modal-dialog">' +
+      '<div class="trancy-modal-head">' +
+        '<h3>⭐ Okuma Sırasında Kaydedilen Kelimeler (' + saved.length + ')</h3>' +
+        '<button class="trancy-btn" onclick="document.getElementById(\'trancySavedModal\').remove()">✕</button>' +
+      '</div>' +
+      '<div class="trancy-modal-content">' +
+        listHtml +
+      '</div>' +
+    '</div>';
+
+    document.body.appendChild(modal);
+  },
+
+  deleteSavedWord: function(idx) {
+    var saved = [];
+    try {
+      saved = JSON.parse(localStorage.getItem("trancy_saved_words") || "[]");
+    } catch (_) {}
+    saved.splice(idx, 1);
+    try {
+      localStorage.setItem("trancy_saved_words", JSON.stringify(saved));
+    } catch (_) {}
+    var modal = document.getElementById("trancySavedModal");
+    if (modal) modal.remove();
+    this.openSavedWordsModal();
+  },
+
+  bindGlobalKeys: function() {
+    var self = this;
+    if (window._trancyKeysBound) return;
+    window._trancyKeysBound = true;
+
+    window.addEventListener("keydown", function(e) {
+      var arena = document.getElementById("trancyArena");
+      if (!arena) return;
+
+      var tag = e.target.tagName.toLowerCase();
+      if (tag === "input" || tag === "textarea") return;
+
+      if (e.code === "Space") {
+        e.preventDefault();
+        self.togglePlay();
+      } else if (e.code === "ArrowLeft") {
+        e.preventDefault();
+        self.prevSentence();
+      } else if (e.code === "ArrowRight") {
+        e.preventDefault();
+        self.nextSentence();
+      } else if (e.key === "r" || e.key === "R") {
+        e.preventDefault();
+        self.speakSentence(self.state.sentIdx);
+      }
+    });
+  }
+};
+
+function showTrancyReader(bookId, chapterIdx) {
+  if (typeof current !== "undefined") current = null;
+  if (typeof closeNav === "function") closeNav();
+  if (typeof fab !== "undefined" && fab) fab.style.display = "none";
+  TrancyReader.init(bookId, chapterIdx);
+}
+
 function showListenHub(){
   current = null; closeNav();
-var YTSTUDY={player:null,videoId:"",language:"en",pending:null,apiLoading:false};
-function ytStudyParse(raw){
-  var value=String(raw||"").trim();if(!value)return null;if(/^[\w-]{11}$/.test(value))return{id:value,start:0};
-  if(!/^[a-z][a-z0-9+.-]*:\/\//i.test(value))value="https://"+value;
-  try{var u=new URL(value),host=u.hostname.toLowerCase().replace(/^www\./,"").replace(/^m\./,"");
-    if(host!=="youtube.com"&&host!=="youtu.be"&&host!=="youtube-nocookie.com")return null;
-    var id=host==="youtu.be"?u.pathname.split("/").filter(Boolean)[0]:u.searchParams.get("v");
-    if(!id){var parts=u.pathname.split("/").filter(Boolean);if(parts.length>1&&["embed","shorts","live","v"].indexOf(parts[0])>=0)id=parts[1];}
-    if(!id||! /^[\w-]{11}$/.test(id))return null;
-    var t=u.searchParams.get("start")||u.searchParams.get("t")||"",start=/^\d+$/.test(t)?Number(t):0;
-    if(!start&&t){var m,re=/(\d+)(h|m|s)/g;while((m=re.exec(t)))start+=Number(m[1])*(m[2]==="h"?3600:m[2]==="m"?60:1);}
-    return{id:id,start:start};
-  }catch(e){return null;}
-}
-function ytStudyApi(ready){
-  if(window.YT&&window.YT.Player){ready();return;}YTSTUDY.pending=ready;if(YTSTUDY.apiLoading)return;YTSTUDY.apiLoading=true;
-  var prev=window.onYouTubeIframeAPIReady;window.onYouTubeIframeAPIReady=function(){YTSTUDY.apiLoading=false;if(typeof prev==="function")try{prev();}catch(e){}var run=YTSTUDY.pending;YTSTUDY.pending=null;if(run)run();};
-  var script=document.createElement("script");script.src="https://www.youtube.com/iframe_api";script.onerror=function(){YTSTUDY.apiLoading=false;var n=el("ytStudyHelp");if(n)n.textContent="YouTube oynatıcı yüklenemedi; internet bağlantını kontrol et.";};document.head.appendChild(script);
-}
-function ytStudyMount(id,language,startAt){
-  YTSTUDY.videoId=id;YTSTUDY.language=language;ytStudyApi(function(){var target=el("ytStudyPlayer");if(!target)return;
-    if(YTSTUDY.player&&YTSTUDY.player.destroy)try{YTSTUDY.player.destroy();}catch(e){}target.innerHTML="";
-    var vars={playsinline:1,cc_load_policy:1,cc_lang_pref:language,hl:"tr",rel:0,enablejsapi:1};if(startAt>0)vars.start=Math.floor(startAt);if(location.origin&&location.origin!=="null")vars.origin=location.origin;
-    YTSTUDY.player=new YT.Player(target,{width:"100%",height:"100%",videoId:id,playerVars:vars,events:{onReady:function(){var n=el("ytStudyHelp");if(n)n.textContent=language==="tr"?"Türkçe altyazı varsa oynatıcıda gösterilir; dili ⚙ menüsünden değiştirebilirsin.":"İngilizce altyazı varsa CC düğmesinden açabilirsin.";},onError:function(e){var n=el("ytStudyHelp");if(n)n.textContent=(e.data===101||e.data===150)?"Bu video gömülü oynatmaya kapalı; YouTube'da aç.":"Video oynatılamadı; bağlantıyı ve kullanılabilirliğini kontrol et.";}}});
-  });
-}
-function showYouTubeStudy(initialUrl){
-  current=null;closeNav();var initial=esc(initialUrl||"").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
-  main.innerHTML='<section class="ytstudy-hero"><div class="crumb" style="color:#c7c9ff">YOUTUBE · İNGİLİZCE ÖĞRENME</div><h1>Sevdiğin videolarla İngilizce öğren.</h1><p>YouTube bağlantını ekle. Video burada açılır; varsa İngilizce veya Türkçe altyazıyı oynatıcıdan seçebilirsin.</p><form class="ytstudy-form" id="ytStudyForm"><input id="ytStudyUrl" type="url" placeholder="YouTube video bağlantısını yapıştır" value="'+initial+'" autocomplete="url"><button class="btn primary" type="submit">▶ Videoyu aç</button></form><div class="ytstudy-error" id="ytStudyError" hidden></div></section><div class="ytstudy-grid"><section class="ytstudy-player-card"><div class="ytstudy-player" id="ytStudyPlayer"><div class="ytstudy-placeholder"><b>YouTube bağlantını ekleyerek başla</b></div></div><div class="ytstudy-player-meta"><span id="ytStudyTitle">Henüz video seçilmedi</span><a id="ytStudyExternal" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">YouTube ↗</a></div></section><aside class="ytstudy-sidecard"><div class="crumb">ALTYAZI DİLİ</div><h3>İzlerken takip et</h3><p>Altyazıyı oynatıcının CC düğmesinden aç. Dil seçimi yalnızca videoda bulunan altyazılara bağlıdır.</p><div class="ytstudy-lang-row"><button class="ytstudy-lang active" id="ytStudyEn">🇬🇧 English</button><button class="ytstudy-lang" id="ytStudyTr">🇹🇷 Türkçe</button></div><div class="ytstudy-note" id="ytStudyHelp">Altyazı desteği videoya göre değişir.</div></aside></div>';
-  el("ytStudyForm").onsubmit=function(e){e.preventDefault();var r=ytStudyParse(el("ytStudyUrl").value),error=el("ytStudyError");if(!r){error.hidden=false;error.textContent="Geçerli bir YouTube video bağlantısı gir.";return;}error.hidden=true;el("ytStudyTitle").textContent="YouTube videosu";el("ytStudyExternal").href="https://www.youtube.com/watch?v="+r.id;ytStudyMount(r.id,YTSTUDY.language,r.start);};
-  el("ytStudyEn").onclick=function(){ytStudyChooseLanguage("en");};el("ytStudyTr").onclick=function(){ytStudyChooseLanguage("tr");};if(initial)el("ytStudyForm").requestSubmit();window.scrollTo(0,0);fab.style.display="none";buildNav(el("search").value);
-}
-function ytStudyChooseLanguage(language){if(!YTSTUDY.videoId){YTSTUDY.language=language;el("ytStudyEn").classList.toggle("active",language==="en");el("ytStudyTr").classList.toggle("active",language==="tr");return;}var start=0;if(YTSTUDY.player&&YTSTUDY.player.getCurrentTime)try{start=YTSTUDY.player.getCurrentTime()||0;}catch(e){}el("ytStudyEn").classList.toggle("active",language==="en");el("ytStudyTr").classList.toggle("active",language==="tr");ytStudyMount(YTSTUDY.videoId,language,start);}
   var total = 0;
   T.forEach(function(t){ total += allVids(t.id).length; });
   var allV = getAllTopicVideos();
@@ -8851,6 +9946,7 @@ function go(id){
   else if(id === "__listen") showListenHub();
   else if(id === "__ytstudy") showYouTubeStudy();
   else if(id === "__tauruss") showTaurussCatalog();
+  else if(id === "__reader") showTrancyReader();
   else if(id === "__chat") showChat();
   else if(id === "__ytstudy") showYouTubeStudy();
   else if(id === "__vocab") showVocab("list");
@@ -8872,6 +9968,7 @@ el("examBtn").onclick = function(){ showExam(true); };
 el("listenBtn").onclick = showListenHub;
 el("ytStudyBtn").onclick = function(){ showYouTubeStudy(); };
 el("taurussBtn").onclick = function(){ showTaurussCatalog(); };
+if(el("readerBtn")) el("readerBtn").onclick = function(){ showTrancyReader(); };
 el("chatBtn").onclick = showChat;
 el("vocabBtn").onclick = function(){ showVocab("list"); };
 el("writeBtn").onclick = function(){ showWriting(); };
@@ -8888,6 +9985,7 @@ window.addEventListener("resize", function(){
 /* ---------- Başlat ---------- */
 buildNav("");
 if(location.hash.indexOf("party") !== -1 || location.search.indexOf("party") !== -1 || location.hash === "#tauruss" || location.search.indexOf("tauruss") !== -1) showTaurussCatalog();
+else if(location.hash === "#reader" || location.search.indexOf("reader") !== -1) showTrancyReader();
 else if(location.hash === "#ytstudy" || location.search.indexOf("ytstudy") !== -1) showYouTubeStudy();
 else if(location.hash === "#chat" || location.search.indexOf("chat") !== -1) showChat();
 else showHome();
