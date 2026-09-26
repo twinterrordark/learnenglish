@@ -8062,7 +8062,7 @@ function ytStudyChooseLanguage(language){
 }
 
 /* =====================================================================
-   TRANCY BILINGUAL BOOK READER MODULE
+   TRANCY BILINGUAL BOOK READER MODULE - COMPLETE WITH BOOK CREATOR
    ===================================================================== */
 
 var TRANCY_LIBRARY = [
@@ -8306,11 +8306,26 @@ var TrancyReader = {
     } catch (_) {}
   },
 
-  getAllBooks: function() {
-    var custom = [];
+  getCustomBooks: function() {
     try {
-      custom = JSON.parse(localStorage.getItem("trancy_custom_library") || "[]");
+      var custom = JSON.parse(localStorage.getItem("trancy_custom_library") || "[]");
+      return Array.isArray(custom) ? custom : [];
+    } catch (_) {
+      return [];
+    }
+  },
+
+  saveCustomBooks: function(books) {
+    try {
+      localStorage.setItem("trancy_custom_library", JSON.stringify(books));
     } catch (_) {}
+  },
+
+  getAllBooks: function() {
+    var custom = this.getCustomBooks().map(function(b) {
+      b.isCustom = true;
+      return b;
+    });
     return TRANCY_LIBRARY.concat(custom);
   },
 
@@ -8325,7 +8340,7 @@ var TrancyReader = {
     var book = this.getCurrentBook();
     var idx = this.state.chapIdx;
     if (!book.chapters || !book.chapters.length) {
-      return { title: "Bölüm", sentences: [] };
+      return { title: "Bölüm 1", sentences: [] };
     }
     return book.chapters[idx] || book.chapters[0];
   },
@@ -8335,10 +8350,13 @@ var TrancyReader = {
     var book = self.getCurrentBook();
     var chap = self.getCurrentChapter();
     var books = self.getAllBooks();
+    var customBooks = self.getCustomBooks();
 
     var chapOptionsHtml = (book.chapters || []).map(function(c, i) {
-      return '<option value="' + i + '"' + (i === self.state.chapIdx ? ' selected' : '') + '>' + esc(c.title) + '</option>';
+      return '<option value="' + i + '"' + (i === self.state.chapIdx ? ' selected' : '') + '>' + esc(c.title || ("Bölüm " + (i + 1))) + '</option>';
     }).join("");
+
+    var isCustom = !!book.isCustom;
 
     var html = '<div class="trancy-wrap">' +
       '<div class="trancy-header">' +
@@ -8348,13 +8366,16 @@ var TrancyReader = {
               '<span>' + (book.icon || '📖') + '</span> ' +
               '<span>' + esc(book.title) + '</span>' +
               '<span class="trancy-badge-level">' + esc(book.level || 'B1') + '</span>' +
+              (isCustom ? '<span class="trancy-badge-level" style="background:rgba(2,132,199,.15);color:#0284c7;border-color:rgba(2,132,199,.3)">Kendi Kitabım</span>' : '') +
             '</div>' +
-            '<p class="trancy-book-author">' + esc(book.author) + ' &bull; ' + (book.chapters ? book.chapters.length : 1) + ' Bölüm &bull; ' + (chap.sentences ? chap.sentences.length : 0) + ' Cümle</p>' +
+            '<p class="trancy-book-author">' + esc(book.author) + ' &bull; ' + (book.chapters ? book.chapters.length : 1) + ' Bölüm &bull; ' + (chap.sentences ? chap.sentences.length : 0) + ' Cümle' + (book.desc ? (' &bull; <em>' + esc(book.desc) + '</em>') : '') + '</p>' +
           '</div>' +
           '<div class="trancy-action-btns">' +
             '<button class="trancy-btn" onclick="TrancyReader.openLibraryModal()">📚 Kitaplık (' + books.length + ')</button>' +
-            '<button class="trancy-btn" onclick="TrancyReader.openCustomTextModal()">➕ Metin Ekle</button>' +
-            '<button class="trancy-btn primary" onclick="TrancyReader.openSavedWordsModal()">⭐ Kaydedilen Kelimeler</button>' +
+            '<button class="trancy-btn primary" onclick="TrancyReader.openAddBookModal()">➕ Kitap Ekle</button>' +
+            (isCustom ? '<button class="trancy-btn" onclick="TrancyReader.openAddChapterModal(\'' + book.id + '\')">📑 Bölüm Ekle</button>' : '') +
+            (isCustom ? '<button class="trancy-btn" onclick="TrancyReader.openEditBookModal(\'' + book.id + '\')">✏️ Düzenle</button>' : '') +
+            '<button class="trancy-btn" onclick="TrancyReader.openSavedWordsModal()">⭐ Kelimelerim</button>' +
           '</div>' +
         '</div>' +
 
@@ -8398,7 +8419,7 @@ var TrancyReader = {
     '<div class="trancy-audio-bar" id="trancyAudioBar">' +
       '<div class="trancy-ab-info">' +
         '<div class="trancy-ab-title" id="trancyAbTitle">' + esc(book.title) + '</div>' +
-        '<div class="trancy-ab-prog" id="trancyAbProg">Cümle 1 / ' + chap.sentences.length + '</div>' +
+        '<div class="trancy-ab-prog" id="trancyAbProg">Cümle 1 / ' + (chap.sentences ? chap.sentences.length : 0) + '</div>' +
       '</div>' +
       '<div class="trancy-ab-ctrls">' +
         '<button class="trancy-ab-btn" title="Önceki Cümle (Sol Ok)" onclick="TrancyReader.prevSentence()">⏮</button>' +
@@ -8429,7 +8450,12 @@ var TrancyReader = {
     var sentences = chap.sentences || [];
 
     if (!sentences.length) {
-      return '<div style="text-align:center;padding:40px;color:var(--muted)">Bu bölümde henüz cümle bulunmuyor.</div>';
+      return '<div style="text-align:center;padding:50px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:12px">' +
+        '<span style="font-size:36px">📖</span>' +
+        '<div style="font-size:16px;font-weight:700">Bu bölümde henüz cümle bulunmuyor.</div>' +
+        '<p style="font-size:13px;max-width:400px;margin:0">Bu kitaba yeni cümleler veya yeni bir bölüm eklemek için butona tıklayabilirsiniz.</p>' +
+        '<button class="trancy-btn primary" onclick="TrancyReader.openAddChapterModal(\'' + self.state.bookId + '\')">➕ Bu Kitaba Bölüm/Metin Ekle</button>' +
+      '</div>';
     }
 
     if (self.state.layoutMode === "flow") {
@@ -8459,6 +8485,7 @@ var TrancyReader = {
           '<div class="trancy-card-actions">' +
             '<button class="trancy-card-btn" title="Bu cümleyi dinle" onclick="event.stopPropagation();TrancyReader.playSingleSentence(' + idx + ')">🔊</button>' +
             '<button class="trancy-card-btn" title="Cümleyi kopyala" onclick="event.stopPropagation();TrancyReader.copySentence(' + idx + ')">📋</button>' +
+            '<button class="trancy-card-btn" title="Cümleyi ve çevirisini düzenle" onclick="event.stopPropagation();TrancyReader.openEditSentenceModal(' + idx + ')">✏️</button>' +
           '</div>' +
         '</div>';
 
@@ -8547,7 +8574,6 @@ var TrancyReader = {
     var self = this;
     self.speakWord(wordClean);
 
-    // Remove existing popover if any
     var existing = document.getElementById("trancyWordPop");
     if (existing) existing.remove();
 
@@ -8590,7 +8616,6 @@ var TrancyReader = {
     };
     setTimeout(function() { document.addEventListener("click", closeOnOutside); }, 80);
 
-    // Fetch Turkish translation
     self.lookupTranslation(wordClean, function(trMeaning) {
       var meanEl = document.getElementById("trancyPopMeaning");
       if (meanEl) {
@@ -8609,8 +8634,9 @@ var TrancyReader = {
 
   lookupTranslation: function(word, done) {
     var self = this;
-    if (self.wordCache[word.toLowerCase()]) {
-      done(self.wordCache[word.toLowerCase()]);
+    var key = word.trim().toLowerCase();
+    if (self.wordCache[key]) {
+      done(self.wordCache[key]);
       return;
     }
     var url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=tr&dt=t&q=" + encodeURIComponent(word);
@@ -8622,7 +8648,7 @@ var TrancyReader = {
           translated = data[0].map(function(item) { return item[0]; }).join("").trim();
         }
         if (translated) {
-          self.wordCache[word.toLowerCase()] = translated;
+          self.wordCache[key] = translated;
           done(translated);
         } else {
           done(word);
@@ -8830,15 +8856,59 @@ var TrancyReader = {
     this.render();
   },
 
+  /* ===================================================================
+     KITAP YONETIMI & EKLEME (BOOK CREATOR & LIBRARY MANAGER)
+     =================================================================== */
+
   openLibraryModal: function() {
     var self = this;
     var books = self.getAllBooks();
+    var customBooks = self.getCustomBooks();
     var modal = document.createElement("div");
     modal.className = "trancy-modal-mask";
     modal.id = "trancyLibraryModal";
 
-    var listHtml = books.map(function(b) {
-      return '<div class="trancy-book-card-item" onclick="TrancyReader.loadBook(\'' + b.id + '\')">' +
+    var customHtml = "";
+    if (customBooks.length > 0) {
+      customHtml = '<div style="margin-bottom:18px"><div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">' +
+        '<span>🌟 Kendi Eklediğim Kitaplar (' + customBooks.length + ')</span>' +
+        '<button class="trancy-btn" style="font-size:11.5px;padding:3px 9px" onclick="TrancyReader.exportAllBooks()">💾 Tümünü Yedekle (JSON)</button>' +
+      '</div><div style="display:flex;flex-direction:column;gap:10px">';
+
+      customBooks.forEach(function(b) {
+        var totalSent = (b.chapters || []).reduce(function(acc, c){ return acc + (c.sentences ? c.sentences.length : 0); }, 0);
+        customHtml += '<div class="trancy-book-card-item">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between">' +
+            '<div style="font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px">' +
+              '<span>' + (b.icon || '📖') + '</span> <span>' + esc(b.title) + '</span>' +
+            '</div>' +
+            '<span class="trancy-badge-level" style="background:rgba(2,132,199,.15);color:#0284c7">' + esc(b.level || 'Özel') + '</span>' +
+          '</div>' +
+          '<div style="font-size:12px;color:var(--muted);font-weight:600">' + esc(b.author || 'Bilinmiyor') + ' &bull; ' + (b.chapters ? b.chapters.length : 1) + ' Bölüm &bull; ' + totalSent + ' Cümle</div>' +
+          (b.desc ? '<div style="font-size:12.5px;color:var(--text);line-height:1.4">' + esc(b.desc) + '</div>' : '') +
+          '<div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:8px;margin-top:4px">' +
+            '<button class="trancy-btn primary" style="font-size:11.5px;padding:4px 10px" onclick="TrancyReader.loadBook(\'' + b.id + '\')">📖 Şimdi Oku</button>' +
+            '<div style="display:flex;align-items:center;gap:6px">' +
+              '<button class="trancy-btn" style="font-size:11.5px;padding:4px 8px" title="Yeni bölüm ekle" onclick="TrancyReader.openAddChapterModal(\'' + b.id + '\')">📑 Bölüm Ekle</button>' +
+              '<button class="trancy-btn" style="font-size:11.5px;padding:4px 8px" title="Kitap bilgilerini düzenle" onclick="TrancyReader.openEditBookModal(\'' + b.id + '\')">✏️ Düzenle</button>' +
+              '<button class="trancy-btn" style="font-size:11.5px;padding:4px 8px" title="JSON olarak indir" onclick="TrancyReader.exportBook(\'' + b.id + '\')">💾 İndir</button>' +
+              '<button class="trancy-btn" style="font-size:11.5px;padding:4px 8px;color:var(--err)" title="Kitabı sil" onclick="TrancyReader.deleteBook(\'' + b.id + '\')">🗑️ Sil</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      });
+      customHtml += '</div></div>';
+    } else {
+      customHtml = '<div style="background:var(--surface2);border:1px dashed var(--line);border-radius:12px;padding:16px;text-align:center;margin-bottom:18px">' +
+        '<div style="font-size:13.5px;font-weight:700;margin-bottom:4px">Henüz kendinize ait bir kitap eklemediniz.</div>' +
+        '<p style="font-size:12px;color:var(--muted);margin:0 0 10px">Dilediğiniz İngilizce metni veya kitabı ekleyebilir, çift dilli olarak hemen çalışabilirsiniz.</p>' +
+        '<button class="trancy-btn primary" onclick="document.getElementById(\'trancyLibraryModal\').remove();TrancyReader.openAddBookModal()">➕ Hemen Yeni Kitap Ekle</button>' +
+      '</div>';
+    }
+
+    var classicsHtml = '<div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:10px">📚 Örnek Klasikler & Hikayeler</div><div style="display:flex;flex-direction:column;gap:10px">';
+    TRANCY_LIBRARY.forEach(function(b) {
+      classicsHtml += '<div class="trancy-book-card-item" onclick="TrancyReader.loadBook(\'' + b.id + '\')">' +
         '<div style="display:flex;align-items:center;justify-content:space-between">' +
           '<div style="font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px">' +
             '<span>' + (b.icon || '📖') + '</span> <span>' + esc(b.title) + '</span>' +
@@ -8848,15 +8918,24 @@ var TrancyReader = {
         '<div style="font-size:12px;color:var(--muted);font-weight:600">' + esc(b.author) + ' &bull; ' + (b.chapters ? b.chapters.length : 1) + ' Bölüm</div>' +
         '<div style="font-size:12.5px;color:var(--text);line-height:1.4">' + esc(b.desc || '') + '</div>' +
       '</div>';
-    }).join("");
+    });
+    classicsHtml += '</div>';
 
-    modal.innerHTML = '<div class="trancy-modal-dialog">' +
+    modal.innerHTML = '<div class="trancy-modal-dialog" style="max-width:740px">' +
       '<div class="trancy-modal-head">' +
-        '<h3>📚 Trancy Kitaplık & Klasikler</h3>' +
-        '<button class="trancy-btn" onclick="document.getElementById(\'trancyLibraryModal\').remove()">✕ Kapat</button>' +
+        '<h3>📚 Trancy Kitaplık</h3>' +
+        '<div style="display:flex;align-items:center;gap:8px">' +
+          '<button class="trancy-btn primary" onclick="document.getElementById(\'trancyLibraryModal\').remove();TrancyReader.openAddBookModal()">➕ Yeni Kitap Ekle</button>' +
+          '<label class="trancy-btn" style="cursor:pointer">' +
+            '📥 JSON Yükle' +
+            '<input type="file" accept=".json" style="display:none" onchange="TrancyReader.importBooksFromFile(event)">' +
+          '</label>' +
+          '<button class="trancy-btn" onclick="document.getElementById(\'trancyLibraryModal\').remove()">✕ Kapat</button>' +
+        '</div>' +
       '</div>' +
       '<div class="trancy-modal-content">' +
-        listHtml +
+        customHtml +
+        classicsHtml +
       '</div>' +
     '</div>';
 
@@ -8874,118 +8953,648 @@ var TrancyReader = {
     this.render();
   },
 
-  openCustomTextModal: function() {
+  /* Kitap Ekleme Modalı (Gelişmiş Stüdyo) */
+  openAddBookModal: function() {
     var self = this;
+    var existingModal = document.getElementById("trancyAddBookModal");
+    if (existingModal) existingModal.remove();
+
     var modal = document.createElement("div");
     modal.className = "trancy-modal-mask";
-    modal.id = "trancyCustomModal";
+    modal.id = "trancyAddBookModal";
 
-    modal.innerHTML = '<div class="trancy-modal-dialog">' +
+    modal.innerHTML = '<div class="trancy-modal-dialog" style="max-width:780px">' +
       '<div class="trancy-modal-head">' +
-        '<h3>➕ Kendi Metnini Ekle (Akıllı Çift Dil Reader)</h3>' +
-        '<button class="trancy-btn" onclick="document.getElementById(\'trancyCustomModal\').remove()">✕</button>' +
+        '<h3>➕ Yeni Kitap / Metin Ekle</h3>' +
+        '<button class="trancy-btn" onclick="document.getElementById(\'trancyAddBookModal\').remove()">✕</button>' +
       '</div>' +
       '<div class="trancy-modal-content">' +
-        '<p style="font-size:13px;color:var(--muted);margin:0">İstediğin herhangi bir İngilizce makaleyi, kitap bölümünü veya haber metnini buraya yapıştır. Sistem otomatik olarak cümlelere bölecek ve Türkçe karşılıklarını çevirip Trancy Reader\'a ekleyecektir.</p>' +
-        '<div>' +
-          '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Metin / Kitap Başlığı:</label>' +
-          '<input type="text" id="trancyCustomTitle" placeholder="Örn: The Philosophy of Life" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none">' +
+        '<!-- Meta Bilgiler -->' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">' +
+          '<div>' +
+            '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Kitap / Eser Başlığı: *</label>' +
+            '<input type="text" id="abTitle" placeholder="Örn: 1984 veya The Little Prince" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none">' +
+          '</div>' +
+          '<div>' +
+            '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Yazar: *</label>' +
+            '<input type="text" id="abAuthor" placeholder="Örn: George Orwell" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none">' +
+          '</div>' +
         '</div>' +
-        '<div>' +
-          '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">İngilizce Metin:</label>' +
-          '<textarea id="trancyCustomText" rows="9" placeholder="İngilizce metni buraya yapıştırın..." style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none;resize:vertical;font-family:inherit"></textarea>' +
+
+        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">' +
+          '<div>' +
+            '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Seviye:</label>' +
+            '<select id="abLevel" class="trancy-select" style="width:100%;padding:7px 10px">' +
+              '<option value="A1 · Başlangıç">A1 · Başlangıç</option>' +
+              '<option value="A2 · Temel">A2 · Temel</option>' +
+              '<option value="B1 · Orta" selected>B1 · Orta</option>' +
+              '<option value="B2 · İleri">B2 · İleri</option>' +
+              '<option value="C1 · Uzman">C1 · Uzman</option>' +
+            '</select>' +
+          '</div>' +
+          '<div>' +
+            '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Kapak Simgesi:</label>' +
+            '<select id="abIcon" class="trancy-select" style="width:100%;padding:7px 10px">' +
+              '<option value="📖">📖 Kitap</option>' +
+              '<option value="📕">📕 Kırmızı Kitap</option>' +
+              '<option value="📗">📗 Yeşil Kitap</option>' +
+              '<option value="📘">📘 Mavi Kitap</option>' +
+              '<option value="📙">📙 Turuncu Kitap</option>' +
+              '<option value="🦊">🦊 Tilki</option>' +
+              '<option value="🐺">🐺 Kurt</option>' +
+              '<option value="🦁">🦁 Aslan</option>' +
+              '<option value="🕵️">🕵️ Dedektif</option>' +
+              '<option value="🏰">🏰 Kale</option>' +
+              '<option value="🚀">🚀 Uzay</option>' +
+              '<option value="👑">👑 Taç</option>' +
+            '</select>' +
+          '</div>' +
+          '<div>' +
+            '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">İlk Bölüm Başlığı:</label>' +
+            '<input type="text" id="abChapTitle" value="Bölüm 1: Giriş" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none">' +
+          '</div>' +
         '</div>' +
-        '<div id="trancyImportStatus" style="font-size:12.5px;color:#10b981;font-weight:700" hidden></div>' +
-        '<button class="trancy-btn primary" id="trancyProcessBtn" onclick="TrancyReader.processCustomText()" style="padding:10px 16px;font-size:13.5px;justify-content:center">✨ Cümle Cümle Böl ve Çevir (Kitaba Dönüştür)</button>' +
+
+        '<div>' +
+          '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Kısa Açıklama / Not (İsteğe bağlı):</label>' +
+          '<input type="text" id="abDesc" placeholder="Kitap hakkında kısa bilgi..." style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none">' +
+        '</div>' +
+
+        '<!-- Sekmeler: Yöntem Seçimi -->' +
+        '<div style="border-top:1px solid var(--line);padding-top:14px">' +
+          '<label style="font-size:12.5px;font-weight:800;color:var(--text);display:block;margin-bottom:8px">İçerik Giriş Yöntemi:</label>' +
+          '<div style="display:flex;gap:8px;margin-bottom:12px">' +
+            '<button class="trancy-chip active" id="tabBtnAuto" onclick="TrancyReader.switchAddTab(\'auto\')">✨ Otomatik Çeviri (İngilizce Metin)</button>' +
+            '<button class="trancy-chip" id="tabBtnDual" onclick="TrancyReader.switchAddTab(\'dual\')">🔀 Hazır Çift Dil (EN + TR Metin)</button>' +
+            '<button class="trancy-chip" id="tabBtnManual" onclick="TrancyReader.switchAddTab(\'manual\')">📝 Cümle Cümle Ekle</button>' +
+          '</div>' +
+
+          '<!-- Tab 1: Auto Translate -->' +
+          '<div id="addTabAuto">' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">' +
+              '<span style="font-size:12px;color:var(--muted)">İngilizce metni yapıştırın; cümle cümle bölünüp Türkçeye otomatik çevrilir.</span>' +
+              '<label class="trancy-btn" style="font-size:11px;padding:2px 8px;cursor:pointer">' +
+                '📂 .txt Dosyasından Oku' +
+                '<input type="file" accept=".txt" style="display:none" onchange="TrancyReader.readTxtToInput(event, \'abEnAutoText\')">' +
+              '</label>' +
+            '</div>' +
+            '<textarea id="abEnAutoText" rows="7" placeholder="İngilizce metni buraya yapıştırın..." style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none;resize:vertical;font-family:inherit"></textarea>' +
+          '</div>' +
+
+          '<!-- Tab 2: Dual English + Turkish -->' +
+          '<div id="addTabDual" style="display:none">' +
+            '<div style="font-size:12px;color:var(--muted);margin-bottom:6px">Elinizde hem İngilizce hem Türkçe çeviri varsa ikisini de yapıştırın. Sistem cümleleri eşleştirecektir.</div>' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+              '<div>' +
+                '<label style="font-size:11.5px;font-weight:700;display:block;margin-bottom:3px">🇬🇧 İngilizce Metin:</label>' +
+                '<textarea id="abEnDualText" rows="7" placeholder="English sentences..." style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:12.5px;outline:none;resize:vertical;font-family:inherit"></textarea>' +
+              '</div>' +
+              '<div>' +
+                '<label style="font-size:11.5px;font-weight:700;display:block;margin-bottom:3px">🇹🇷 Türkçe Çevirisi:</label>' +
+                '<textarea id="abTrDualText" rows="7" placeholder="Türkçe karşılık cümleleri..." style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:12.5px;outline:none;resize:vertical;font-family:inherit"></textarea>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<!-- Tab 3: Manual sentence builder -->' +
+          '<div id="addTabManual" style="display:none">' +
+            '<div id="abManualSentences" style="display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;padding-right:4px">' +
+              '<div class="ab-sentence-row" style="display:flex;gap:8px;align-items:center">' +
+                '<span style="font-size:11px;font-weight:700;color:var(--muted);width:22px">#1</span>' +
+                '<input type="text" class="ab-manual-en" placeholder="İngilizce cümle..." style="flex:1;padding:6px 9px;border-radius:6px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:12px;outline:none">' +
+                '<input type="text" class="ab-manual-tr" placeholder="Türkçe çevirisi..." style="flex:1;padding:6px 9px;border-radius:6px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:12px;outline:none">' +
+                '<button class="trancy-btn" style="padding:4px 8px;color:var(--err)" onclick="this.parentElement.remove()">✕</button>' +
+              '</div>' +
+            '</div>' +
+            '<button class="trancy-btn" style="margin-top:8px;font-size:12px" onclick="TrancyReader.addManualSentenceRow()">➕ Yeni Cümle Satırı Ekle</button>' +
+          '</div>' +
+        '</div>' +
+
+        '<div id="abProcessStatus" style="font-size:13px;font-weight:700;color:#10b981;display:none"></div>' +
+        '<div id="abProgressBar" style="display:none;width:100%;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden"><div id="abProgressFill" style="width:0;height:100%;background:#10b981;transition:width .15s"></div></div>' +
+
+        '<button class="trancy-btn primary" id="abSubmitBtn" onclick="TrancyReader.submitNewBook()" style="padding:12px;font-size:14px;justify-content:center">💾 Kitabı Kaydet ve Hemen Oku</button>' +
       '</div>' +
     '</div>';
 
     document.body.appendChild(modal);
   },
 
-  processCustomText: function() {
+  switchAddTab: function(tabName) {
+    document.getElementById("addTabAuto").style.display = tabName === "auto" ? "block" : "none";
+    document.getElementById("addTabDual").style.display = tabName === "dual" ? "block" : "none";
+    document.getElementById("addTabManual").style.display = tabName === "manual" ? "block" : "none";
+
+    document.getElementById("tabBtnAuto").classList.toggle("active", tabName === "auto");
+    document.getElementById("tabBtnDual").classList.toggle("active", tabName === "dual");
+    document.getElementById("tabBtnManual").classList.toggle("active", tabName === "manual");
+  },
+
+  readTxtToInput: function(event, targetInputId) {
+    var file = event.target.files && event.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var target = document.getElementById(targetInputId);
+      if (target) target.value = e.target.result;
+    };
+    reader.readAsText(file);
+  },
+
+  addManualSentenceRow: function() {
+    var container = document.getElementById("abManualSentences");
+    if (!container) return;
+    var count = container.querySelectorAll(".ab-sentence-row").length + 1;
+    var row = document.createElement("div");
+    row.className = "ab-sentence-row";
+    row.style.cssText = "display:flex;gap:8px;align-items:center";
+    row.innerHTML = '<span style="font-size:11px;font-weight:700;color:var(--muted);width:22px">#' + count + '</span>' +
+      '<input type="text" class="ab-manual-en" placeholder="İngilizce cümle..." style="flex:1;padding:6px 9px;border-radius:6px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:12px;outline:none">' +
+      '<input type="text" class="ab-manual-tr" placeholder="Türkçe çevirisi..." style="flex:1;padding:6px 9px;border-radius:6px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:12px;outline:none">' +
+      '<button class="trancy-btn" style="padding:4px 8px;color:var(--err)" onclick="this.parentElement.remove()">✕</button>';
+    container.appendChild(row);
+  },
+
+  submitNewBook: function() {
     var self = this;
-    var titleInput = document.getElementById("trancyCustomTitle");
-    var textInput = document.getElementById("trancyCustomText");
-    var status = document.getElementById("trancyImportStatus");
-    var btn = document.getElementById("trancyProcessBtn");
+    var title = (document.getElementById("abTitle").value || "").trim();
+    var author = (document.getElementById("abAuthor").value || "").trim();
+    var level = document.getElementById("abLevel").value;
+    var icon = document.getElementById("abIcon").value;
+    var chapTitle = (document.getElementById("abChapTitle").value || "Bölüm 1").trim();
+    var desc = (document.getElementById("abDesc").value || "").trim();
 
-    var rawText = (textInput ? textInput.value : "").trim();
-    var title = (titleInput && titleInput.value ? titleInput.value : "").trim() || "Özel Metin #" + Math.floor(Math.random() * 1000);
+    if (!title) {
+      alert("Lütfen bir kitap başlığı girin.");
+      return;
+    }
+    if (!author) author = "Özel Yazar";
 
-    if (!rawText) {
-      alert("Lütfen bir İngilizce metin girin.");
+    var isAuto = document.getElementById("tabBtnAuto").classList.contains("active");
+    var isDual = document.getElementById("tabBtnDual").classList.contains("active");
+    var isManual = document.getElementById("tabBtnManual").classList.contains("active");
+
+    var submitBtn = document.getElementById("abSubmitBtn");
+    var status = document.getElementById("abProcessStatus");
+    var progBar = document.getElementById("abProgressBar");
+    var progFill = document.getElementById("abProgressFill");
+
+    if (isManual) {
+      var rows = document.querySelectorAll("#abManualSentences .ab-sentence-row");
+      var sents = [];
+      rows.forEach(function(r) {
+        var en = (r.querySelector(".ab-manual-en").value || "").trim();
+        var tr = (r.querySelector(".ab-manual-tr").value || "").trim();
+        if (en) {
+          sents.push({ en: en, tr: tr || en });
+        }
+      });
+      if (!sents.length) {
+        alert("Lütfen en az bir İngilizce cümle girin.");
+        return;
+      }
+      self.finishBookCreation({
+        title: title, author: author, level: level, icon: icon, desc: desc,
+        chapters: [{ title: chapTitle, sentences: sents }]
+      });
       return;
     }
 
-    var cleanSentences = rawText
+    if (isDual) {
+      var enRaw = (document.getElementById("abEnDualText").value || "").trim();
+      var trRaw = (document.getElementById("abTrDualText").value || "").trim();
+      if (!enRaw) {
+        alert("Lütfen İngilizce metni girin.");
+        return;
+      }
+      var enSents = self.splitIntoSentences(enRaw);
+      var trSents = self.splitIntoSentences(trRaw);
+
+      var paired = [];
+      enSents.forEach(function(s, idx) {
+        paired.push({
+          en: s,
+          tr: trSents[idx] || s
+        });
+      });
+
+      self.finishBookCreation({
+        title: title, author: author, level: level, icon: icon, desc: desc,
+        chapters: [{ title: chapTitle, sentences: paired }]
+      });
+      return;
+    }
+
+    // Auto translate mode
+    var autoText = (document.getElementById("abEnAutoText").value || "").trim();
+    if (!autoText) {
+      alert("Lütfen İngilizce metni yapıştırın.");
+      return;
+    }
+    var cleanSents = self.splitIntoSentences(autoText);
+    if (!cleanSents.length) {
+      alert("Geçerli cümle bulunamadı.");
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = "0.6";
+    status.style.display = "block";
+    progBar.style.display = "block";
+    status.textContent = "Cümleler çevriliyor: 0 / " + cleanSents.length + "...";
+
+    var results = [];
+    var curIdx = 0;
+
+    function nextTrans() {
+      if (curIdx >= cleanSents.length) {
+        self.finishBookCreation({
+          title: title, author: author, level: level, icon: icon, desc: desc,
+          chapters: [{ title: chapTitle, sentences: results }]
+        });
+        return;
+      }
+      var curSent = cleanSents[curIdx];
+      var pct = Math.round((curIdx / cleanSents.length) * 100);
+      progFill.style.width = pct + "%";
+      status.textContent = "Cümleler çevriliyor: " + (curIdx + 1) + " / " + cleanSents.length + " (%" + pct + ")...";
+
+      self.lookupTranslation(curSent, function(trVal) {
+        results.push({ en: curSent, tr: trVal || curSent });
+        curIdx++;
+        setTimeout(nextTrans, 100);
+      });
+    }
+
+    nextTrans();
+  },
+
+  splitIntoSentences: function(text) {
+    if (!text) return [];
+    return text
       .replace(/\r\n/g, "\n")
       .split(/(?<=[.?!])\s+/)
       .map(function(s) { return s.trim(); })
-      .filter(function(s) { return s.length > 2; });
+      .filter(function(s) { return s.length > 1; });
+  },
 
-    if (!cleanSentences.length) {
+  finishBookCreation: function(bookData) {
+    var customBooks = this.getCustomBooks();
+    var newBook = {
+      id: "custom_" + Date.now(),
+      title: bookData.title,
+      author: bookData.author,
+      level: bookData.level,
+      icon: bookData.icon || "📖",
+      desc: bookData.desc,
+      chapters: bookData.chapters,
+      createdAt: new Date().toLocaleDateString("tr-TR")
+    };
+
+    customBooks.unshift(newBook);
+    this.saveCustomBooks(customBooks);
+
+    var modal = document.getElementById("trancyAddBookModal");
+    if (modal) modal.remove();
+
+    this.loadBook(newBook.id);
+  },
+
+  /* Mevcut Kitaba Yeni Bölüm Ekleme */
+  openAddChapterModal: function(bookId) {
+    var self = this;
+    var books = self.getAllBooks();
+    var book = books.find(function(b) { return b.id === bookId; });
+    if (!book) return;
+
+    var chapNum = (book.chapters ? book.chapters.length : 0) + 1;
+    var modal = document.createElement("div");
+    modal.className = "trancy-modal-mask";
+    modal.id = "trancyAddChapModal";
+
+    modal.innerHTML = '<div class="trancy-modal-dialog" style="max-width:700px">' +
+      '<div class="trancy-modal-head">' +
+        '<h3>📑 "' + esc(book.title) + '" Kitabına Yeni Bölüm Ekle</h3>' +
+        '<button class="trancy-btn" onclick="document.getElementById(\'trancyAddChapModal\').remove()">✕</button>' +
+      '</div>' +
+      '<div class="trancy-modal-content">' +
+        '<div>' +
+          '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Bölüm Başlığı:</label>' +
+          '<input type="text" id="acTitle" value="Bölüm ' + chapNum + '" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none">' +
+        '</div>' +
+        '<div>' +
+          '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">İngilizce Bölüm Metni:</label>' +
+          '<textarea id="acText" rows="8" placeholder="İngilizce metni yapıştırın..." style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none;resize:vertical;font-family:inherit"></textarea>' +
+        '</div>' +
+        '<div id="acStatus" style="font-size:12.5px;color:#10b981;font-weight:700;display:none"></div>' +
+        '<button class="trancy-btn primary" id="acSubmitBtn" onclick="TrancyReader.submitNewChapter(\'' + book.id + '\')" style="padding:11px;font-size:13.5px;justify-content:center">✨ Bölümü Çevir ve Kitaba Ekle</button>' +
+      '</div>' +
+    '</div>';
+
+    document.body.appendChild(modal);
+  },
+
+  submitNewChapter: function(bookId) {
+    var self = this;
+    var title = (document.getElementById("acTitle").value || "Yeni Bölüm").trim();
+    var text = (document.getElementById("acText").value || "").trim();
+    var status = document.getElementById("acStatus");
+    var btn = document.getElementById("acSubmitBtn");
+
+    if (!text) {
+      alert("Lütfen İngilizce metin girin.");
+      return;
+    }
+
+    var cleanSents = self.splitIntoSentences(text);
+    if (!cleanSents.length) {
       alert("Geçerli cümle bulunamadı.");
       return;
     }
 
     btn.disabled = true;
     btn.style.opacity = "0.6";
-    status.hidden = false;
-    status.textContent = "Cümleler çevriliyor: 0 / " + cleanSentences.length + "...";
+    status.style.display = "block";
+    status.textContent = "Bölüm çevriliyor: 0 / " + cleanSents.length + "...";
 
     var results = [];
-    var currentIdx = 0;
+    var curIdx = 0;
 
-    function translateNext() {
-      if (currentIdx >= cleanSentences.length) {
-        // Finished
-        var customBooks = [];
-        try {
-          customBooks = JSON.parse(localStorage.getItem("trancy_custom_library") || "[]");
-        } catch (_) {}
+    function transChap() {
+      if (curIdx >= cleanSents.length) {
+        var customBooks = self.getCustomBooks();
+        var target = customBooks.find(function(b) { return b.id === bookId; });
+        if (target) {
+          if (!target.chapters) target.chapters = [];
+          target.chapters.push({ title: title, sentences: results });
+          self.saveCustomBooks(customBooks);
+        }
 
-        var newBook = {
-          id: "custom_" + Date.now(),
-          title: title,
-          author: "Kullanıcı Metni",
-          level: "Özel",
-          icon: "📝",
-          desc: "Kullanıcı tarafından eklenen özel İngilizce çalışma metni.",
-          chapters: [
-            {
-              title: "Bölüm 1",
-              sentences: results
-            }
-          ]
-        };
-
-        customBooks.unshift(newBook);
-        try {
-          localStorage.setItem("trancy_custom_library", JSON.stringify(customBooks));
-        } catch (_) {}
-
-        var modal = document.getElementById("trancyCustomModal");
+        var modal = document.getElementById("trancyAddChapModal");
         if (modal) modal.remove();
 
-        self.loadBook(newBook.id);
+        self.state.bookId = bookId;
+        self.state.chapIdx = (target && target.chapters ? target.chapters.length - 1 : 0);
+        self.render();
         return;
       }
 
-      var textToTrans = cleanSentences[currentIdx];
-      status.textContent = "Cümleler çevriliyor: " + (currentIdx + 1) + " / " + cleanSentences.length + "...";
-
-      self.lookupTranslation(textToTrans, function(trVal) {
-        results.push({
-          en: textToTrans,
-          tr: trVal || textToTrans
-        });
-        currentIdx++;
-        setTimeout(translateNext, 120);
+      var s = cleanSents[curIdx];
+      status.textContent = "Bölüm çevriliyor: " + (curIdx + 1) + " / " + cleanSents.length + "...";
+      self.lookupTranslation(s, function(trVal) {
+        results.push({ en: s, tr: trVal || s });
+        curIdx++;
+        setTimeout(transChap, 100);
       });
     }
 
-    translateNext();
+    transChap();
+  },
+
+  /* Kitap Bilgilerini Düzenleme Modalı */
+  openEditBookModal: function(bookId) {
+    var self = this;
+    var customBooks = self.getCustomBooks();
+    var book = customBooks.find(function(b) { return b.id === bookId; });
+    if (!book) return;
+
+    var modal = document.createElement("div");
+    modal.className = "trancy-modal-mask";
+    modal.id = "trancyEditBookModal";
+
+    var chapListHtml = (book.chapters || []).map(function(c, i) {
+      return '<div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);padding:8px 12px;border-radius:8px;border:1px solid var(--line)">' +
+        '<span style="font-size:13px;font-weight:700">' + esc(c.title || ("Bölüm " + (i + 1))) + ' (' + (c.sentences ? c.sentences.length : 0) + ' Cümle)</span>' +
+        (book.chapters.length > 1 ? '<button class="trancy-btn" style="color:var(--err);font-size:11px;padding:2px 6px" onclick="TrancyReader.deleteChapter(\'' + book.id + '\', ' + i + ')">Bölümü Sil</button>' : '') +
+      '</div>';
+    }).join("");
+
+    modal.innerHTML = '<div class="trancy-modal-dialog" style="max-width:660px">' +
+      '<div class="trancy-modal-head">' +
+        '<h3>✏️ Kitap Bilgilerini Düzenle</h3>' +
+        '<button class="trancy-btn" onclick="document.getElementById(\'trancyEditBookModal\').remove()">✕</button>' +
+      '</div>' +
+      '<div class="trancy-modal-content">' +
+        '<div>' +
+          '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Kitap Başlığı:</label>' +
+          '<input type="text" id="ebTitle" value="' + esc(book.title).replace(/"/g, '&quot;') + '" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none">' +
+        '</div>' +
+        '<div>' +
+          '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Yazar:</label>' +
+          '<input type="text" id="ebAuthor" value="' + esc(book.author).replace(/"/g, '&quot;') + '" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none">' +
+        '</div>' +
+        '<div>' +
+          '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Açıklama / Özet:</label>' +
+          '<input type="text" id="ebDesc" value="' + esc(book.desc || '').replace(/"/g, '&quot;') + '" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none">' +
+        '</div>' +
+        '<div style="border-top:1px solid var(--line);padding-top:10px">' +
+          '<label style="font-size:12.5px;font-weight:700;display:block;margin-bottom:8px">Bölümler:</label>' +
+          '<div style="display:flex;flex-direction:column;gap:6px">' + chapListHtml + '</div>' +
+        '</div>' +
+        '<button class="trancy-btn primary" onclick="TrancyReader.saveBookEdit(\'' + book.id + '\')" style="padding:10px;justify-content:center">💾 Değişiklikleri Kaydet</button>' +
+      '</div>' +
+    '</div>';
+
+    document.body.appendChild(modal);
+  },
+
+  saveBookEdit: function(bookId) {
+    var customBooks = this.getCustomBooks();
+    var book = customBooks.find(function(b) { return b.id === bookId; });
+    if (!book) return;
+
+    var title = (document.getElementById("ebTitle").value || "").trim();
+    var author = (document.getElementById("ebAuthor").value || "").trim();
+    var desc = (document.getElementById("ebDesc").value || "").trim();
+
+    if (title) book.title = title;
+    if (author) book.author = author;
+    book.desc = desc;
+
+    this.saveCustomBooks(customBooks);
+    var modal = document.getElementById("trancyEditBookModal");
+    if (modal) modal.remove();
+    this.render();
+  },
+
+  deleteChapter: function(bookId, chapIdx) {
+    if (!confirm("Bu bölümü silmek istediğinize emin misiniz?")) return;
+    var customBooks = this.getCustomBooks();
+    var book = customBooks.find(function(b) { return b.id === bookId; });
+    if (book && book.chapters && book.chapters.length > 1) {
+      book.chapters.splice(chapIdx, 1);
+      this.saveCustomBooks(customBooks);
+      var modal = document.getElementById("trancyEditBookModal");
+      if (modal) modal.remove();
+      this.state.chapIdx = 0;
+      this.render();
+    }
+  },
+
+  deleteBook: function(bookId) {
+    if (!confirm("Bu kitabı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.")) return;
+    var customBooks = this.getCustomBooks();
+    var filtered = customBooks.filter(function(b) { return b.id !== bookId; });
+    this.saveCustomBooks(filtered);
+
+    var libModal = document.getElementById("trancyLibraryModal");
+    if (libModal) libModal.remove();
+
+    if (this.state.bookId === bookId) {
+      this.state.bookId = "tolstoy-confession";
+      this.state.chapIdx = 0;
+      this.state.sentIdx = 0;
+    }
+    this.render();
+  },
+
+  /* Cümle Düzenleme Modalı */
+  openEditSentenceModal: function(sentIdx) {
+    var self = this;
+    var chap = self.getCurrentChapter();
+    var s = chap.sentences[sentIdx];
+    if (!s) return;
+
+    var modal = document.createElement("div");
+    modal.className = "trancy-modal-mask";
+    modal.id = "trancyEditSentModal";
+
+    modal.innerHTML = '<div class="trancy-modal-dialog" style="max-width:600px">' +
+      '<div class="trancy-modal-head">' +
+        '<h3>✏️ Cümleyi Düzenle (#' + (sentIdx + 1) + ')</h3>' +
+        '<button class="trancy-btn" onclick="document.getElementById(\'trancyEditSentModal\').remove()">✕</button>' +
+      '</div>' +
+      '<div class="trancy-modal-content">' +
+        '<div>' +
+          '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">İngilizce Cümle:</label>' +
+          '<textarea id="esEnText" rows="3" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none;resize:vertical">' + esc(s.en) + '</textarea>' +
+        '</div>' +
+        '<div>' +
+          '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Türkçe Çevirisi:</label>' +
+          '<textarea id="esTrText" rows="3" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none;resize:vertical">' + esc(s.tr) + '</textarea>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;justify-content:space-between">' +
+          '<button class="trancy-btn" onclick="TrancyReader.autoTranslateSentenceEdit()">✨ Otomatik Çevir</button>' +
+          '<button class="trancy-btn primary" onclick="TrancyReader.saveSentenceEdit(' + sentIdx + ')">💾 Kaydet</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+    document.body.appendChild(modal);
+  },
+
+  autoTranslateSentenceEdit: function() {
+    var self = this;
+    var en = (document.getElementById("esEnText").value || "").trim();
+    if (!en) return;
+    self.lookupTranslation(en, function(trVal) {
+      var trEl = document.getElementById("esTrText");
+      if (trEl) trEl.value = trVal;
+    });
+  },
+
+  saveSentenceEdit: function(sentIdx) {
+    var chap = this.getCurrentChapter();
+    var s = chap.sentences[sentIdx];
+    if (!s) return;
+
+    var en = (document.getElementById("esEnText").value || "").trim();
+    var tr = (document.getElementById("esTrText").value || "").trim();
+
+    if (en) s.en = en;
+    if (tr) s.tr = tr;
+
+    // If it's a custom book, save changes
+    var book = this.getCurrentBook();
+    if (book.isCustom) {
+      var customBooks = this.getCustomBooks();
+      var found = customBooks.find(function(b) { return b.id === book.id; });
+      if (found) {
+        found.chapters = book.chapters;
+        this.saveCustomBooks(customBooks);
+      }
+    }
+
+    var modal = document.getElementById("trancyEditSentModal");
+    if (modal) modal.remove();
+
+    var arena = document.getElementById("trancyArena");
+    if (arena) arena.innerHTML = this.renderSentencesMarkup();
+    this.highlightSentence(sentIdx);
+  },
+
+  /* JSON Dışa ve İçe Aktarma */
+  exportBook: function(bookId) {
+    var books = this.getAllBooks();
+    var book = books.find(function(b) { return b.id === bookId; });
+    if (!book) return;
+
+    var jsonStr = JSON.stringify(book, null, 2);
+    var blob = new Blob([jsonStr], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = (book.title.replace(/[^a-zA-Z0-9_-]/g, "_") || "kitap") + ".json";
+    a.click();
+    URL.revokeObjectURL(url);
+  },
+
+  exportAllBooks: function() {
+    var customBooks = this.getCustomBooks();
+    if (!customBooks.length) {
+      alert("Yedeklenecek özel kitap bulunamadı.");
+      return;
+    }
+    var jsonStr = JSON.stringify(customBooks, null, 2);
+    var blob = new Blob([jsonStr], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "learnenglish_tum_kitaplarim.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  },
+
+  importBooksFromFile: function(event) {
+    var self = this;
+    var file = event.target.files && event.target.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        var parsed = JSON.parse(e.target.result);
+        var customBooks = self.getCustomBooks();
+        var addedCount = 0;
+
+        if (Array.isArray(parsed)) {
+          parsed.forEach(function(item) {
+            if (item.title && item.chapters) {
+              item.id = "custom_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+              customBooks.unshift(item);
+              addedCount++;
+            }
+          });
+        } else if (parsed && parsed.title && parsed.chapters) {
+          parsed.id = "custom_" + Date.now();
+          customBooks.unshift(parsed);
+          addedCount++;
+        }
+
+        if (addedCount > 0) {
+          self.saveCustomBooks(customBooks);
+          alert(addedCount + " adet kitap başarıyla içe aktarıldı!");
+          var libModal = document.getElementById("trancyLibraryModal");
+          if (libModal) libModal.remove();
+          self.openLibraryModal();
+        } else {
+          alert("Dosyada geçerli kitap formatı bulunamadı.");
+        }
+      } catch (err) {
+        alert("JSON dosyası okunamadı: " + err.message);
+      }
+    };
+    reader.readAsText(file);
   },
 
   openSavedWordsModal: function() {
