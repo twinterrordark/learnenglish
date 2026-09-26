@@ -7,6 +7,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>A2 İngilizce Gramer Haritası</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.5.0/mqtt.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 :root{
   --bg:#f6f7fb; --surface:#ffffff; --surface2:#f0f2f8; --text:#1b1f2e; --muted:#6b7280;
@@ -1057,6 +1058,9 @@ html[data-theme="dark"] .trancy-pop-meaning{color:#34d399}
 .trancy-book-card-item{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:all .15s}
 .trancy-book-card-item:hover{border-color:#10b981;transform:translateY(-1px);background:var(--surface)}
 .trancy-saved-item{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+
+.trancy-pdf-dropzone{border:2px dashed var(--line);border-radius:14px;padding:24px;text-align:center;background:var(--surface2);cursor:pointer;transition:all .15s ease;display:flex;flex-direction:column;align-items:center;gap:6px}
+.trancy-pdf-dropzone:hover,.trancy-pdf-dropzone.dragover{border-color:#10b981;background:rgba(16,185,129,.06)}
 </style>
 </head>
 <body>
@@ -8062,7 +8066,7 @@ function ytStudyChooseLanguage(language){
 }
 
 /* =====================================================================
-   TRANCY BILINGUAL BOOK READER MODULE - COMPLETE WITH BOOK CREATOR
+   TRANCY BILINGUAL BOOK READER MODULE - COMPLETE WITH PDF IMPORTER
    ===================================================================== */
 
 var TRANCY_LIBRARY = [
@@ -8263,6 +8267,8 @@ var TrancyReader = {
   },
   wordCache: {},
   activeUtterance: null,
+  currentPdfBuffer: null,
+  currentPdfDoc: null,
 
   init: function(bookId, chapIdx) {
     var self = this;
@@ -8350,7 +8356,6 @@ var TrancyReader = {
     var book = self.getCurrentBook();
     var chap = self.getCurrentChapter();
     var books = self.getAllBooks();
-    var customBooks = self.getCustomBooks();
 
     var chapOptionsHtml = (book.chapters || []).map(function(c, i) {
       return '<option value="' + i + '"' + (i === self.state.chapIdx ? ' selected' : '') + '>' + esc(c.title || ("Bölüm " + (i + 1))) + '</option>';
@@ -8372,7 +8377,8 @@ var TrancyReader = {
           '</div>' +
           '<div class="trancy-action-btns">' +
             '<button class="trancy-btn" onclick="TrancyReader.openLibraryModal()">📚 Kitaplık (' + books.length + ')</button>' +
-            '<button class="trancy-btn primary" onclick="TrancyReader.openAddBookModal()">➕ Kitap Ekle</button>' +
+            '<button class="trancy-btn primary" onclick="TrancyReader.openAddBookModal(\'pdf\')">📄 PDF Yükle</button>' +
+            '<button class="trancy-btn" onclick="TrancyReader.openAddBookModal()">➕ Kitap Ekle</button>' +
             (isCustom ? '<button class="trancy-btn" onclick="TrancyReader.openAddChapterModal(\'' + book.id + '\')">📑 Bölüm Ekle</button>' : '') +
             (isCustom ? '<button class="trancy-btn" onclick="TrancyReader.openEditBookModal(\'' + book.id + '\')">✏️ Düzenle</button>' : '') +
             '<button class="trancy-btn" onclick="TrancyReader.openSavedWordsModal()">⭐ Kelimelerim</button>' +
@@ -8453,7 +8459,7 @@ var TrancyReader = {
       return '<div style="text-align:center;padding:50px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:12px">' +
         '<span style="font-size:36px">📖</span>' +
         '<div style="font-size:16px;font-weight:700">Bu bölümde henüz cümle bulunmuyor.</div>' +
-        '<p style="font-size:13px;max-width:400px;margin:0">Bu kitaba yeni cümleler veya yeni bir bölüm eklemek için butona tıklayabilirsiniz.</p>' +
+        '<p style="font-size:13px;max-width:400px;margin:0">Bu kitaba yeni cümleler, PDF veya metin eklemek için butona tıklayabilirsiniz.</p>' +
         '<button class="trancy-btn primary" onclick="TrancyReader.openAddChapterModal(\'' + self.state.bookId + '\')">➕ Bu Kitaba Bölüm/Metin Ekle</button>' +
       '</div>';
     }
@@ -8857,6 +8863,90 @@ var TrancyReader = {
   },
 
   /* ===================================================================
+     PDF YUKLEME & PARSING MOTORU (PDF.JS INTEGRATION)
+     =================================================================== */
+
+  loadPdfJs: function(callback) {
+    if (window.pdfjsLib) {
+      if (window.pdfjsLib.GlobalWorkerOptions && !window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      }
+      callback();
+      return;
+    }
+    var script = document.createElement("script");
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    script.onload = function() {
+      if (window.pdfjsLib) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      }
+      callback();
+    };
+    script.onerror = function() {
+      alert("PDF okuyucu kütüphanesi yüklenemedi. Lütfen internet bağlantınızı kontrol edin.");
+    };
+    document.head.appendChild(script);
+  },
+
+  onPdfSelected: function(event) {
+    var self = this;
+    var file = event.target.files && event.target.files[0];
+    if (!file) return;
+
+    var statusEl = document.getElementById("pdfDropStatus");
+    if (statusEl) {
+      statusEl.style.display = "block";
+      statusEl.textContent = "PDF taranıyor ve sayfalar yükleniyor...";
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      self.currentPdfBuffer = e.target.result;
+      self.loadPdfJs(function() {
+        var loadingTask = window.pdfjsLib.getDocument({ data: self.currentPdfBuffer });
+        loadingTask.promise.then(function(pdfDoc) {
+          self.currentPdfDoc = pdfDoc;
+          var totalPages = pdfDoc.numPages;
+
+          // Auto-fill book title from filename
+          var rawName = file.name.replace(/\.[^/.]+$/, "");
+          var cleanTitle = rawName.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+          var titleInput = document.getElementById("abTitle");
+          if (titleInput && (!titleInput.value || titleInput.value.indexOf("Özel Metin") !== -1)) {
+            titleInput.value = cleanTitle;
+          }
+
+          // Show PDF meta card
+          var metaCard = document.getElementById("pdfMetaCard");
+          if (metaCard) metaCard.style.display = "block";
+          var fnEl = document.getElementById("pdfFileName");
+          if (fnEl) fnEl.textContent = file.name;
+          var pcEl = document.getElementById("pdfPageCount");
+          if (pcEl) pcEl.textContent = "Toplam " + totalPages + " Sayfa (" + (file.size / (1024 * 1024)).toFixed(2) + " MB)";
+
+          var sPage = document.getElementById("pdfStartPage");
+          if (sPage) { sPage.max = totalPages; sPage.value = 1; }
+          var ePage = document.getElementById("pdfEndPage");
+          if (ePage) { ePage.max = totalPages; ePage.value = totalPages; }
+
+          if (statusEl) statusEl.style.display = "none";
+        }).catch(function(err) {
+          if (statusEl) statusEl.textContent = "PDF açılamadı: " + err.message;
+        });
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  },
+
+  setPdfAllPages: function() {
+    if (!this.currentPdfDoc) return;
+    var sPage = document.getElementById("pdfStartPage");
+    var ePage = document.getElementById("pdfEndPage");
+    if (sPage) sPage.value = 1;
+    if (ePage) ePage.value = this.currentPdfDoc.numPages;
+  },
+
+  /* ===================================================================
      KITAP YONETIMI & EKLEME (BOOK CREATOR & LIBRARY MANAGER)
      =================================================================== */
 
@@ -8901,8 +8991,11 @@ var TrancyReader = {
     } else {
       customHtml = '<div style="background:var(--surface2);border:1px dashed var(--line);border-radius:12px;padding:16px;text-align:center;margin-bottom:18px">' +
         '<div style="font-size:13.5px;font-weight:700;margin-bottom:4px">Henüz kendinize ait bir kitap eklemediniz.</div>' +
-        '<p style="font-size:12px;color:var(--muted);margin:0 0 10px">Dilediğiniz İngilizce metni veya kitabı ekleyebilir, çift dilli olarak hemen çalışabilirsiniz.</p>' +
-        '<button class="trancy-btn primary" onclick="document.getElementById(\'trancyLibraryModal\').remove();TrancyReader.openAddBookModal()">➕ Hemen Yeni Kitap Ekle</button>' +
+        '<p style="font-size:12px;color:var(--muted);margin:0 0 10px">PDF dosyanızı veya dilediğiniz İngilizce metni yükleyerek çift dilli olarak hemen çalışabilirsiniz.</p>' +
+        '<div style="display:flex;justify-content:center;gap:8px">' +
+          '<button class="trancy-btn primary" onclick="document.getElementById(\'trancyLibraryModal\').remove();TrancyReader.openAddBookModal(\'pdf\')">📄 PDF Yükle</button>' +
+          '<button class="trancy-btn" onclick="document.getElementById(\'trancyLibraryModal\').remove();TrancyReader.openAddBookModal()">➕ Metin Yapıştır</button>' +
+        '</div>' +
       '</div>';
     }
 
@@ -8925,7 +9018,8 @@ var TrancyReader = {
       '<div class="trancy-modal-head">' +
         '<h3>📚 Trancy Kitaplık</h3>' +
         '<div style="display:flex;align-items:center;gap:8px">' +
-          '<button class="trancy-btn primary" onclick="document.getElementById(\'trancyLibraryModal\').remove();TrancyReader.openAddBookModal()">➕ Yeni Kitap Ekle</button>' +
+          '<button class="trancy-btn primary" onclick="document.getElementById(\'trancyLibraryModal\').remove();TrancyReader.openAddBookModal(\'pdf\')">📄 PDF Yükle</button>' +
+          '<button class="trancy-btn" onclick="document.getElementById(\'trancyLibraryModal\').remove();TrancyReader.openAddBookModal()">➕ Kitap Ekle</button>' +
           '<label class="trancy-btn" style="cursor:pointer">' +
             '📥 JSON Yükle' +
             '<input type="file" accept=".json" style="display:none" onchange="TrancyReader.importBooksFromFile(event)">' +
@@ -8953,9 +9047,12 @@ var TrancyReader = {
     this.render();
   },
 
-  /* Kitap Ekleme Modalı (Gelişmiş Stüdyo) */
-  openAddBookModal: function() {
+  /* Kitap Ekleme Modalı (Gelişmiş Stüdyo & PDF Desteği) */
+  openAddBookModal: function(initialTab) {
     var self = this;
+    self.currentPdfBuffer = null;
+    self.currentPdfDoc = null;
+
     var existingModal = document.getElementById("trancyAddBookModal");
     if (existingModal) existingModal.remove();
 
@@ -8995,7 +9092,8 @@ var TrancyReader = {
           '<div>' +
             '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Kapak Simgesi:</label>' +
             '<select id="abIcon" class="trancy-select" style="width:100%;padding:7px 10px">' +
-              '<option value="📖">📖 Kitap</option>' +
+              '<option value="📄">📄 PDF Dosyası</option>' +
+              '<option value="📖" selected>📖 Kitap</option>' +
               '<option value="📕">📕 Kırmızı Kitap</option>' +
               '<option value="📗">📗 Yeşil Kitap</option>' +
               '<option value="📘">📘 Mavi Kitap</option>' +
@@ -9023,10 +9121,64 @@ var TrancyReader = {
         '<!-- Sekmeler: Yöntem Seçimi -->' +
         '<div style="border-top:1px solid var(--line);padding-top:14px">' +
           '<label style="font-size:12.5px;font-weight:800;color:var(--text);display:block;margin-bottom:8px">İçerik Giriş Yöntemi:</label>' +
-          '<div style="display:flex;gap:8px;margin-bottom:12px">' +
-            '<button class="trancy-chip active" id="tabBtnAuto" onclick="TrancyReader.switchAddTab(\'auto\')">✨ Otomatik Çeviri (İngilizce Metin)</button>' +
+          '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">' +
+            '<button class="trancy-chip" id="tabBtnPdf" onclick="TrancyReader.switchAddTab(\'pdf\')">📄 PDF Dosyası Yükle</button>' +
+            '<button class="trancy-chip active" id="tabBtnAuto" onclick="TrancyReader.switchAddTab(\'auto\')">✨ Otomatik Çeviri (Metin Yapıştır)</button>' +
             '<button class="trancy-chip" id="tabBtnDual" onclick="TrancyReader.switchAddTab(\'dual\')">🔀 Hazır Çift Dil (EN + TR Metin)</button>' +
             '<button class="trancy-chip" id="tabBtnManual" onclick="TrancyReader.switchAddTab(\'manual\')">📝 Cümle Cümle Ekle</button>' +
+          '</div>' +
+
+          '<!-- Tab 0: PDF Upload -->' +
+          '<div id="addTabPdf" style="display:none">' +
+            '<div class="trancy-pdf-dropzone" id="trancyPdfDropzone" onclick="document.getElementById(\'abPdfFile\').click()">' +
+              '<input type="file" id="abPdfFile" accept=".pdf,application/pdf" style="display:none" onchange="TrancyReader.onPdfSelected(event)">' +
+              '<div style="font-size:36px">📄</div>' +
+              '<div style="font-size:14px;font-weight:700">PDF Dosyasını Buraya Sürükleyin veya Seçin</div>' +
+              '<div style="font-size:12px;color:var(--muted)">.pdf formatındaki İngilizce kitap veya makalenizi yükleyin</div>' +
+              '<div id="pdfDropStatus" style="font-size:12px;color:#10b981;font-weight:700;display:none;margin-top:6px"></div>' +
+            '</div>' +
+
+            '<div id="pdfMetaCard" style="display:none;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px">' +
+              '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">' +
+                '<div style="display:flex;align-items:center;gap:8px">' +
+                  '<span style="font-size:22px">📑</span>' +
+                  '<div>' +
+                    '<div id="pdfFileName" style="font-size:13.5px;font-weight:700">kitap.pdf</div>' +
+                    '<div id="pdfPageCount" style="font-size:11.5px;color:var(--muted)">Toplam 25 Sayfa</div>' +
+                  '</div>' +
+                '</div>' +
+                '<button class="trancy-btn" style="font-size:11px;padding:3px 8px" onclick="document.getElementById(\'abPdfFile\').click()">Başka PDF Seç</button>' +
+              '</div>' +
+
+              '<div style="display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);padding-top:10px;margin-top:8px;flex-wrap:wrap">' +
+                '<span style="font-size:12px;font-weight:700">Sayfa Aralığı:</span>' +
+                '<div style="display:flex;align-items:center;gap:6px">' +
+                  '<span style="font-size:12px">Başlangıç:</span>' +
+                  '<input type="number" id="pdfStartPage" min="1" value="1" style="width:65px;padding:4px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-size:12px">' +
+                  '<span style="font-size:12px">Bitiş:</span>' +
+                  '<input type="number" id="pdfEndPage" min="1" value="1" style="width:65px;padding:4px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-size:12px">' +
+                  '<button class="trancy-btn" style="font-size:11px;padding:3px 7px" onclick="TrancyReader.setPdfAllPages()">Tümünü Seç</button>' +
+                '</div>' +
+              '</div>' +
+
+              '<div style="display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap">' +
+                '<span style="font-size:12px;font-weight:700">Bölümlendirme:</span>' +
+                '<select id="pdfChapterMode" class="trancy-select" style="font-size:12px">' +
+                  '<option value="single">Tek Bölüm Olarak Al</option>' +
+                  '<option value="by_pages_5">Her 5 Sayfayı 1 Bölüm Yap</option>' +
+                  '<option value="by_pages_10">Her 10 Sayfayı 1 Bölüm Yap</option>' +
+                  '<option value="by_headings" selected>Chapter / Bölüm Başlıklarından Otomatik Böl</option>' +
+                '</select>' +
+              '</div>' +
+
+              '<div style="display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap">' +
+                '<span style="font-size:12px;font-weight:700">Çeviri Tercihi:</span>' +
+                '<select id="pdfTransMode" class="trancy-select" style="font-size:12px">' +
+                  '<option value="auto" selected>✨ Tüm Cümleleri Önceden Çevir (Bilingual)</option>' +
+                  '<option value="lazy">⚡ Hızlı Başla (İngilizce Oku, Tıklayınca Çevir)</option>' +
+                '</select>' +
+              '</div>' +
+            '</div>' +
           '</div>' +
 
           '<!-- Tab 1: Auto Translate -->' +
@@ -9078,16 +9230,43 @@ var TrancyReader = {
     '</div>';
 
     document.body.appendChild(modal);
+
+    // Setup drag and drop for PDF
+    var dropzone = document.getElementById("trancyPdfDropzone");
+    if (dropzone) {
+      dropzone.addEventListener("dragover", function(e) { e.preventDefault(); dropzone.classList.add("dragover"); });
+      dropzone.addEventListener("dragleave", function(e) { dropzone.classList.remove("dragover"); });
+      dropzone.addEventListener("drop", function(e) {
+        e.preventDefault();
+        dropzone.classList.remove("dragover");
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          var input = document.getElementById("abPdfFile");
+          input.files = e.dataTransfer.files;
+          self.onPdfSelected({ target: input });
+        }
+      });
+    }
+
+    if (initialTab) {
+      self.switchAddTab(initialTab);
+    }
   },
 
   switchAddTab: function(tabName) {
+    document.getElementById("addTabPdf").style.display = tabName === "pdf" ? "block" : "none";
     document.getElementById("addTabAuto").style.display = tabName === "auto" ? "block" : "none";
     document.getElementById("addTabDual").style.display = tabName === "dual" ? "block" : "none";
     document.getElementById("addTabManual").style.display = tabName === "manual" ? "block" : "none";
 
+    document.getElementById("tabBtnPdf").classList.toggle("active", tabName === "pdf");
     document.getElementById("tabBtnAuto").classList.toggle("active", tabName === "auto");
     document.getElementById("tabBtnDual").classList.toggle("active", tabName === "dual");
     document.getElementById("tabBtnManual").classList.toggle("active", tabName === "manual");
+
+    var iconSelect = document.getElementById("abIcon");
+    if (iconSelect && tabName === "pdf") {
+      iconSelect.value = "📄";
+    }
   },
 
   readTxtToInput: function(event, targetInputId) {
@@ -9124,12 +9303,7 @@ var TrancyReader = {
     var chapTitle = (document.getElementById("abChapTitle").value || "Bölüm 1").trim();
     var desc = (document.getElementById("abDesc").value || "").trim();
 
-    if (!title) {
-      alert("Lütfen bir kitap başlığı girin.");
-      return;
-    }
-    if (!author) author = "Özel Yazar";
-
+    var isPdf = document.getElementById("tabBtnPdf").classList.contains("active");
     var isAuto = document.getElementById("tabBtnAuto").classList.contains("active");
     var isDual = document.getElementById("tabBtnDual").classList.contains("active");
     var isManual = document.getElementById("tabBtnManual").classList.contains("active");
@@ -9138,6 +9312,26 @@ var TrancyReader = {
     var status = document.getElementById("abProcessStatus");
     var progBar = document.getElementById("abProgressBar");
     var progFill = document.getElementById("abProgressFill");
+
+    if (isPdf) {
+      if (!self.currentPdfDoc) {
+        alert("Lütfen önce bir PDF dosyası seçin.");
+        return;
+      }
+      if (!title) title = (document.getElementById("pdfFileName").textContent || "PDF Kitap").replace(/\.[^/.]+$/, "");
+      if (!author) author = "PDF Yazar";
+
+      self.processPdfImport({
+        title: title, author: author, level: level, icon: icon || "📄", desc: desc, chapTitle: chapTitle
+      });
+      return;
+    }
+
+    if (!title) {
+      alert("Lütfen bir kitap başlığı girin.");
+      return;
+    }
+    if (!author) author = "Özel Yazar";
 
     if (isManual) {
       var rows = document.querySelectorAll("#abManualSentences .ab-sentence-row");
@@ -9229,6 +9423,227 @@ var TrancyReader = {
     nextTrans();
   },
 
+  /* PDF İçerik Çıkarma ve Kitaba Dönüştürme */
+  processPdfImport: async function(bookData) {
+    var self = this;
+    var pdfDoc = self.currentPdfDoc;
+    if (!pdfDoc) return;
+
+    var startPage = parseInt(document.getElementById("pdfStartPage").value || "1", 10);
+    var endPage = parseInt(document.getElementById("pdfEndPage").value || String(pdfDoc.numPages), 10);
+    var chapMode = document.getElementById("pdfChapterMode").value;
+    var transMode = document.getElementById("pdfTransMode").value;
+
+    startPage = Math.max(1, Math.min(startPage, pdfDoc.numPages));
+    endPage = Math.min(pdfDoc.numPages, Math.max(startPage, endPage));
+
+    var submitBtn = document.getElementById("abSubmitBtn");
+    var status = document.getElementById("abProcessStatus");
+    var progBar = document.getElementById("abProgressBar");
+    var progFill = document.getElementById("abProgressFill");
+
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = "0.6";
+    status.style.display = "block";
+    progBar.style.display = "block";
+
+    status.textContent = "PDF sayfaları okunuyor: Sayfa " + startPage + " - " + endPage + "...";
+
+    var pagesData = [];
+    var totalPagesToRead = endPage - startPage + 1;
+
+    try {
+      for (var p = startPage; p <= endPage; p++) {
+        var page = await pdfDoc.getPage(p);
+        var textContent = await page.getTextContent();
+        var lastY, pageText = "";
+
+        textContent.items.forEach(function(item) {
+          if (!item.str) return;
+          if (lastY !== undefined && Math.abs(item.transform[5] - lastY) > 5) {
+            if (/-\s*$/.test(pageText)) {
+              pageText = pageText.replace(/-\s*$/, "") + item.str;
+            } else {
+              pageText += "\n" + item.str;
+            }
+          } else {
+            if (pageText && !pageText.endsWith(" ") && !pageText.endsWith("\n")) {
+              pageText += " ";
+            }
+            pageText += item.str;
+          }
+          lastY = item.transform[5];
+        });
+
+        pagesData.push({ pageNum: p, text: pageText });
+        var readPct = Math.round(((p - startPage + 1) / totalPagesToRead) * 30);
+        progFill.style.width = readPct + "%";
+        status.textContent = "PDF okunuyor: Sayfa " + p + " / " + endPage + "...";
+      }
+
+      // Bölümlere ayırma (Structuring into chapters)
+      var chaptersRaw = [];
+      if (chapMode === "by_pages_5" || chapMode === "by_pages_10") {
+        var chunkSize = chapMode === "by_pages_5" ? 5 : 10;
+        for (var i = 0; i < pagesData.length; i += chunkSize) {
+          var chunk = pagesData.slice(i, i + chunkSize);
+          var fromP = chunk[0].pageNum;
+          var toP = chunk[chunk.length - 1].pageNum;
+          var chunkText = chunk.map(function(c) { return c.text; }).join("\n\n");
+          chaptersRaw.push({
+            title: "Bölüm " + (chaptersRaw.length + 1) + " (Sayfa " + fromP + "-" + toP + ")",
+            text: chunkText
+          });
+        }
+      } else if (chapMode === "by_headings") {
+        var fullText = pagesData.map(function(c) { return c.text; }).join("\n\n");
+        chaptersRaw = self.detectChaptersFromText(fullText, bookData.chapTitle);
+      } else {
+        // Single chapter
+        var combinedText = pagesData.map(function(c) { return c.text; }).join("\n\n");
+        chaptersRaw.push({
+          title: bookData.chapTitle || "Bölüm 1",
+          text: combinedText
+        });
+      }
+
+      // Her bölümü temizle ve cümlelere ayır
+      var parsedChapters = [];
+      var allSentencesToTranslate = [];
+
+      chaptersRaw.forEach(function(chap, cIdx) {
+        var cleanTxt = self.cleanPdfText(chap.text);
+        var sents = self.splitIntoSentences(cleanTxt);
+        var sentObjs = sents.map(function(s) {
+          return { en: s, tr: "" };
+        });
+        parsedChapters.push({
+          title: chap.title || ("Bölüm " + (cIdx + 1)),
+          sentences: sentObjs
+        });
+        sentObjs.forEach(function(item) {
+          allSentencesToTranslate.push(item);
+        });
+      });
+
+      if (!allSentencesToTranslate.length) {
+        alert("PDF'ten okunabilir metin çıkarılamadı.");
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = "1";
+        status.style.display = "none";
+        progBar.style.display = "none";
+        return;
+      }
+
+      if (transMode === "lazy") {
+        // Lazy: İngilizce hazırla, çevirileri tıklandıkça getir
+        allSentencesToTranslate.forEach(function(item) {
+          item.tr = "Çevirisi için cümlenin üzerine tıklayın veya sesli okutun.";
+        });
+        self.finishBookCreation({
+          title: bookData.title,
+          author: bookData.author,
+          level: bookData.level,
+          icon: bookData.icon || "📄",
+          desc: bookData.desc || ("PDF'ten aktarıldı (" + totalPagesToRead + " Sayfa, " + allSentencesToTranslate.length + " Cümle)"),
+          chapters: parsedChapters
+        });
+        return;
+      }
+
+      // Auto translation mode
+      status.textContent = "Cümleler Türkçeye çevriliyor: 0 / " + allSentencesToTranslate.length + "...";
+      var tIdx = 0;
+
+      function translateBatch() {
+        if (tIdx >= allSentencesToTranslate.length) {
+          self.finishBookCreation({
+            title: bookData.title,
+            author: bookData.author,
+            level: bookData.level,
+            icon: bookData.icon || "📄",
+            desc: bookData.desc || ("PDF'ten aktarıldı (" + totalPagesToRead + " Sayfa, " + allSentencesToTranslate.length + " Cümle)"),
+            chapters: parsedChapters
+          });
+          return;
+        }
+
+        var item = allSentencesToTranslate[tIdx];
+        var pct = 30 + Math.round((tIdx / allSentencesToTranslate.length) * 70);
+        progFill.style.width = pct + "%";
+        status.textContent = "Cümleler çevriliyor: " + (tIdx + 1) + " / " + allSentencesToTranslate.length + " (%" + pct + ")...";
+
+        self.lookupTranslation(item.en, function(trVal) {
+          item.tr = trVal || item.en;
+          tIdx++;
+          setTimeout(translateBatch, 90);
+        });
+      }
+
+      translateBatch();
+    } catch (err) {
+      alert("PDF işlenirken bir hata oluştu: " + err.message);
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = "1";
+      status.style.display = "none";
+      progBar.style.display = "none";
+    }
+  },
+
+  cleanPdfText: function(text) {
+    if (!text) return "";
+    var s = String(text);
+    // De-hyphenate broken words across lines: "infor- \n mation" -> "information"
+    s = s.replace(/(\b[a-zA-Z]{2,})-\s*\n\s*([a-zA-Z]{2,}\b)/g, "$1$2");
+    // Remove standalone page numbers on a single line
+    s = s.replace(/\n\s*\d+\s*\n/g, "\n");
+    // Unwrap soft newlines inside sentences (newline followed by lowercase letter or continuation)
+    s = s.replace(/([^\.\?!:\n])\n+([a-zA-Z0-9'"`])/g, "$1 $2");
+    // Collapse multiple whitespace
+    s = s.replace(/[ \t]+/g, " ");
+    return s.trim();
+  },
+
+  detectChaptersFromText: function(text, fallbackTitle) {
+    var lines = text.split("\n");
+    var chapters = [];
+    var currentChapTitle = fallbackTitle || "Bölüm 1";
+    var currentChapLines = [];
+
+    var headingRegex = /^(?:CHAPTER|Chapter|BÖLÜM|Bölüm|PART|Part|ACT|Act)\s+([0-9IVXLCDMivxlcdm]+|[A-Za-z]+)(.*)$/i;
+
+    lines.forEach(function(line) {
+      var trimmed = line.trim();
+      if (headingRegex.test(trimmed) && trimmed.length < 60) {
+        if (currentChapLines.length > 0) {
+          chapters.push({
+            title: currentChapTitle,
+            text: currentChapLines.join("\n")
+          });
+          currentChapLines = [];
+        }
+        currentChapTitle = trimmed;
+      } else {
+        currentChapLines.push(line);
+      }
+    });
+
+    if (currentChapLines.length > 0) {
+      chapters.push({
+        title: currentChapTitle,
+        text: currentChapLines.join("\n")
+      });
+    }
+
+    if (!chapters.length) {
+      chapters.push({
+        title: fallbackTitle || "Bölüm 1",
+        text: text
+      });
+    }
+    return chapters;
+  },
+
   splitIntoSentences: function(text) {
     if (!text) return [];
     return text
@@ -9280,7 +9695,7 @@ var TrancyReader = {
       '<div class="trancy-modal-content">' +
         '<div>' +
           '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Bölüm Başlığı:</label>' +
-          '<input type="text" id="acTitle" value="Bölüm ' + chapNum + '" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none">' +
+          '<input type="text" id="acTitle" value="Bölüm " style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font-size:13px;outline:none">' +
         '</div>' +
         '<div>' +
           '<label style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">İngilizce Bölüm Metni:</label>' +
@@ -9292,6 +9707,8 @@ var TrancyReader = {
     '</div>';
 
     document.body.appendChild(modal);
+    var acTitleInput = document.getElementById("acTitle");
+    if (acTitleInput) acTitleInput.value = "Bölüm " + chapNum;
   },
 
   submitNewChapter: function(bookId) {
@@ -9504,7 +9921,6 @@ var TrancyReader = {
     if (en) s.en = en;
     if (tr) s.tr = tr;
 
-    // If it's a custom book, save changes
     var book = this.getCurrentBook();
     if (book.isCustom) {
       var customBooks = this.getCustomBooks();
