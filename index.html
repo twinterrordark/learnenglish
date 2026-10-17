@@ -725,35 +725,37 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
 .tauruss-sugg-badge.movie{background:rgba(56,189,248,.18);color:#38bdf8}
 .tauruss-sugg-badge.series{background:rgba(244,63,94,.18);color:#f43f5e}
 
-.tauruss-wrap{background:#090a0d;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);position:relative;display:flex;flex-direction:column}
-.tauruss-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line)}
-.tauruss-toolbar strong{font-size:13px;display:flex;align-items:center;gap:6px}
-.tauruss-toolbar span{font-size:11.5px;color:var(--muted)}
-.tauruss-learning-layout{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px;align-items:stretch}
-.tauruss-learning-frame{display:block;width:100%;height:calc(100vh - 220px);min-height:500px;border:0;background:#05070a}
+.tauruss-wrap{background:#090a0d;border:1px solid #334155;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);position:relative;display:flex;flex-direction:column}
+.tauruss-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 14px;background:#0f172a;border-bottom:1px solid #334155}
+.tauruss-toolbar strong{font-size:13px;display:flex;align-items:center;gap:6px;color:#f8fafc}
+.tauruss-toolbar span{font-size:11.5px;color:#94a3b8}
+.tauruss-learning-layout{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px;align-items:stretch;transition:grid-template-columns .2s ease}
+.tauruss-learning-layout.panel-closed{grid-template-columns:minmax(0,1fr)!important}
+.tauruss-learning-layout.panel-closed .tauruss-learning-panel{display:none!important}
+.tauruss-learning-frame{display:block;width:100%;height:calc(100vh - 200px);min-height:520px;border:0;background:#000000}
 
-/* PANEL & DIALOGUE LIST */
-.tauruss-learning-panel{display:flex;flex-direction:column;min-height:500px;max-height:calc(100vh - 220px);background:#070a12;border:1px solid #1e293b;border-radius:14px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
-.tauruss-learning-head{padding:10px 14px;background:#0d1424;border-bottom:1px solid #1e293b}
-.tauruss-learning-head strong{font-size:13px;color:#f8fafc;display:flex;align-items:center;gap:6px}
+/* PANEL & DIALOGUE LIST - HIGH CONTRAST & SLEEK */
+.tauruss-learning-panel{display:flex;flex-direction:column;min-height:520px;max-height:calc(100vh - 200px);background:#0f172a;border:1px solid #334155;border-radius:12px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+.tauruss-learning-head{padding:10px 14px;background:#1e293b;border-bottom:1px solid #334155}
+.tauruss-learning-head strong{font-size:13.5px;color:#ffffff;display:flex;align-items:center;gap:6px}
 .tauruss-learning-head p{margin:2px 0 0;color:#94a3b8;font-size:11px;line-height:1.35}
-.tauruss-live-box{padding:12px 14px;background:#0b1329;border-bottom:1px solid #1e3a5f;display:flex;flex-direction:column;gap:5px}
-.tauruss-live-label{font-size:10.5px;font-weight:800;letter-spacing:.6px;color:#38bdf8;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
+.tauruss-live-box{padding:12px 14px;background:#1e293b;border-bottom:1px solid #334155;display:flex;flex-direction:column;gap:6px}
+.tauruss-live-label{font-size:11px;font-weight:800;letter-spacing:.6px;color:#38bdf8;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
 .tauruss-live-text{font-size:15px;line-height:1.45;color:#ffffff;user-select:text}
-.sub-word{cursor:pointer;border-radius:4px;padding:1px 3px;margin:0 1px;transition:.12s;display:inline-block;color:#ffffff;font-weight:700}
-.sub-word:hover{background:#38bdf8;color:#000000;text-decoration:none}
+.sub-word{cursor:pointer;border-radius:4px;padding:2px 5px;margin:0 1px;transition:.12s;display:inline-block;color:#ffffff;font-weight:700;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}
+.sub-word:hover{background:#38bdf8;color:#000000;border-color:#38bdf8;text-decoration:none}
 .tauruss-word-card{margin-top:6px;padding:8px 12px;border-radius:8px;background:#0f172a;border:1px solid #38bdf8;font-size:12.5px;display:flex;align-items:center;justify-content:space-between;color:#ffffff}
-.tauruss-learning-state{padding:6px 12px;background:#090d18;color:#94a3b8;font-size:11px;line-height:1.4;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1e293b}
-.tauruss-cues{overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:7px;flex:1;background:#070a12}
-.tauruss-cue{padding:9px 12px;border:1px solid #1e293b;border-radius:10px;background:#0b1120;transition:.15s;cursor:pointer}
-.tauruss-cue:hover{border-color:#38bdf8;background:#0f172a}
-.tauruss-cue.active-second{border-color:#38bdf8!important;background:#172554!important;box-shadow:0 0 14px rgba(56,189,248,.4)!important}
-.tauruss-cue-en{font-size:13.5px;line-height:1.45;font-weight:700;color:#ffffff}
-.tauruss-cue-tr{font-size:13px;line-height:1.4;color:#facc15;margin-top:4px;font-weight:700}
-.tauruss-cue-time{font-size:10.5px;color:#94a3b8;margin-top:3px;display:flex;align-items:center;justify-content:space-between}
-.tauruss-cue-sync-btn{background:#1e293b;border:1px solid #334155;color:#38bdf8;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;cursor:pointer}
+.tauruss-learning-state{padding:6px 12px;background:#0f172a;color:#94a3b8;font-size:11px;line-height:1.4;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #334155}
+.tauruss-cues{overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:8px;flex:1;background:#0f172a}
+.tauruss-cue{padding:10px 12px;border:1px solid #334155;border-radius:8px;background:#1e293b;transition:.15s;cursor:pointer}
+.tauruss-cue:hover{border-color:#38bdf8;background:#24324a}
+.tauruss-cue.active-second{border-color:#38bdf8!important;background:#1e3a5f!important;box-shadow:0 0 14px rgba(56,189,248,.5)!important}
+.tauruss-cue-en{font-size:14px;line-height:1.45;font-weight:700;color:#ffffff}
+.tauruss-cue-tr{font-size:13.5px;line-height:1.4;color:#38bdf8;margin-top:4px;font-weight:700}
+.tauruss-cue-time{font-size:11px;color:#94a3b8;margin-top:3px;display:flex;align-items:center;justify-content:space-between}
+.tauruss-cue-sync-btn{background:#334155;border:1px solid #475569;color:#38bdf8;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;cursor:pointer}
 .tauruss-cue-sync-btn:hover{background:#38bdf8;color:#000}
-.tauruss-learning-foot{padding:8px 12px;border-top:1px solid #1e293b;font-size:10.5px;line-height:1.4;color:#94a3b8;background:#090d18}
+.tauruss-learning-foot{padding:8px 12px;border-top:1px solid #334155;font-size:11px;line-height:1.4;color:#94a3b8;background:#1e293b}
 
 @media(max-width:960px){
   .tauruss-learning-layout{grid-template-columns:1fr;gap:12px}
@@ -5359,143 +5361,89 @@ function showTaurussCatalog(){
   }).join("");
 
   main.innerHTML = '<div class="tauruss-theater">' +
-    '<div class="crumb">FİLMLE İNGİLİZCE · REKLAMSIZ SİNEMA MODU</div>' +
-    '<div class="tauruss-hero">' +
-      '<div class="tauruss-hero-top">' +
-        '<div class="tauruss-title-block">' +
-          '<h1 id="taurussMediaTitle">🚀 Interstellar (Yıldızlararası)</h1>' +
-          '<p id="taurussMediaDesc">🛡️ Reklamsız, temiz sinema oynatıcısı devrede. Reklamlar ve yönlendirmeler tamamen engellendi.</p>' +
-        '</div>' +
-        '<div class="tauruss-btn-group">' +
-          '<button class="tauruss-pill-btn active" id="tfBtnAdfree" title="Sıfır Reklam Temiz Oynatıcı">🛡️ Reklamsız Oynatıcı</button>' +
-          '<button class="tauruss-pill-btn" id="tfBtnCinema" title="Geniş Sinema Modu">🎬 Sinema</button>' +
-          '<button class="tauruss-pill-btn" id="tfBtnSplit" title="Yan Yana Bölünmüş Mod">◫ Yan Yana</button>' +
-          '<button class="tauruss-pill-btn" id="tfBtnFull" title="Tam Ekran">⛶ Tam Ekran</button>' +
-          '<button class="tauruss-pill-btn tauruss-party-toggle-btn" id="tfBtnParty" title="Arkadaşlarınla beraber aynı anda izle">👥 Birlikte İzle <span class="tauruss-party-badge" id="tfPartyBadge" style="display:none">● 0</span></button>' +
-        '</div>' +
-      '</div>' +
-
-      '<div class="tauruss-search-row">' +
+    '<!-- Clean Search Area -->' +
+    '<div class="tauruss-search-container" style="margin-bottom:12px;background:#0f172a;border:1px solid #334155;border-radius:12px;padding:12px">' +
+      '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">' +
         '<div class="tauruss-type-toggle">' +
-          '<button class="tauruss-type-btn active" id="tfTypeMovie">Film</button>' +
-          '<button class="tauruss-type-btn" id="tfTypeTv">Dizi</button>' +
+          '<button class="tauruss-type-btn active" id="tfTypeMovie">🎬 Film</button>' +
+          '<button class="tauruss-type-btn" id="tfTypeTv">📺 Dizi</button>' +
         '</div>' +
         '<div class="tauruss-series-pick" id="tfSeriesPick">' +
-          '<span>Sezon:</span><input type="number" id="tfSeason" min="1" max="99" value="1">' +
-          '<span>Bölüm:</span><input type="number" id="tfEpisode" min="1" max="99" value="1">' +
+          '<span style="color:#94a3b8;font-size:12px;font-weight:700">Sezon:</span><input type="number" id="tfSeason" min="1" max="99" value="1">' +
+          '<span style="color:#94a3b8;font-size:12px;font-weight:700">Bölüm:</span><input type="number" id="tfEpisode" min="1" max="99" value="1">' +
         '</div>' +
-        '<div class="tauruss-search-box-wrap">' +
-          '<input type="text" class="tauruss-search-input" id="tfSearchInput" placeholder="Film veya Dizi adı yazın (ör: Interstellar, Inception, Breaking Bad)..." autocomplete="off">' +
+        '<div class="tauruss-search-box-wrap" style="flex:1;min-width:240px;position:relative">' +
+          '<input type="text" class="tauruss-search-input" id="tfSearchInput" placeholder="Film veya Dizi adı yazın (ör: Interstellar, Inception, Breaking Bad)..." autocomplete="off" style="width:100%;background:#1e293b;border:1px solid #334155;color:#f8fafc;padding:8px 12px;border-radius:8px;font-size:13.5px;outline:none">' +
           '<div class="tauruss-suggestions-dropdown" id="tfSuggestions"></div>' +
         '</div>' +
-        '<button class="tauruss-go-btn" id="tfSearchGo">▶ Oynat</button>' +
+        '<button class="tauruss-go-btn" id="tfSearchGo" style="padding:8px 16px;font-size:13px;border-radius:8px;background:#0284c7;color:#fff;border:none;font-weight:700;cursor:pointer">▶ Oynat</button>' +
+        '<select id="taurussServerSelect" title="Oynatıcı Kaynağı (Türkçe ve İngilizce Altyazılı)" style="background:#1e293b;color:#38bdf8;border:1px solid #334155;border-radius:8px;padding:8px 10px;font-size:12px;font-weight:700;cursor:pointer">' +
+          '<option value="vidlink" selected>🛡️ VidLink (TR & EN Altyazı + Canlı Senkron)</option>' +
+          '<option value="embedsu">🎬 Embed.su (TR & EN Altyazı)</option>' +
+          '<option value="multiembed">🌐 MultiEmbed (TR & EN Altyazı)</option>' +
+          '<option value="vidsrc">📽️ VidSrc (Klasik)</option>' +
+        '</select>' +
+        '<button type="button" id="tfTogglePanelBtn" class="tauruss-toggle-panel-btn" style="background:#1e293b;color:#facc15;border:1px solid #334155;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px" title="Language Reactor panelini aç veya kapat">' +
+          '<span id="tfTogglePanelIcon">✕</span> <span id="tfTogglePanelLabel">Paneli Kapat</span>' +
+        '</button>' +
       '</div>' +
-
-      '<div class="tauruss-chips" id="taurussChips">' + chipsHtml + '</div>' +
-
-      '<div class="tauruss-sub-strip">' +
-        '<div class="tauruss-sub-group">' +
-          '<span style="font-size:12px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:4px">⚡ Language Reactor Paneli:</span>' +
-          '<button class="tauruss-sub-btn active" id="tfSubLR_EnToTr" title="Video İngilizce ise sağ panelde Türkçe karşılığını göster">🇬🇧 Video ENG ➔ 🇹🇷 Sağda Türkçe</button>' +
-          '<button class="tauruss-sub-btn" id="tfSubLR_TrToEn" title="Video Türkçe ise sağ panelde İngilizce karşılığını göster">🇹🇷 Video TR ➔ 🇬🇧 Sağda İngilizce</button>' +
-          '<button class="tauruss-sub-btn" id="tfSubLR_Both" title="Hem İngilizce hem Türkçe alt alta aksın">🇬🇧+🇹🇷 Çift Altyazı</button>' +
-          '<button class="tauruss-sub-btn" id="tfSubOverlayToggle" title="Video ekranı üzerine de altyazı bas (Varsayılan: Kapalı, player\'ın kendi altyazısıyla çakışmaz)">📺 Video Üstü: Kapalı</button>' +
-          '<button class="tauruss-sub-btn" id="tfSubFetch" title="Altyazıları yenile">🔍 Yenile</button>' +
-        '</div>' +
-        '<div class="tauruss-sub-group">' +
-          '<div class="tauruss-sub-badge loading" id="tfSubStatus">⏳ Altyazı aranıyor...</div>' +
-          '<div class="tauruss-sync-box">' +
-            '<span>Senkron:</span>' +
-            '<button class="tauruss-sync-btn" id="tfSyncMinus1" title="Altyazıyı 1s geri al">-1s</button>' +
-            '<button class="tauruss-sync-btn" id="tfSyncMinus" title="Altyazıyı 0.2s geri al (Kısayol: [)">-0.2s</button>' +
-            '<button class="tauruss-sync-btn" id="tfSyncZero" title="Senkronu sıfırla (Kısayol: \)"><span id="tfSyncVal" style="min-width:36px;text-align:center">0.0s</span></button>' +
-            '<button class="tauruss-sync-btn" id="tfSyncPlus" title="Altyazıyı 0.2s ileri al (Kısayol: ])">+0.2s</button>' +
-            '<button class="tauruss-sync-btn" id="tfSyncPlus1" title="Altyazıyı 1s ileri al">+1s</button>' +
-            '<button class="tauruss-auto-sync-btn" id="tfAutoSync" title="Konuşulan sesi duyduğunuz an bu butona (veya S tuşuna) basın; sistem zaman farkını otomatik hesaplayıp tüm filmi anında eşitler.">🎯 Sesi Duyunca Bas (Oto-Senkron)</button>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
+      '<div class="tauruss-chips" id="taurussChips" style="margin-top:10px">' + chipsHtml + '</div>' +
     '</div>' +
 
-    '<div class="tauruss-learning-layout cinema-mode" id="taurussLayout">' +
+    '<!-- 2-Column Layout: Left Player + Right Language Reactor Panel -->' +
+    '<div class="tauruss-learning-layout" id="taurussLayout">' +
       '<section class="tauruss-wrap" id="taurussWrap">' +
-        '<div class="tauruss-toolbar">' +
-          '<div><strong id="taurussPlayerLabel">🛡️ Reklamsız Player · VidLink</strong><br><span id="taurussPlayerSub">Interstellar (tt0816692) yüklendi · Reklamsız akış</span></div>' +
+        '<div class="tauruss-toolbar" style="background:#0f172a;border-bottom:1px solid #334155;padding:8px 14px;display:flex;justify-content:space-between;align-items:center">' +
+          '<div>' +
+            '<strong id="taurussPlayerLabel" style="color:#ffffff;font-size:13px">🎬 Interstellar</strong>' +
+            '<span id="taurussPlayerSub" style="color:#94a3b8;font-size:11px;margin-left:8px">Player menüsünden English ve Türkçe altyazıları seçebilirsiniz</span>' +
+          '</div>' +
           '<div style="display:flex;align-items:center;gap:8px">' +
-            '<select id="taurussServerSelect" title="Oynatıcı Kaynağı Seç" style="background:#1e293b;color:#38bdf8;border:1px solid #334155;border-radius:6px;padding:4px 8px;font-size:12px;font-weight:600;cursor:pointer">' +
-              '<option value="vidlink" selected>🛡️ Sunucu 1 (VidLink - Reklamsız & Oto-Senkron)</option>' +
-              '<option value="vidsrc">🎬 Sunucu 2 (VidSrc - Klasik)</option>' +
-              '<option value="videasy">⚡ Sunucu 3 (Videasy)</option>' +
-            '</select>' +
-            '<a class="ytstudy-external" id="taurussExtLink" href="https://vidlink.pro/movie/tt0816692?primaryColor=0284c7&secondaryColor=0f172a&icons=vid" target="_blank" rel="noopener noreferrer">Yeni sekmede aç ↗</a>' +
+            '<span id="tfSubStatus" class="tauruss-sub-badge found" style="font-size:11px">⚡ Canlı Senkron Hazır</span>' +
+            '<button type="button" class="tauruss-floating-fs-btn" id="tfFloatingFsBtn" title="Tam Ekran" style="position:static;padding:4px 10px;font-size:11px;background:#1e293b;color:#f8fafc;border:1px solid #334155;border-radius:6px;cursor:pointer">⛶ Tam Ekran</button>' +
           '</div>' +
         '</div>' +
-        '<div class="tauruss-frame-container" style="position:relative">' +
-          '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidlink.pro/movie/tt0816692?primaryColor=0284c7&secondaryColor=0f172a&icons=vid" title="Reklamsız Film Player" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *" allowfullscreen loading="eager" referrerpolicy="origin"></iframe>' +
-          '<button type="button" class="tauruss-floating-fs-btn" id="tfFloatingFsBtn" title="Tam Ekran (Altyazılı)">⛶ Tam Ekran</button>' +
-          '<div class="tauruss-party-countdown" id="tfPartyCountdown" style="display:none">' +
-            '<div class="tauruss-countdown-num" id="tfCountdownNum">3</div>' +
-            '<div class="tauruss-countdown-sub" id="tfCountdownSub">Eşzamanlı başlatılıyor...</div>' +
-          '</div>' +
-          '<div class="tauruss-reactions-layer" id="tfReactionsLayer"></div>' +
-          '<div class="tauruss-onvideo-subtitle" id="taurussVideoOverlay" style="display:none">' +
-            '<div class="tauruss-overlay-text" id="taurussOverlayText"></div>' +
-          '</div>' +
-        '</div>' +
-
-        '<div class="tauruss-mobile-nav-tabs" id="taurussMobileTabs">' +
-          '<button type="button" class="tauruss-m-tab active" id="tfMTabCues">💬 Diyaloglar (<span id="tfCueCountMobile">0</span>)</button>' +
-          '<button type="button" class="tauruss-m-tab" id="tfMTabSearch">🎬 Film / Dizi Seç</button>' +
-          '<button type="button" class="tauruss-m-tab" id="tfMTabParty">👥 Birlikte İzle</button>' +
+        '<div class="tauruss-frame-container" style="position:relative;background:#000">' +
+          '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidlink.pro/movie/tt0816692?primaryColor=0284c7&secondaryColor=0f172a&icons=vid" title="Film Oynatıcı" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *" allowfullscreen loading="eager" referrerpolicy="origin"></iframe>' +
         '</div>' +
       '</section>' +
 
-      '<aside class="tauruss-learning-panel" aria-label="Language Reactor paneli">' +
+      '<aside class="tauruss-learning-panel" id="taurussLearningPanel" aria-label="Language Reactor paneli">' +
         '<div class="tauruss-learning-head">' +
           '<div style="display:flex;align-items:center;justify-content:space-between">' +
-            '<strong id="taurussPanelHeading" style="font-size:13px;color:#f8fafc">⚡ Language Reactor</strong>' +
-            '<span id="tfLiveTimeBadge" style="background:#0284c7;color:#fff;padding:2px 7px;border-radius:5px;font-family:monospace;font-size:12px;font-weight:800">00:00</span>' +
+            '<strong style="font-size:13.5px;color:#ffffff;display:flex;align-items:center;gap:6px">⚡ Language Reactor</strong>' +
+            '<div style="display:flex;align-items:center;gap:6px">' +
+              '<span id="tfLiveTimeBadge" style="background:#0284c7;color:#ffffff;padding:2px 7px;border-radius:5px;font-family:monospace;font-size:12px;font-weight:800">00:00</span>' +
+              '<button type="button" id="tfPanelCloseBtn" title="Paneli Kapat" style="background:transparent;border:none;color:#94a3b8;cursor:pointer;font-size:14px;padding:2px 6px">✕</button>' +
+            '</div>' +
           '</div>' +
-          '<p id="taurussPanelSub" style="margin:2px 0 0;color:#94a3b8;font-size:11px">Player kaçıncı saniyedeyse sağ panel tam orayı gösterir.</p>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px">' +
+            '<button type="button" class="tauruss-sub-btn active" id="tfSubLR_EnToTr" title="Player İngilizce iken panelde Türkçe karşılığını göster" style="font-size:11px;padding:6px 4px;text-align:center;justify-content:center">🇬🇧 Video ENG ➔ 🇹🇷 TR</button>' +
+            '<button type="button" class="tauruss-sub-btn" id="tfSubLR_TrToEn" title="Player Türkçe iken panelde İngilizce karşılığını göster" style="font-size:11px;padding:6px 4px;text-align:center;justify-content:center">🇹🇷 Video TR ➔ 🇬🇧 ENG</button>' +
+          '</div>' +
         '</div>' +
 
         '<div class="tauruss-live-box" id="taurussLiveBox">' +
           '<div class="tauruss-live-label" id="taurussLiveLabel">' +
-            '<span>💬 Canlı Diyalog:</span>' +
-            '<span style="font-size:10px;opacity:.7">Tıkla & Dinle</span>' +
+            '<span style="color:#38bdf8;font-weight:800;font-size:11px">💬 CANLI SAHNE KARŞILIĞI:</span>' +
+            '<span style="color:#94a3b8;font-size:10px">Kelimelere tıkla & dinle</span>' +
           '</div>' +
-          '<div class="tauruss-live-text" id="taurussLiveCounterpart">Videoyu başlatınca bu saniyenin diyalogu ve karşılık çevirisi burada gösterilir.</div>' +
+          '<div class="tauruss-live-text" id="taurussLiveCounterpart">' +
+            '<div style="color:#94a3b8;font-size:13px;font-style:italic">Video başladığında bu sahnenin karşılık çevirisi burada gösterilir.</div>' +
+          '</div>' +
           '<div class="tauruss-word-card" id="taurussWordCard" style="display:none"></div>' +
         '</div>' +
 
-        '<div style="display:flex;align-items:center;justify-content:space-between;gap:4px;padding:6px 10px;background:#0d1424;border-bottom:1px solid #1e293b">' +
-          '<button type="button" id="tfPanelPlayPause" style="background:#0284c7;color:#fff;border:none;border-radius:6px;padding:5px 9px;font-size:11px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px">▶ Akışı Başlat</button>' +
-          '<div style="display:flex;gap:3px">' +
-            '<button type="button" id="tfPanelMinus2" style="background:#1e293b;color:#cbd5e1;border:1px solid #334155;border-radius:6px;padding:4px 6px;font-size:11px;font-weight:700;cursor:pointer" title="2 saniye geri">-2s</button>' +
-            '<button type="button" id="tfPanelPlus2" style="background:#1e293b;color:#cbd5e1;border:1px solid #334155;border-radius:6px;padding:4px 6px;font-size:11px;font-weight:700;cursor:pointer" title="2 saniye ileri">+2s</button>' +
-          '</div>' +
-          '<div style="display:flex;align-items:center;gap:3px">' +
-            '<input type="text" id="tfJumpInput" placeholder="01:25" style="width:48px;background:#0b1120;color:#facc15;border:1px solid #334155;border-radius:6px;padding:4px 3px;font-size:11px;font-family:monospace;text-align:center" title="Saniyeye gitmek için örn: 02:40">' +
-            '<button type="button" id="tfJumpBtn" style="background:#1e293b;color:#38bdf8;border:1px solid #334155;border-radius:6px;padding:4px 7px;font-size:11px;font-weight:800;cursor:pointer">Git</button>' +
-          '</div>' +
-        '</div>' +
-
-        '<div class="tauruss-learning-state" id="taurussLearningState">' +
-          '<input type="text" id="tfCueFilter" placeholder="🔍 Diyaloglarda kelime ara..." style="flex:1;margin-right:8px;background:#0b1120;color:#f8fafc;border:1px solid #1e293b;border-radius:5px;padding:3px 6px;font-size:11px">' +
-          '<span id="taurussCueCount" style="color:#facc15;font-weight:800;white-space:nowrap">0 diyalog</span>' +
+        '<div class="tauruss-learning-state" id="taurussLearningState" style="padding:6px 10px;background:#0f172a;border-bottom:1px solid #334155;display:flex;align-items:center;gap:6px">' +
+          '<input type="text" id="tfCueFilter" placeholder="🔍 Diyaloglarda ara..." style="flex:1;background:#1e293b;color:#ffffff;border:1px solid #334155;border-radius:6px;padding:4px 8px;font-size:11px;outline:none">' +
+          '<span id="taurussCueCount" style="color:#facc15;font-weight:800;font-size:11px;white-space:nowrap">0 diyalog</span>' +
         '</div>' +
 
         '<div class="tauruss-cues" id="taurussCues" aria-live="polite"></div>' +
-        '<div class="tauruss-learning-foot">💡 Listedeki <strong>herhangi bir repliğe dokunarak</strong> anında o saniyeye gidebilirsin.</div>' +
+        '<div class="tauruss-learning-foot" style="padding:8px 12px;border-top:1px solid #334155;color:#94a3b8;font-size:11px">' +
+          '💡 Listedeki bir repliğe tıklayarak o sahneye atlayabilirsiniz.' +
+        '</div>' +
       '</aside>' +
-    '</div>' +
-
-    '<div class="tauruss-party-drawer" id="taurussPartyDrawer" style="display:none">' +
-      '<div class="tauruss-party-header">' +
-        '<strong><span>👥</span> Birlikte İzle <span id="tfPartyHeaderStatus" style="font-size:11.5px;color:var(--muted);font-weight:normal"></span></strong>' +
-        '<button class="tauruss-party-close" id="tfPartyClose" title="Kapat">✕</button>' +
-      '</div>' +
-      '<div class="tauruss-party-body" id="taurussPartyBody"></div>' +
     '</div>' +
   '</div>';
 
@@ -5792,49 +5740,13 @@ var TaurussLearning = {
 
     if(subLR_EnToTr) subLR_EnToTr.onclick = function(){ self.setSubtitleLang("en_to_tr"); };
     if(subLR_TrToEn) subLR_TrToEn.onclick = function(){ self.setSubtitleLang("tr_to_en"); };
-    if(subLR_Both) subLR_Both.onclick = function(){ self.setSubtitleLang("both"); };
-    if(subOverlayToggle) subOverlayToggle.onclick = function(){ self.toggleOverlayOnVideo(); };
-    if(subFetch) subFetch.onclick = function(){ self.fetchSubtitles(self.currentId, self.season, self.episode, true); };
 
-    var panelPlayPause = el("tfPanelPlayPause");
-    var panelMinus2 = el("tfPanelMinus2");
-    var panelPlus2 = el("tfPanelPlus2");
-    var jumpInput = el("tfJumpInput");
-    var jumpBtn = el("tfJumpBtn");
+    var togglePanelBtn = el("tfTogglePanelBtn");
+    var panelCloseBtn = el("tfPanelCloseBtn");
+    if(togglePanelBtn) togglePanelBtn.onclick = function(){ self.togglePanel(); };
+    if(panelCloseBtn) panelCloseBtn.onclick = function(){ self.togglePanel(false); };
+
     var cueFilter = el("tfCueFilter");
-
-    if(panelPlayPause) panelPlayPause.onclick = function(){
-      self.toggleMobileTimer();
-    };
-    if(panelMinus2) panelMinus2.onclick = function(){
-      self.lastCurrentTime = Math.max(0, (self.lastCurrentTime || 0) - 2.0);
-      self.onTimeUpdate(self.lastCurrentTime);
-    };
-    if(panelPlus2) panelPlus2.onclick = function(){
-      self.lastCurrentTime = (self.lastCurrentTime || 0) + 2.0;
-      self.onTimeUpdate(self.lastCurrentTime);
-    };
-
-    var doJump = function(){
-      if(!jumpInput) return;
-      var raw = jumpInput.value.trim();
-      if(!raw) return;
-      var sec = 0;
-      if(raw.indexOf(":") !== -1){
-        var parts = raw.split(":");
-        if(parts.length === 2){
-          sec = (parseInt(parts[0], 10) || 0) * 60 + (parseFloat(parts[1]) || 0);
-        } else if(parts.length === 3){
-          sec = (parseInt(parts[0], 10) || 0) * 3600 + (parseInt(parts[1], 10) || 0) * 60 + (parseFloat(parts[2]) || 0);
-        }
-      } else {
-        sec = parseFloat(raw) || 0;
-      }
-      self.jumpToTime(sec);
-    };
-    if(jumpBtn) jumpBtn.onclick = doJump;
-    if(jumpInput) jumpInput.onkeydown = function(e){ if(e.key === "Enter") doJump(); };
-
     if(cueFilter){
       cueFilter.oninput = function(){
         var q = this.value.toLowerCase().trim();
@@ -5849,182 +5761,48 @@ var TaurussLearning = {
         });
       };
     }
-
-    if(!window._taurussBlurBound){
-      window._taurussBlurBound = true;
-      window.addEventListener("blur", function(){
-        setTimeout(function(){
-          if(!self.isTimerRunning) self.startMobileTimer();
-        }, 250);
-      });
-    }
-
-    if(mTabCues) mTabCues.onclick = function(){
-      mTabCues.classList.add("active");
-      if(mTabSearch) mTabSearch.classList.remove("active");
-      if(mTabParty) mTabParty.classList.remove("active");
-      var panel = document.querySelector(".tauruss-learning-panel");
-      if(panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
-    };
-
-    if(mTabSearch) mTabSearch.onclick = function(){
-      mTabSearch.classList.add("active");
-      if(mTabCues) mTabCues.classList.remove("active");
-      if(mTabParty) mTabParty.classList.remove("active");
-      var hero = document.querySelector(".tauruss-hero");
-      if(hero) hero.scrollIntoView({ behavior: "smooth", block: "start" });
-    };
-
-    if(mTabParty) mTabParty.onclick = function(){
-      if(window.WatchParty) window.WatchParty.toggleDrawer(true);
-    };
-
-    var syncMinus1 = el("tfSyncMinus1");
-    var syncMinus = el("tfSyncMinus");
-    var syncZero = el("tfSyncZero");
-    var syncPlus = el("tfSyncPlus");
-    var syncPlus1 = el("tfSyncPlus1");
-    var autoSyncBtn = el("tfAutoSync");
-
-    if(syncMinus1) syncMinus1.onclick = function(){ self.adjustSync(-1.0); };
-    if(syncMinus) syncMinus.onclick = function(){ self.adjustSync(-0.2); };
-    if(syncZero) syncZero.onclick = function(){ self.adjustSync(0, 0.0); };
-    if(syncPlus) syncPlus.onclick = function(){ self.adjustSync(0.2); };
-    if(syncPlus1) syncPlus1.onclick = function(){ self.adjustSync(1.0); };
-    if(autoSyncBtn) autoSyncBtn.onclick = function(){ self.autoSyncCurrent(); };
-
-    if(!window._taurussKeyBound){
-      window._taurussKeyBound = true;
-      window.addEventListener("keydown", function(e){
-        if(e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
-        if(!el("taurussFrame")) return;
-        if(e.key === "["){ self.adjustSync(-0.2); }
-        else if(e.key === "]"){ self.adjustSync(0.2); }
-        else if(e.key === "\\"){ self.adjustSync(0, 0.0); }
-        else if(e.key === "s" || e.key === "S"){ self.autoSyncCurrent(); }
-      });
-    }
   },
 
-  setLayout: function(mode){
-    this.mode = mode;
+  isPanelOpen: true,
+
+  togglePanel: function(forceState){
+    if(typeof forceState === "boolean"){
+      this.isPanelOpen = forceState;
+    } else {
+      this.isPanelOpen = !this.isPanelOpen;
+    }
     var layout = el("taurussLayout");
-    var btnCinema = el("tfBtnCinema");
-    var btnSplit = el("tfBtnSplit");
-    if(!layout) return;
-
-    if(mode === "cinema"){
-      layout.classList.remove("split-mode");
-      layout.classList.add("cinema-mode");
-      if(btnCinema) btnCinema.classList.add("active");
-      if(btnSplit) btnSplit.classList.remove("active");
-    } else {
-      layout.classList.remove("cinema-mode");
-      layout.classList.add("split-mode");
-      if(btnSplit) btnSplit.classList.add("active");
-      if(btnCinema) btnCinema.classList.remove("active");
+    if(layout){
+      layout.classList.toggle("panel-closed", !this.isPanelOpen);
     }
+    var icon = el("tfTogglePanelIcon");
+    var label = el("tfTogglePanelLabel");
+    if(icon) icon.textContent = this.isPanelOpen ? "✕" : "👁️";
+    if(label) label.textContent = this.isPanelOpen ? "Paneli Kapat" : "Language Reactor'ı Aç";
   },
 
-  adjustSync: function(delta, absolute){
-    if(absolute !== undefined){
-      this.syncOffset = absolute;
-    } else {
-      this.syncOffset = Math.round((this.syncOffset + delta) * 10) / 10;
-    }
-    var valEl = el("tfSyncVal");
-    if(valEl){
-      var sign = this.syncOffset > 0 ? "+" : "";
-      valEl.textContent = sign + this.syncOffset.toFixed(1) + "s";
-      valEl.style.color = this.syncOffset === 0 ? "inherit" : "var(--accent)";
-    }
-
-    // Send updated syncOffset to extension in iframe so on-video overlay syncs instantly
-    var frame = el("taurussFrame");
-    if(frame && frame.contentWindow){
-      var msg = { source: "learnenglish-app", type: "SET_SYNC_OFFSET", syncOffset: this.syncOffset };
-      try {
-        frame.contentWindow.postMessage(msg, "*");
-        for(var i = 0; i < frame.contentWindow.frames.length; i++){
-          try { frame.contentWindow.frames[i].postMessage(msg, "*"); } catch(_) {}
-        }
-      } catch(_) {}
-    }
-
-    this.currentCueIdx = -1;
-    this.updateLiveDisplay(this.lastCurrentTime);
-  },
-
-  mobileTimer: null,
-  isTimerRunning: false,
-
-  startMobileTimer: function(){
-    var self = this;
-    clearInterval(self.mobileTimer);
-    self.isTimerRunning = true;
-    self.updateTimerUI();
-    self.mobileTimer = setInterval(function(){
-      self.lastCurrentTime = (self.lastCurrentTime || 0) + 1.0;
-      self.onTimeUpdate(self.lastCurrentTime);
-    }, 1000);
-  },
-
-  pauseMobileTimer: function(){
-    var self = this;
-    clearInterval(self.mobileTimer);
-    self.isTimerRunning = false;
-    self.updateTimerUI();
-  },
-
-  toggleMobileTimer: function(){
-    if(this.isTimerRunning) this.pauseMobileTimer();
-    else this.startMobileTimer();
-  },
-
-  updateTimerUI: function(){
-    var btn = el("tfPanelPlayPause");
-    if(btn){
-      btn.textContent = this.isTimerRunning ? "⏸️ Duraklat" : "▶ Akışı Başlat";
-      btn.style.background = this.isTimerRunning ? "#dc2626" : "#0284c7";
-    }
-  },
+  // Rogue timer disabled per user demand - panel strictly syncs with player events
+  startMobileTimer: function(){},
+  pauseMobileTimer: function(){},
+  toggleMobileTimer: function(){},
+  updateTimerUI: function(){},
 
   setSubtitleLang: function(lang){
     this.activeSubLang = lang;
     var btnEnTr = el("tfSubLR_EnToTr");
     var btnTrEn = el("tfSubLR_TrToEn");
-    var btnBoth = el("tfSubLR_Both");
 
     if(btnEnTr) btnEnTr.classList.toggle("active", lang === "en_to_tr");
     if(btnTrEn) btnTrEn.classList.toggle("active", lang === "tr_to_en");
-    if(btnBoth) btnBoth.classList.toggle("active", lang === "both");
 
     var layout = el("taurussLayout");
     if(layout) layout.setAttribute("data-sub-lang", lang);
 
-    var heading = el("taurussPanelHeading");
-    var subHeading = el("taurussPanelSub");
-    if(lang === "en_to_tr"){
-      if(heading) heading.textContent = "⚡ Language Reactor · 🇬🇧 Video ➔ 🇹🇷 Türkçe Karşılığı";
-      if(subHeading) subHeading.textContent = "Player'da İngilizce izlerken, sağ panelde anında Türkçe karşılığı ve kelime anlamları akar.";
-    } else if(lang === "tr_to_en"){
-      if(heading) heading.textContent = "⚡ Language Reactor · 🇹🇷 Video ➔ 🇬🇧 İngilizce Karşılığı";
-      if(subHeading) subHeading.textContent = "Player'da Türkçe izlerken, sağ panelde anında İngilizce cümle yapıları ve çevirisi akar.";
-    } else if(lang === "both"){
-      if(heading) heading.textContent = "⚡ Language Reactor · 🇬🇧+🇹🇷 Çift Altyazı (İkisi Birlikte)";
-      if(subHeading) subHeading.textContent = "Hem İngilizce orijinal hem de Türkçe çevirisi saniye saniye burada akar.";
-    }
-
-    if(!this.showOnVideo){
-      this.hideVideoOverlayOnly();
-    }
-    this.updateLiveDisplay();
-
     // Force cue re-render immediately
-    var prevIdx = (this.currentCueIdx >= 0) ? this.currentCueIdx : 0;
-    this.currentCueIdx = prevIdx;
-    if(this.combinedCues && this.combinedCues.length){
-      this.displayCuePair(this.combinedCues[prevIdx]);
+    if(this.combinedCues && this.combinedCues.length && this.currentCueIdx >= 0){
+      this.displayCuePair(this.combinedCues[this.currentCueIdx]);
+    } else {
+      this.updateLiveDisplay(this.lastCurrentTime);
     }
 
     // Send command to extension in iframe
@@ -6417,30 +6195,34 @@ var TaurussLearning = {
     var srvSelect = el("taurussServerSelect");
     if(srvSelect) srvSelect.value = srv;
 
-    var srvName = (srv === "vidlink") ? "VidLink (Oto-Senkron)" : (srv === "videasy" ? "Videasy" : "VidSrc");
+    var srvName = (srv === "vidlink") ? "VidLink" : (srv === "embedsu" ? "Embed.su" : (srv === "multiembed" ? "MultiEmbed" : "VidSrc"));
     var targetUrl = "";
     if(this.currentType === "tv"){
       if(srv === "vidlink"){
         targetUrl = "https://vidlink.pro/tv/" + this.currentId + "/" + this.season + "/" + this.episode + "?primaryColor=0284c7&secondaryColor=0f172a&icons=vid";
-      } else if(srv === "videasy"){
-        targetUrl = "https://player.videasy.net/tv/" + this.currentId + "/" + this.season + "/" + this.episode;
+      } else if(srv === "embedsu"){
+        targetUrl = "https://embed.su/embed/tv/" + this.currentId + "/" + this.season + "/" + this.episode;
+      } else if(srv === "multiembed"){
+        targetUrl = "https://multiembed.mov/?video_id=" + this.currentId + "&tmdb=1&s=" + this.season + "&e=" + this.episode;
       } else {
         targetUrl = "https://vidsrc.me/embed/tv?imdb=" + this.currentId + "&season=" + this.season + "&episode=" + this.episode;
       }
       if(titleEl) titleEl.textContent = "📺 " + this.currentTitle + " · S" + this.season + " B" + this.episode;
-      if(labelEl) labelEl.textContent = "🛡️ Reklamsız Dizi Player · " + srvName + " · S" + this.season + " E" + this.episode;
-      if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor · Reklamsız akış";
+      if(labelEl) labelEl.textContent = "📺 " + this.currentTitle + " · S" + this.season + " B" + this.episode + " (" + srvName + ")";
+      if(subEl) subEl.textContent = "Player menüsünden English ve Türkçe altyazıları seçebilirsiniz";
     } else {
       if(srv === "vidlink"){
         targetUrl = "https://vidlink.pro/movie/" + this.currentId + "?primaryColor=0284c7&secondaryColor=0f172a&icons=vid";
-      } else if(srv === "videasy"){
-        targetUrl = "https://player.videasy.net/movie/" + this.currentId;
+      } else if(srv === "embedsu"){
+        targetUrl = "https://embed.su/embed/movie/" + this.currentId;
+      } else if(srv === "multiembed"){
+        targetUrl = "https://multiembed.mov/?video_id=" + this.currentId + "&tmdb=1";
       } else {
         targetUrl = "https://vidsrc.me/embed/movie?imdb=" + this.currentId;
       }
       if(titleEl) titleEl.textContent = "🎬 " + this.currentTitle;
-      if(labelEl) labelEl.textContent = "🛡️ Reklamsız Sinema Player · " + srvName;
-      if(subEl) subEl.textContent = this.currentTitle + " (" + this.currentId + ") oynatılıyor · Reklamsız akış";
+      if(labelEl) labelEl.textContent = "🎬 " + this.currentTitle + " (" + srvName + ")";
+      if(subEl) subEl.textContent = "Player menüsünden English ve Türkçe altyazıları seçebilirsiniz";
     }
     frame.removeAttribute("sandbox");
 
@@ -6842,15 +6624,12 @@ var TaurussLearning = {
     var items = self.combinedCues;
     var html = items.map(function(item){
       return '<article class="tauruss-cue" data-idx="' + item.id + '" data-start="' + item.start + '" onclick="TaurussLearning.jumpToTime(' + item.start + ')">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
-          '<span style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;font-weight:800;color:var(--muted)">⏱️ ' + self.formatTime(item.start) + '</span>' +
-          '<div style="display:flex;gap:6px">' +
-            '<button type="button" class="tauruss-cue-sync-btn" onclick="event.stopPropagation(); TaurussLearning.jumpToTime(' + item.start + ');" title="Bu cümleyi tekrar dinle">↺ Tekrar Dinle</button>' +
-            '<button type="button" class="tauruss-cue-sync-btn" onclick="event.stopPropagation(); TaurussLearning.autoSyncToCue(' + item.id + ');" title="Şu an bu cümle konuşuluyor — senkronu buraya kilitle">🎯 Sese Eşitle</button>' +
-          '</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
+          '<span style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;font-weight:800;color:#94a3b8">⏱️ ' + self.formatTime(item.start) + '</span>' +
+          '<button type="button" class="tauruss-cue-sync-btn" onclick="event.stopPropagation(); TaurussLearning.jumpToTime(' + item.start + ');" title="Bu sahneye git">▶ Sahneye Git</button>' +
         '</div>' +
-        '<div class="tauruss-cue-en" style="font-size:14px;line-height:1.45;color:#ffffff;font-weight:700">🇬🇧 ' + (item.en ? self.formatClickableWords(item.en) : '<em>İngilizce diyalog</em>') + '</div>' +
-        '<div class="tauruss-cue-tr" style="font-size:13.5px;line-height:1.4;color:#38bdf8;font-weight:700;margin-top:5px">🇹🇷 ' + (item.tr ? item.tr : '<span style="color:#64748b;font-style:italic">Çevirisi yükleniyor…</span>') + '</div>' +
+        '<div class="tauruss-cue-en" style="font-size:13.5px;line-height:1.45;color:#ffffff;font-weight:700">🇬🇧 ' + (item.en ? self.formatClickableWords(item.en) : '<em>İngilizce diyalog</em>') + '</div>' +
+        '<div class="tauruss-cue-tr" style="font-size:13px;line-height:1.4;color:#38bdf8;font-weight:700;margin-top:4px">🇹🇷 ' + (item.tr ? item.tr : '<span style="color:#64748b;font-style:italic">Çevirisi yükleniyor…</span>') + '</div>' +
       '</article>';
     }).join("");
 
@@ -6871,7 +6650,6 @@ var TaurussLearning = {
     }
     this.lastCurrentTime = targetTime;
     this.onTimeUpdate(targetTime);
-    if(!this.isTimerRunning) this.startMobileTimer();
   },
 
   onTimeUpdate: function(currentTime){
@@ -6906,10 +6684,10 @@ var TaurussLearning = {
   },
 
   hideCuePair: function(){
-    var onVideoOverlay = el("taurussVideoOverlay");
-    var onVideoText = el("taurussOverlayText");
-    if(onVideoOverlay) onVideoOverlay.style.display = "none";
-    if(onVideoText) onVideoText.innerHTML = "";
+    var liveCounterpart = el("taurussLiveCounterpart");
+    if(liveCounterpart){
+      liveCounterpart.innerHTML = '<div style="color:#64748b;font-size:13px;font-style:italic;padding:4px 0">💬 Diyalog bekleniyor... (Player ilerledikçe burada gösterilir)</div>';
+    }
     this.clearHighlight();
     this.sendSubtitleToPlayer("");
   },
@@ -6924,66 +6702,49 @@ var TaurussLearning = {
   displayCuePair: function(cue){
     var self = this;
     var liveCounterpart = el("taurussLiveCounterpart");
-    var timeIndicator = el("tfSubTimeIndicator");
-    var onVideoOverlay = el("taurussVideoOverlay");
-    var onVideoText = el("taurussOverlayText");
+    var timeBadge = el("tfLiveTimeBadge");
     if(!cue) return;
 
-    if(timeIndicator) timeIndicator.textContent = self.formatTime(cue.start);
+    if(timeBadge) timeBadge.textContent = self.formatTime(cue.start);
 
     var enHtml = cue.en ? self.formatClickableWords(cue.en) : "";
     var trText = cue.tr || "Türkçe çevirisi hazırlanıyor…";
 
     if(self.activeSubLang === "en_to_tr"){
-      // Video English -> Show Turkish Counterpart
+      // Video English -> Show Turkish Counterpart Prominently
       if(liveCounterpart){
         liveCounterpart.innerHTML =
-          '<div style="display:flex;flex-direction:column;gap:6px">' +
-            '<div><span style="display:inline-block;padding:2px 7px;border-radius:5px;background:rgba(56,189,248,.15);color:#38bdf8;font-size:11px;font-weight:800;margin-bottom:4px">🇹🇷 TÜRKÇE KARŞILIĞI</span>' +
-            '<div style="color:#38bdf8;font-size:16px;font-weight:800;line-height:1.4">' + trText + '</div></div>' +
-            '<div style="margin-top:4px;padding-top:6px;border-top:1px dashed rgba(255,255,255,.12)">' +
-            '<span style="display:inline-block;padding:2px 7px;border-radius:5px;background:rgba(255,255,255,.1);color:#cbd5e1;font-size:11px;font-weight:700;margin-bottom:4px">🇬🇧 İNGİLİZCE ORİJİNAL (Kelimelere Dokun)</span>' +
-            '<div style="color:#ffffff;font-size:15px;font-weight:700;line-height:1.45">' + (enHtml || cue.en) + '</div></div>' +
+          '<div style="display:flex;flex-direction:column;gap:8px">' +
+            '<div style="background:rgba(2,132,199,0.14);border-left:3px solid #0284c7;padding:8px 10px;border-radius:6px">' +
+              '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">' +
+                '<span style="background:#0284c7;color:#ffffff;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:4px">🇹🇷 TÜRKÇE KARŞILIĞI</span>' +
+                '<span style="color:#94a3b8;font-size:11px;font-family:monospace;font-weight:700">⏱️ ' + self.formatTime(cue.start) + '</span>' +
+              '</div>' +
+              '<div style="color:#38bdf8;font-size:16px;font-weight:800;line-height:1.4">' + trText + '</div>' +
+            '</div>' +
+            '<div style="background:rgba(255,255,255,0.05);border-left:3px solid #64748b;padding:8px 10px;border-radius:6px">' +
+              '<div style="color:#cbd5e1;font-size:10.5px;font-weight:700;margin-bottom:4px">🇬🇧 İNGİLİZCE ORİJİNAL (Kelimelere Dokun)</div>' +
+              '<div style="color:#ffffff;font-size:14.5px;font-weight:700;line-height:1.45">' + (enHtml || cue.en) + '</div>' +
+            '</div>' +
           '</div>';
-      }
-      if(self.showOnVideo && onVideoOverlay){
-        onVideoOverlay.style.display = "flex";
-        if(onVideoText) onVideoText.innerHTML = '<span style="color:#38bdf8;font-weight:800">' + trText + '</span>';
-      } else if(onVideoOverlay){
-        onVideoOverlay.style.display = "none";
-      }
-    } else if(self.activeSubLang === "tr_to_en"){
-      // Video Turkish -> Show English Counterpart
-      if(liveCounterpart){
-        liveCounterpart.innerHTML =
-          '<div style="display:flex;flex-direction:column;gap:6px">' +
-            '<div><span style="display:inline-block;padding:2px 7px;border-radius:5px;background:rgba(255,255,255,.15);color:#ffffff;font-size:11px;font-weight:800;margin-bottom:4px">🇬🇧 İNGİLİZCE KARŞILIĞI (Kelimelere Dokun)</span>' +
-            '<div style="color:#ffffff;font-size:16px;font-weight:800;line-height:1.4">' + (enHtml || cue.en) + '</div></div>' +
-            '<div style="margin-top:4px;padding-top:6px;border-top:1px dashed rgba(255,255,255,.12)">' +
-            '<span style="display:inline-block;padding:2px 7px;border-radius:5px;background:rgba(56,189,248,.1);color:#38bdf8;font-size:11px;font-weight:700;margin-bottom:4px">🇹🇷 TÜRKÇE DİYALOG</span>' +
-            '<div style="color:#38bdf8;font-size:15px;font-weight:700;line-height:1.45">' + trText + '</div></div>' +
-          '</div>';
-      }
-      if(self.showOnVideo && onVideoOverlay){
-        onVideoOverlay.style.display = "flex";
-        if(onVideoText) onVideoText.innerHTML = '<span style="color:#ffffff;font-weight:800">' + (cue.en || trText) + '</span>';
-      } else if(onVideoOverlay){
-        onVideoOverlay.style.display = "none";
       }
     } else {
-      // BOTH TOGETHER
+      // Video Turkish -> Show English Counterpart Prominently
       if(liveCounterpart){
         liveCounterpart.innerHTML =
-          '<div style="display:flex;flex-direction:column;gap:6px">' +
-            '<div style="color:#ffffff;font-size:15.5px;font-weight:700;line-height:1.45">🇬🇧 ' + (enHtml || cue.en) + '</div>' +
-            '<div style="color:#38bdf8;font-size:15px;font-weight:800;line-height:1.4;margin-top:2px">🇹🇷 ' + trText + '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:8px">' +
+            '<div style="background:rgba(2,132,199,0.14);border-left:3px solid #0284c7;padding:8px 10px;border-radius:6px">' +
+              '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">' +
+                '<span style="background:#0284c7;color:#ffffff;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:4px">🇬🇧 İNGİLİZCE KARŞILIĞI (Kelimelere Dokun)</span>' +
+                '<span style="color:#94a3b8;font-size:11px;font-family:monospace;font-weight:700">⏱️ ' + self.formatTime(cue.start) + '</span>' +
+              '</div>' +
+              '<div style="color:#ffffff;font-size:16px;font-weight:800;line-height:1.4">' + (enHtml || cue.en) + '</div>' +
+            '</div>' +
+            '<div style="background:rgba(255,255,255,0.05);border-left:3px solid #64748b;padding:8px 10px;border-radius:6px">' +
+              '<div style="color:#cbd5e1;font-size:10.5px;font-weight:700;margin-bottom:4px">🇹🇷 TÜRKÇE DİYALOG</div>' +
+              '<div style="color:#38bdf8;font-size:14.5px;font-weight:700;line-height:1.45">' + trText + '</div>' +
+            '</div>' +
           '</div>';
-      }
-      if(self.showOnVideo && onVideoOverlay){
-        onVideoOverlay.style.display = "flex";
-        if(onVideoText) onVideoText.innerHTML = '<div style="color:#ffffff;font-weight:800">' + (cue.en || "") + '</div><div style="color:#38bdf8;font-weight:800;margin-top:4px">' + trText + '</div>';
-      } else if(onVideoOverlay){
-        onVideoOverlay.style.display = "none";
       }
     }
 
