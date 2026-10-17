@@ -23,7 +23,10 @@ const ALLOWED_ORIGINS = new Set(String(process.env.ALLOWED_ORIGINS ||
   "https://twinterrordark.github.io,http://localhost:8765,http://127.0.0.1:8765")
   .split(",").map(s => s.trim()).filter(Boolean));
 const CODE        = String(process.env.CHAT_CODE || "").trim();   // boşsa kod sorulmaz
-const ROOT        = __dirname;
+/* Site dosyaları bu klasörde mi, bir üst klasörde mi? backend/ altına
+   taşındığında index.html bir üst dizinde kalıyor. */
+const ROOT        = fs.existsSync(path.join(__dirname, "index.html"))
+                      ? __dirname : path.join(__dirname, "..");
 const MAX_CLIENTS = 20;      // aynı anda en fazla kişi
 const MAX_LEN     = 500;     // bir mesajın en fazla karakteri
 const HISTORY     = 200;     // saklanan mesaj sayısı
@@ -180,8 +183,9 @@ const MIME = { ".html":"text/html; charset=utf-8", ".js":"text/javascript; chars
    sunucunun kendi kaynağı ve sohbet kaydı dışarıda kalır. */
 const DENY = new Set(["server.js", "chat-log.json", "package.json", "package-lock.json"]);
 function allowed(rel) {
-  const parts = rel.split(/[\/]+/).filter(Boolean);
+  const parts = rel.split(/[\\/]+/).filter(Boolean);
   if (parts.some(x => x.startsWith("."))) return false;          /* .git, .claude, .env ... */
+  if (parts[0] && parts[0].toLowerCase() === "backend") return false;   /* sunucu kaynakları */
   const f = parts[parts.length - 1] || "";
   if (DENY.has(f.toLowerCase())) return false;
   return Object.prototype.hasOwnProperty.call(MIME, path.extname(f).toLowerCase());

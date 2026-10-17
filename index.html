@@ -5410,10 +5410,11 @@ function showTaurussCatalog(){
         '</div>' +
         '<button class="tauruss-go-btn" id="tfSearchGo" style="padding:8px 16px;font-size:13px;border-radius:8px;background:#0284c7;color:#fff;border:none;font-weight:700;cursor:pointer">▶ Oynat</button>' +
         '<select id="taurussServerSelect" title="Oynatıcı Kaynağı (Türkçe ve İngilizce Altyazılı)" style="background:#1e293b;color:#38bdf8;border:1px solid #334155;border-radius:8px;padding:8px 10px;font-size:12px;font-weight:700;cursor:pointer">' +
-          '<option value="vidlink" selected>🛡️ VidLink (TR & EN Altyazı + Canlı Senkron)</option>' +
-          '<option value="embedsu">🎬 Embed.su (TR & EN Altyazı)</option>' +
-          '<option value="multiembed">🌐 MultiEmbed (TR & EN Altyazı)</option>' +
-          '<option value="vidsrc">📽️ VidSrc (Klasik)</option>' +
+          '<option value="videasy" selected>⚡ Sunucu 1: Videasy (Hızlı & TR/EN Altyazılı)</option>' +
+          '<option value="vidsrc">🎬 Sunucu 2: VidSrc (Klasik)</option>' +
+          '<option value="autoembed">🌐 Sunucu 3: AutoEmbed</option>' +
+          '<option value="multiembed">📽️ Sunucu 4: MultiEmbed</option>' +
+          '<option value="vidlink">🛡️ Sunucu 5: VidLink</option>' +
         '</select>' +
         '<button type="button" id="tfTogglePanelBtn" class="tauruss-toggle-panel-btn" style="background:#1e293b;color:#facc15;border:1px solid #334155;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px" title="Language Reactor panelini aç veya kapat">' +
           '<span id="tfTogglePanelIcon">✕</span> <span id="tfTogglePanelLabel">Paneli Kapat</span>' +
@@ -5436,7 +5437,7 @@ function showTaurussCatalog(){
           '</div>' +
         '</div>' +
         '<div class="tauruss-frame-container" style="position:relative;background:#000">' +
-          '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://vidlink.pro/movie/tt0816692?primaryColor=0284c7&secondaryColor=0f172a&icons=vid" title="Film Oynatıcı" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *" allowfullscreen loading="eager" referrerpolicy="origin"></iframe>' +
+          '<iframe class="tauruss-learning-frame" id="taurussFrame" src="https://player.videasy.to/movie/tt0816692" title="Film Oynatıcı" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *" allowfullscreen loading="eager" referrerpolicy="origin"></iframe>' +
         '</div>' +
       '</section>' +
 
@@ -5505,7 +5506,7 @@ var TaurussLearning = {
   currentCueIdx: -1,
   searchTimer: null,
   activeSuggestions: [],
-  currentServer: "vidlink",
+  currentServer: "videasy",
   hasRealTimeSync: false,
   _realSyncReported: false,
 
@@ -6236,34 +6237,38 @@ var TaurussLearning = {
     var live = el("taurussLiveCounterpart");
     if(live) live.textContent = "Yeni içerik başlatılıyor…";
 
-    var srv = this.currentServer || "vidlink";
+    var srv = this.currentServer || "videasy";
     var srvSelect = el("taurussServerSelect");
     if(srvSelect) srvSelect.value = srv;
 
-    var srvName = (srv === "vidlink") ? "VidLink" : (srv === "embedsu" ? "Embed.su" : (srv === "multiembed" ? "MultiEmbed" : "VidSrc"));
+    var srvName = (srv === "videasy") ? "Videasy" : (srv === "vidsrc" ? "VidSrc" : (srv === "autoembed" ? "AutoEmbed" : (srv === "multiembed" ? "MultiEmbed" : "VidLink")));
     var targetUrl = "";
     if(this.currentType === "tv"){
-      if(srv === "vidlink"){
-        targetUrl = "https://vidlink.pro/tv/" + this.currentId + "/" + this.season + "/" + this.episode + "?primaryColor=0284c7&secondaryColor=0f172a&icons=vid";
-      } else if(srv === "embedsu"){
-        targetUrl = "https://embed.su/embed/tv/" + this.currentId + "/" + this.season + "/" + this.episode;
+      if(srv === "videasy"){
+        targetUrl = "https://player.videasy.to/tv/" + this.currentId + "/" + this.season + "/" + this.episode;
+      } else if(srv === "vidsrc"){
+        targetUrl = "https://vidsrc.sh/embed/tv?imdb=" + this.currentId + "&season=" + this.season + "&episode=" + this.episode;
+      } else if(srv === "autoembed"){
+        targetUrl = "https://autoembed.co/tv/imdb/" + this.currentId + "-" + this.season + "-" + this.episode;
       } else if(srv === "multiembed"){
         targetUrl = "https://multiembed.mov/?video_id=" + this.currentId + "&tmdb=1&s=" + this.season + "&e=" + this.episode;
       } else {
-        targetUrl = "https://vidsrc.me/embed/tv?imdb=" + this.currentId + "&season=" + this.season + "&episode=" + this.episode;
+        targetUrl = "https://vidlink.pro/tv/" + this.currentId + "/" + this.season + "/" + this.episode + "?primaryColor=0284c7&secondaryColor=0f172a&icons=vid";
       }
       if(titleEl) titleEl.textContent = "📺 " + this.currentTitle + " · S" + this.season + " B" + this.episode;
       if(labelEl) labelEl.textContent = "📺 " + this.currentTitle + " · S" + this.season + " B" + this.episode + " (" + srvName + ")";
       if(subEl) subEl.textContent = "Player menüsünden English ve Türkçe altyazıları seçebilirsiniz";
     } else {
-      if(srv === "vidlink"){
-        targetUrl = "https://vidlink.pro/movie/" + this.currentId + "?primaryColor=0284c7&secondaryColor=0f172a&icons=vid";
-      } else if(srv === "embedsu"){
-        targetUrl = "https://embed.su/embed/movie/" + this.currentId;
+      if(srv === "videasy"){
+        targetUrl = "https://player.videasy.to/movie/" + this.currentId;
+      } else if(srv === "vidsrc"){
+        targetUrl = "https://vidsrc.sh/embed/movie?imdb=" + this.currentId;
+      } else if(srv === "autoembed"){
+        targetUrl = "https://autoembed.co/movie/imdb/" + this.currentId;
       } else if(srv === "multiembed"){
         targetUrl = "https://multiembed.mov/?video_id=" + this.currentId + "&tmdb=1";
       } else {
-        targetUrl = "https://vidsrc.me/embed/movie?imdb=" + this.currentId;
+        targetUrl = "https://vidlink.pro/movie/" + this.currentId + "?primaryColor=0284c7&secondaryColor=0f172a&icons=vid";
       }
       if(titleEl) titleEl.textContent = "🎬 " + this.currentTitle;
       if(labelEl) labelEl.textContent = "🎬 " + this.currentTitle + " (" + srvName + ")";
