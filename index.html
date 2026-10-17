@@ -651,7 +651,7 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
 .ytstudy-form input{flex:1;min-width:0;padding:13px 15px;border-radius:11px;border:1px solid #ffffff35;background:#10121dcc;color:#fff;font-size:14px;outline:none}
 .ytstudy-form input:focus{border-color:#a5b4fc;box-shadow:0 0 0 3px #a5b4fc24}
 .ytstudy-form input::placeholder{color:#a3a6b5}
-.ytstudy-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(240px,.8fr);gap:14px;align-items:start}
+.ytstudy-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,1fr);gap:14px;align-items:start}
 .ytstudy-player-card,.ytstudy-sidecard{background:var(--surface);border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:var(--shadow)}
 .ytstudy-player{aspect-ratio:16/9;background:#08090d;position:relative;min-height:220px}
 .ytstudy-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
@@ -666,6 +666,38 @@ svg.vz .draw{stroke-dasharray:260;stroke-dashoffset:260;animation:vzDraw .7s eas
 .ytstudy-lang-row{display:flex;gap:8px;margin:14px 0 10px}
 .ytstudy-lang{flex:1;padding:10px 8px;border:1px solid var(--line);background:var(--surface2);border-radius:10px;font-size:12px;font-weight:750}
 .ytstudy-lang.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+/* --- YouTube çift altyazı paneli --- */
+.ytsub-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.ytsub-badge{background:var(--accent);color:#fff;padding:2px 8px;border-radius:6px;
+  font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;font-weight:800}
+.ytsub-files{display:flex;gap:6px;margin:10px 0 8px;flex-wrap:wrap}
+.ytsub-file{flex:1;min-width:110px;text-align:center;padding:7px 8px;border:1px solid var(--line);
+  background:var(--surface2);border-radius:9px;font-size:11.5px;font-weight:750;cursor:pointer}
+.ytsub-file:hover{border-color:var(--accent)}
+.ytsub-file.ok{border-color:var(--ok);color:var(--ok)}
+.ytsub-now{background:var(--surface2);border:1px solid var(--line);border-radius:11px;
+  padding:11px 12px;min-height:76px;margin-bottom:8px}
+.ytsub-now-lbl{display:inline-block;padding:2px 7px;border-radius:5px;background:var(--accent-soft);
+  color:var(--accent);font-size:10.5px;font-weight:800;margin-bottom:5px}
+.ytsub-now-main{font-size:16px;font-weight:800;line-height:1.4;color:var(--text)}
+.ytsub-now-alt{margin-top:7px;padding-top:7px;border-top:1px dashed var(--line);
+  font-size:14px;font-weight:650;line-height:1.45;color:var(--muted)}
+.ytsub-card{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:var(--accent-soft);border-radius:9px;padding:7px 10px;font-size:13px;margin-bottom:8px}
+.ytsub-listhead{display:flex;justify-content:space-between;align-items:center;
+  font-size:11.5px;font-weight:800;color:var(--muted);margin-bottom:5px}
+.ytsub-list{max-height:330px;overflow-y:auto;overscroll-behavior:contain;
+  border:1px solid var(--line);border-radius:11px}
+.ytsub-cue{padding:9px 11px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s}
+.ytsub-cue:last-child{border-bottom:0}
+.ytsub-cue:hover{background:var(--surface2)}
+.ytsub-cue.on{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+.ytsub-cue-t{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10.5px;font-weight:800;color:var(--muted)}
+.ytsub-cue-a{font-size:13.5px;font-weight:700;line-height:1.4;color:var(--text);margin-top:2px}
+.ytsub-cue-b{font-size:12.5px;font-weight:600;line-height:1.4;color:var(--muted);margin-top:2px}
+.ytsub-word{cursor:pointer;border-radius:4px;padding:1px 2px;transition:.12s}
+.ytsub-word:hover{background:var(--accent);color:#fff}
+@media(max-width:860px){ .ytsub-list{max-height:240px} }
 .ytstudy-note{margin-top:13px;padding:11px 12px;border-radius:10px;background:var(--surface2);font-size:11.5px;line-height:1.55;color:var(--muted)}
 .ytstudy-error{color:var(--err);font-size:12px;margin-top:8px}
 .wrap:has(.tauruss-theater){max-width:1560px}
@@ -5574,8 +5606,20 @@ var TaurussLearning = {
     if(!window._adblockOpenPatched){
       window._adblockOpenPatched = true;
       try {
-        window.open = function(){ console.warn("[AdBlock] Blocked popup"); return null; };
+        window.open = function(url){ 
+          console.warn("[AdBlock] Blocked window.open popup:", url); 
+          return null; 
+        };
       } catch(_) {}
+
+      document.addEventListener("click", function(e){
+        var a = e.target.closest("a");
+        if(a && a.target === "_blank" && a.id !== "taurussExtLink"){
+          e.preventDefault();
+          e.stopPropagation();
+          console.warn("[AdBlock] Blocked ad link popup:", a.href);
+        }
+      }, true);
     }
 
     if(!window._topRedirectBlocked){
@@ -5584,7 +5628,8 @@ var TaurussLearning = {
         if(window._allowPageUnload) return;
         if(document.activeElement && document.activeElement.id === "taurussFrame"){
           e.preventDefault();
-          return (e.returnValue = "Sayfadan ayrılmak istiyor musunuz?");
+          e.stopImmediatePropagation();
+          return (e.returnValue = "Reklam yönlendirmesi engellendi.");
         }
       });
     }
@@ -7759,6 +7804,7 @@ function ytStudyMount(id, language, startAt){
             ? "Türkçe altyazı varsa YouTube oynatıcıda gösterilir. Altyazılar ⚙ menüsünden de seçilebilir."
             : "İngilizce altyazı varsa YouTube oynatıcıda gösterilir. Altyazılar CC menüsünden açılıp kapatılabilir.";
         },
+        onStateChange:function(event){ YTSUB.onState(event.data); },
         onError:function(event){
           var note = el("ytStudyHelp");
           if(note) note.textContent = (event.data === 101 || event.data === 150)
@@ -7784,11 +7830,21 @@ function showYouTubeStudy(initialUrl){
     '<div class="ytstudy-placeholder"><b>YouTube bağlantını ekleyerek başla</b><span>Video aynı sayfada oynatılacak.</span></div></div>'+
     '<div class="ytstudy-player-meta"><div class="ytstudy-video-title" id="ytStudyTitle">Henüz video seçilmedi</div>'+
     '<a class="ytstudy-external" id="ytStudyExternal" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">YouTube ↗</a></div></section>'+
-    '<aside class="ytstudy-sidecard"><div class="crumb">ALTYAZI DİLİ</div><h3>İzlerken takip et</h3>'+
-    '<p>Altyazıyı oynatıcının CC düğmesinden aç. Aşağıdan tercih ettiğin dili seç.</p>'+
+    '<aside class="ytstudy-sidecard">'+
+    '<div class="ytsub-head"><div class="crumb" style="margin:0">ÇİFT ALTYAZI</div>'+
+      '<span class="ytsub-badge" id="ytsubTime">0:00</span></div>'+
     '<div class="ytstudy-lang-row"><button class="ytstudy-lang active" id="ytStudyEn">🇬🇧 English</button><button class="ytstudy-lang" id="ytStudyTr">🇹🇷 Türkçe</button></div>'+
-    '<div class="ytstudy-note" id="ytStudyHelp">YouTube altyazısı olan videolarda çalışır. Türkçe çeviri, video ve YouTube altyazı desteğine bağlıdır.</div>'+
-    '<div class="ytstudy-note">Dil değiştirince video aynı konumda yeniden açılır. Bazı videolarda altyazı bulunmayabilir veya gömülü oynatma kapalı olabilir.</div></aside></div>';
+    '<div class="ytstudy-note" id="ytStudyHelp">Oynatıcıda hangi dili izliyorsan onu seç; panel o sahnenin diğer dildeki karşılığını gösterir.</div>'+
+    '<div class="ytsub-files">'+
+      '<label class="ytsub-file" id="ytsubEnLbl" for="ytsubEnFile">🇬🇧 İngilizce .srt</label>'+
+      '<label class="ytsub-file" id="ytsubTrLbl" for="ytsubTrFile">🇹🇷 Türkçe .srt</label>'+
+      '<input type="file" id="ytsubEnFile" accept=".srt,.vtt,text/plain" hidden>'+
+      '<input type="file" id="ytsubTrFile" accept=".srt,.vtt,text/plain" hidden></div>'+
+    '<div class="ytsub-now" id="ytsubNow"><span style="color:var(--muted);font-size:13px">Altyazı dosyası ekle; video oynarken o anki replik burada görünür.</span></div>'+
+    '<div class="ytsub-card" id="ytsubWord" style="display:none"></div>'+
+    '<div class="ytsub-listhead"><span id="ytsubCount">0 replik</span><span>satıra dokun → o ana git</span></div>'+
+    '<div class="ytsub-list" id="ytsubList"></div>'+
+    '</aside></div>';
   el("ytStudyForm").onsubmit = function(event){
     event.preventDefault();
     var result = ytStudyParse(el("ytStudyUrl").value);
@@ -7805,6 +7861,7 @@ function showYouTubeStudy(initialUrl){
     ytStudyMount(result.id, YTSTUDY.language || "en", result.start);
   };
   el("ytStudyUrl").addEventListener("input", function(){ el("ytStudyError").hidden = true; });
+  YTSUB.mount();
   el("ytStudyEn").onclick = function(){ ytStudyChooseLanguage("en"); };
   el("ytStudyTr").onclick = function(){ ytStudyChooseLanguage("tr"); };
   if(initial) el("ytStudyForm").requestSubmit();
@@ -7823,8 +7880,274 @@ function ytStudyChooseLanguage(language){
   if(YTSTUDY.player && YTSTUDY.player.getCurrentTime) try{ start = YTSTUDY.player.getCurrentTime() || 0; }catch(e){}
   el("ytStudyEn").classList.toggle("active", language === "en");
   el("ytStudyTr").classList.toggle("active", language === "tr");
+  YTSUB.setMode(language);
   ytStudyMount(YTSTUDY.videoId, language, start);
 }
+
+/* =====================================================================
+   YouTube çift altyazı paneli
+
+   Zaman, YouTube'un resmî oynatıcı API'sinden okunur:
+   getCurrentTime() gerçek saniyeyi verir, onStateChange duraklatmayı ve
+   ileri sarmayı bildirir. Bu yüzden panel videoya gerçekten bağlıdır —
+   duraklatınca durur, ileri sarınca oraya atlar.
+   ===================================================================== */
+var YTSUB = {
+  en: [], tr: [], pairs: [], idx: -1,
+  mode: "en",            /* izlenen dil; panel diğerini gösterir */
+  timer: null,
+  cache: Object.create(null),
+
+  mount: function(){
+    var self = this;
+    self.idx = -1;
+    var ef = el("ytsubEnFile"), tf = el("ytsubTrFile");
+    if(ef) ef.onchange = function(){ if(this.files[0]) self.load(this.files[0], "en"); };
+    if(tf) tf.onchange = function(){ if(this.files[0]) self.load(this.files[0], "tr"); };
+    self.renderList();
+  },
+
+  setMode: function(lang){
+    this.mode = (lang === "tr") ? "tr" : "en";
+    this.idx = -1;
+    this.renderList();
+    this.update(this.now());
+  },
+
+  /* ---------- altyazı dosyası ---------- */
+  load: function(file, lang){
+    var self = this;
+    var rd = new FileReader();
+    rd.onload = function(){
+      var cues = self.parse(String(rd.result || ""));
+      if(!cues.length){ self.note("Altyazı okunamadı: " + file.name); return; }
+      if(lang === "en") self.en = cues; else self.tr = cues;
+      var lbl = el(lang === "en" ? "ytsubEnLbl" : "ytsubTrLbl");
+      if(lbl){ lbl.classList.add("ok"); lbl.textContent = (lang === "en" ? "🇬🇧 " : "🇹🇷 ") + cues.length + " replik"; }
+      self.pair();
+      self.idx = -1;
+      self.renderList();
+      self.update(self.now());
+    };
+    rd.readAsText(file, "utf-8");
+  },
+
+  note: function(t){ var n = el("ytStudyHelp"); if(n) n.textContent = t; },
+
+  parse: function(raw){
+    var cues = [];
+    var blocks = String(raw || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").split(/\n\n+/);
+    for(var i = 0; i < blocks.length; i++){
+      var lines = blocks[i].trim().split("\n");
+      var ti = -1;
+      for(var j = 0; j < Math.min(3, lines.length); j++){
+        if(lines[j].indexOf("-->") !== -1){ ti = j; break; }
+      }
+      if(ti === -1) continue;
+      var text = lines.slice(ti + 1).join(" ").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+      if(!text) continue;
+      var parts = lines[ti].split("-->");
+      var a = this.time(parts[0]), b = this.time(parts[1]);
+      if(b > a) cues.push({ start: a, end: b, text: text });
+    }
+    cues.sort(function(x, y){ return x.start - y.start; });
+    return cues;
+  },
+
+  time: function(t){
+    var m = String(t || "").trim().match(/(?:(\d+):)?(\d{2}):(\d{2})[,.](\d{1,3})/);
+    if(!m) return 0;
+    return parseInt(m[1] || "0", 10) * 3600 + parseInt(m[2], 10) * 60 +
+           parseInt(m[3], 10) + parseInt(m[4], 10) / 1000;
+  },
+
+  /* iki dildeki replikleri zaman örtüşmesine göre eşle */
+  pair: function(){
+    var base = this.en.length ? this.en : this.tr;
+    var other = this.en.length ? this.tr : this.en;
+    var out = [];
+    for(var i = 0; i < base.length; i++){
+      var c = base[i], match = null, best = 0;
+      for(var j = 0; j < other.length; j++){
+        var ov = Math.min(c.end, other[j].end) - Math.max(c.start, other[j].start);
+        if(ov > best){ best = ov; match = other[j]; }
+      }
+      out.push({
+        id: i, start: c.start, end: c.end,
+        en: this.en.length ? c.text : (match ? match.text : ""),
+        tr: this.en.length ? (match ? match.text : "") : c.text
+      });
+    }
+    this.pairs = out;
+  },
+
+  /* ---------- oynatıcıdan zaman ---------- */
+  now: function(){
+    var p = YTSTUDY.player;
+    if(!p || !p.getCurrentTime) return 0;
+    try { return p.getCurrentTime() || 0; } catch(e){ return 0; }
+  },
+
+  onState: function(state){
+    if(state === 1) this.start();          /* oynuyor */
+    else { this.stop(); this.update(this.now()); }
+  },
+
+  start: function(){
+    var self = this;
+    self.stop();
+    self.timer = setInterval(function(){ self.update(self.now()); }, 80);
+  },
+
+  stop: function(){ if(this.timer){ clearInterval(this.timer); this.timer = null; } },
+
+  at: function(t){
+    var a = this.pairs, lo = 0, hi = a.length - 1;
+    while(lo <= hi){
+      var mid = (lo + hi) >> 1;
+      if(t < a[mid].start) hi = mid - 1;
+      else if(t > a[mid].end) lo = mid + 1;
+      else return mid;
+    }
+    return -1;
+  },
+
+  update: function(t){
+    var badge = el("ytsubTime");
+    if(badge) badge.textContent = this.fmt(t);
+    if(!this.pairs.length) return;
+    var i = this.at(t);
+    if(i === this.idx) return;
+    this.idx = i;
+    if(i === -1) return;   /* boşlukta son repliği ekranda bırak */
+    this.showNow(this.pairs[i]);
+    this.highlight(this.pairs[i].id);
+  },
+
+  /* ---------- çizim ---------- */
+  showNow: function(c){
+    var self = this;
+    var box = el("ytsubNow"); if(!box || !c) return;
+    /* izlenen dil ne ise panel diğerini öne çıkarır */
+    var karsi = self.mode === "en" ? c.tr : c.en;
+    var ayni  = self.mode === "en" ? c.en : c.tr;
+    var karsiLbl = self.mode === "en" ? "🇹🇷 Türkçe karşılığı" : "🇬🇧 İngilizce karşılığı";
+    var ayniLbl  = self.mode === "en" ? "🇬🇧 İngilizce replik" : "🇹🇷 Türkçe replik";
+
+    var karsiHtml = karsi ? (self.mode === "en" ? esc(karsi) : self.words(karsi))
+                          : '<span style="color:var(--muted)">çevriliyor…</span>';
+    var ayniHtml  = ayni  ? (self.mode === "en" ? self.words(ayni) : esc(ayni)) : "";
+
+    box.innerHTML = '<span class="ytsub-now-lbl">' + karsiLbl + '</span>' +
+      '<div class="ytsub-now-main">' + karsiHtml + '</div>' +
+      (ayniHtml ? '<div class="ytsub-now-alt"><b style="font-size:10.5px;color:var(--muted)">' + ayniLbl + '</b><br>' + ayniHtml + '</div>' : '');
+
+    if(!karsi && ayni){
+      self.translate(ayni, self.mode === "en" ? "tr" : "en", function(v){
+        if(self.mode === "en") c.tr = v; else c.en = v;
+        if(self.idx !== -1 && self.pairs[self.idx] === c) self.showNow(c);
+        var row = document.querySelector('.ytsub-cue[data-i="' + c.id + '"] .ytsub-cue-b');
+        if(row) row.textContent = v;
+      });
+    }
+  },
+
+  renderList: function(){
+    var self = this;
+    var list = el("ytsubList"), cnt = el("ytsubCount");
+    if(cnt) cnt.textContent = self.pairs.length + " replik";
+    if(!list) return;
+    if(!self.pairs.length){
+      list.innerHTML = '<div style="padding:14px;text-align:center;color:var(--muted);font-size:12.5px">' +
+        'Altyazı dosyası ekleyince replikler burada listelenir.</div>';
+      return;
+    }
+    list.innerHTML = self.pairs.map(function(c){
+      var ust = self.mode === "en" ? c.en : c.tr;
+      var alt = self.mode === "en" ? c.tr : c.en;
+      return '<div class="ytsub-cue" data-i="' + c.id + '" onclick="YTSUB.seek(' + c.start + ')">' +
+        '<div class="ytsub-cue-t">' + self.fmt(c.start) + '</div>' +
+        '<div class="ytsub-cue-a">' + esc(ust || "") + '</div>' +
+        '<div class="ytsub-cue-b">' + esc(alt || "") + '</div>' +
+      '</div>';
+    }).join("");
+  },
+
+  highlight: function(id){
+    var list = el("ytsubList"); if(!list) return;
+    var prev = list.querySelector(".ytsub-cue.on");
+    if(prev) prev.classList.remove("on");
+    if(id === -1) return;
+    var cur = list.querySelector('[data-i="' + id + '"]');
+    if(cur){ cur.classList.add("on"); cur.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
+  },
+
+  seek: function(sec){
+    var p = YTSTUDY.player;
+    if(!p || !p.seekTo){ this.note("Önce bir video aç."); return; }
+    try { p.seekTo(Math.max(0, sec), true); } catch(e){}
+    this.idx = -1;
+    this.update(sec);
+  },
+
+  /* ---------- kelime ---------- */
+  words: function(text){
+    return String(text || "").split(/([A-Za-z0-9'-]+)/).map(function(tok){
+      if(/[A-Za-z0-9]/.test(tok)){
+        var c = tok.replace(/[^A-Za-z0-9]/g, "");
+        return '<span class="ytsub-word" onclick="YTSUB.word(\'' + c.replace(/'/g, "\\'") + '\')">' + esc(tok) + '</span>';
+      }
+      return esc(tok);
+    }).join("");
+  },
+
+  word: function(w){
+    var self = this;
+    var card = el("ytsubWord"); if(!card) return;
+    self.speak(w);
+    card.style.display = "flex";
+    card.innerHTML = '<span>🔊 <b>' + esc(w) + '</b> — çevriliyor…</span>';
+    self.translate(w, "tr", function(v){
+      if(!card.isConnected) return;
+      card.innerHTML = '<span>🔊 <b>' + esc(w) + '</b> — <b style="color:var(--accent)">' + esc(v) + '</b></span>' +
+        '<button style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px" ' +
+        'onclick="el(\'ytsubWord\').style.display=\'none\'">✕</button>';
+    });
+  },
+
+  speak: function(w){
+    try{
+      if("speechSynthesis" in window && w){
+        window.speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(w);
+        u.lang = "en-US"; u.rate = .92;
+        window.speechSynthesis.speak(u);
+      }
+    }catch(e){}
+  },
+
+  translate: function(text, target, done){
+    var self = this;
+    text = String(text || "").trim();
+    if(!text){ done(""); return; }
+    var key = target + "|" + text;
+    if(self.cache[key]){ done(self.cache[key]); return; }
+    fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" +
+          target + "&dt=t&q=" + encodeURIComponent(text))
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        var out = "";
+        if(Array.isArray(d) && Array.isArray(d[0])) out = d[0].map(function(x){ return x[0]; }).join("").trim();
+        if(out){ self.cache[key] = out; done(out); } else done(text);
+      })
+      .catch(function(){ done("Çeviri alınamadı."); });
+  },
+
+  fmt: function(v){
+    var s = Math.max(0, Math.floor(Number(v) || 0));
+    return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+  }
+};
 
 /* =====================================================================
    TRANCY BILINGUAL BOOK READER MODULE - COMPLETE WITH PDF IMPORTER
